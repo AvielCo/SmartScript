@@ -1,4 +1,4 @@
 .vscode/
-cropped_images/
-ran.jpg
-images/
+input/
+output/
+logger.log
