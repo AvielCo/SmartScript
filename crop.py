@@ -23,8 +23,11 @@ outputFolder = os.path.join(projectDir, "output")
 
 # Single page dimensions
 cropDimensions = {"x1": 1200, "y1": 400, "x2": 2700, "y2": 2400 }
+cropLittleImages = {"x": 300, "y": 200}
 # Pages middle margin
 margin = 150
+
+numOfProcesses = 5
 
 
 def cropSinglePage(imageName: str):
@@ -54,10 +57,12 @@ def runThreads():
     except FileNotFoundError:
         logging.error("Input file '" + inputFolder + "' not found.")
         return
-    i = int(len(imagesInput) / 4)
-    chunks = [imagesInput[4 * i : 4 * (i+1)] for i in range(len(imagesInput) // 4 + 1)]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        for i in range(5):
+    if not os.path.exists(outputFolder):
+        os.mkdir(outputFolder)
+    i = int(len(imagesInput) / (numOfProcesses - 1))
+    chunks = [imagesInput[(numOfProcesses - 1) * i : (numOfProcesses - 1) * (i+1)] for i in range(len(imagesInput) // (numOfProcesses - 1) + 1)]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=numOfProcesses) as executor:
+        for i in range(numOfProcesses):
             executor.submit(cropFiles, chunks[i])
 
 if __name__ == "__main__":
