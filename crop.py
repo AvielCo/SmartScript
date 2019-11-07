@@ -27,7 +27,7 @@ cropLittleImages = {"x": 300, "y": 200}
 # Pages middle margin
 margin = 150
 
-numOfProcesses = 5
+numOfThreads = 5
 
 
 def cropSinglePage(imageName: str):
@@ -59,10 +59,10 @@ def runThreads():
         return
     if not os.path.exists(outputFolder):
         os.mkdir(outputFolder)
-    i = int(len(imagesInput) / (numOfProcesses - 1))
-    chunks = [imagesInput[(numOfProcesses - 1) * i : (numOfProcesses - 1) * (i+1)] for i in range(len(imagesInput) // (numOfProcesses - 1) + 1)]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=numOfProcesses) as executor:
-        for i in range(numOfProcesses):
+    i = int(len(imagesInput) / (numOfThreads - 1))
+    chunks = [imagesInput[(numOfThreads - 1) * i : (numOfThreads - 1) * (i+1)] for i in range(len(imagesInput) // (numOfThreads - 1) + 1)]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=numOfThreads) as executor:
+        for i in range(numOfThreads):
             executor.submit(cropFiles, chunks[i])
 
 if __name__ == "__main__":
