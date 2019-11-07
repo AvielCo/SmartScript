@@ -22,8 +22,8 @@ outputFolder = os.path.join(projectDir, "output")
 # Page details
 
 # Single page dimensions
-cropDimensions = {"x1": 1200, "y1": 400, "x2": 2700, "y2": 2400 }
-cropLittleImages = {"x": 300, "y": 200}
+cropDimensions = {"x1": 1200, "y1": 400, "x2": 2700, "y2": 2400 } # 1500 X 2000 px
+cropLittleImages = {"x": 300, "y": 200, "xOffset": }
 # Pages middle margin
 margin = 150
 
@@ -37,11 +37,11 @@ def cropSinglePage(imageName: str):
     x2 = cropDimensions["x2"]
     y1 = cropDimensions["y1"]
     y2 = cropDimensions["y2"]
+    delta = cropDimensions["x2"] - cropDimensions["x1"]
     for _ in range(2):
         croppedImage = img[y1:y2, x1:x2]
         saveLocation = os.path.join(outputFolder, imageName + ".jpg")
         cv2.imwrite(saveLocation, croppedImage)
-        delta = cropDimensions["x2"] - cropDimensions["x1"]
         x1 += delta + margin
         x2 += delta + margin
         imageName += "2"
