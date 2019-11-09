@@ -18,12 +18,13 @@ logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s - %(
 projectDir = os.getcwd()
 inputFolder = os.path.join(projectDir, "input")
 outputFolder = os.path.join(projectDir, "output")
+patchesFolder = os.path.join(projectDir, "patches_output")
 
 # Page details
 
 # Single page dimensions
 cropDimensions = {"x1": 1200, "y1": 400, "x2": 2700, "y2": 2400 } # 1500 X 2000 px
-cropLittleImages = {"x": 300, "y": 200, "xOffset": }
+patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200//3 }
 # Pages middle margin
 margin = 150
 
@@ -64,6 +65,31 @@ def runThreads():
     with concurrent.futures.ThreadPoolExecutor(max_workers=numOfThreads) as executor:
         for i in range(numOfThreads):
             executor.submit(cropFiles, chunks[i])
+
+# def cropToPatches(imageName: str):
+#     image = cv2.imread(os.path.join(outputFolder, imageName))
+#     x1 = y1 = 0
+#     x2 = xJump = patchDimensions["x"]
+#     y2 = yJump =  patchDimensions["y"]
+#     xOffset = patchDimensions["xOffset"]
+#     yOffset = patchDimensions["yOffset"]
+#     i = 1
+#     while x2 < 1500:
+#         y2 = yJump
+#         while y2 < 2000:
+#             for a in range(3):
+#                 for b in range(3):
+#                     croppedPatch = image[y1 + yOffset * a : y2 + yOffset * a , x1 + xOffset * b : x2 + xOffset * b]
+#                     imageName.replace(".jpg", i + ".jpg")
+#                     saveLocation = os.path.join(patchesFolder, imageName)
+#                     cv2.imwrite(saveLocation, croppedPatch)
+#                     i += 1
+#             y1 += yJump
+#             y2 += yJump
+#         x1 += xJump
+#         x2 += xJump
+
+
 
 if __name__ == "__main__":
     startTime = datetime.now()
