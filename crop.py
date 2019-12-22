@@ -26,14 +26,16 @@ outputFolder = os.path.join(projectDir, "output")
 
 # Single page dimensions
 
-cropDimensions = {"A1": {"x1": 1200, "y1": 400, "x2": 2700, "y2": 2400, "xDelta": 1500, "yDelta": 2000 }}
+cropDimensions = {  "A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin": 200, "pageNum": 2},
+                    "A2": {"x1": 1000, "y1": 550, "x2": 3300, "y2": 3650, "margin": 800, "pageNum": 2},
+                    "B": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2},
+                    "I": {"x1": 750, "y1": 700, "x2": 3200, "y2": 4500, "margin": 0, "pageNum": 1}
+                    }
 patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200//3 }
-# Pages middle margin
-margin = 150
 
 numOfThreads = 3
 
-def cropSinglePage(imageName: str, dimensionsDict: dict, folderName):
+def cropSinglePage(imageName: str, dimensionsDict: dict, folderName: str):
     img = cv2.imread(os.path.join(inputFolder, folderName, imageName), cv2.IMREAD_GRAYSCALE)
     originalName = imageName
     x1 = dimensionsDict["x1"]
@@ -41,20 +43,20 @@ def cropSinglePage(imageName: str, dimensionsDict: dict, folderName):
     y1 = dimensionsDict["y1"]
     y2 = dimensionsDict["y2"]
     delta = dimensionsDict["x2"] - dimensionsDict["x1"]
-    for _ in range(2):
+    for _ in range(dimensionsDict["pageNum"]):
         croppedImage = img[y1:y2, x1:x2]
-        # saveLocation = os.path.join(outputFolder, imageName)
+        # saveLocation = os.path.join(outputFolder, imageName) 
         saveName = imageName[:-4] #Get the name of the image without the extension (e.g. without '.jpg')
-        cropToPatches(croppedImage, saveName, dimensionsDict["xDelta"], dimensionsDict["yDelta"], folderName)
+        cropToPatches(croppedImage, saveName, dimensionsDict["x2"] - dimensionsDict["x1"], dimensionsDict["y2"] - dimensionsDict["y1"], folderName)
         # cv2.imwrite(saveLocation, croppedImage)
-        x1 += delta + margin
-        x2 += delta + margin
+        x1 += delta + dimensionsDict["margin"]
+        x2 += delta + dimensionsDict["margin"]
         imageName = imageName[:-4] + "2.jpg"
     global numOfImagesCropped
     numOfImagesCropped += 1
     logging.info("Image " +  originalName + " Cropped successfully.")
 
-def cropFiles(imagesInput, dimensionsDict, folderName):
+def cropFiles(imagesInput, dimensionsDict: dict, folderName: str):
     for imageName in imagesInput:
         cropSinglePage(imageName, dimensionsDict, folderName)
 
@@ -62,7 +64,7 @@ def listToChunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def runThreads(folderName, dimensionsDict):
+def runThreads(folderName: str, dimensionsDict: dict):
     path = os.path.join(inputFolder, folderName)
     try:
         imagesInput = os.listdir(path)
@@ -79,7 +81,7 @@ def runThreads(folderName, dimensionsDict):
         for i in range(numOfThreads):
             executor.submit(cropFiles, chunks[i], dimensionsDict, folderName)
 
-def cropToPatches(image, imageName: str, xDelta, yDelta, folderName):
+def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: str):
     # image = cv2.imread(os.path.join(outputFolder, imageName))
     x1 = y1 = 0
     x2 , y2 = patchDimensions["x"], patchDimensions["y"]
