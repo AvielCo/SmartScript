@@ -91,7 +91,7 @@ def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: s
         j = 0
         while y2 + yOffset * j < yDelta:
             croppedPatch = image[y1 + yOffset * j : y2 + yOffset * j, x1 : x2]
-            saveLocation = os.path.join(outputFolder, folderName, imageName + str(i) + ".jpg")
+            saveLocation = os.path.join(outputFolder, folderName, imageName + "_" + str(i) + ".jpg")
             global numOfPatches
             numOfPatches += 1
             cv2.imwrite(saveLocation, croppedPatch)
@@ -115,10 +115,12 @@ def preProcessingMain():
             logging.error("File name doesn't match to the dictionary's key.")
             logging.error("Cropping of " + name + " Failed.")
 
+def main():
+    startTime = datetime.now()
+    logging.info("PreProcessing Script started")
+    preProcessingMain()
+    logging.info("PreProcessing Script ended, execution time: " + str(datetime.now() - startTime))
+    logging.info(str(numOfImagesCropped) + " Images have been cropped into " + str(numOfPatches) + " Patches.")
 
 if __name__ == "__main__":
-    startTime = datetime.now()
-    logging.info("Script started")
-    preProcessingMain()
-    logging.info("Script ended, execution time: " + str(datetime.now() - startTime))
-    logging.info(str(numOfImagesCropped) + " Images have been cropped into " + str(numOfPatches) + " Patches.")
+    main()

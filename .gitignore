@@ -4,3 +4,5 @@ output/
 logger.log
 .idea/
 patches_output/
+__pycache__/
+
