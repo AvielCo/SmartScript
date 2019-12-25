@@ -83,13 +83,14 @@ def runThreads(folderName: str, dimensionsDict: dict):
 
 def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: str):
     # image = cv2.imread(os.path.join(outputFolder, imageName))
+    patchCount = 0
     x1 = y1 = 0
     x2 , y2 = patchDimensions["x"], patchDimensions["y"]
     xOffset, yOffset = patchDimensions["xOffset"], patchDimensions["yOffset"]
     i = 1
-    while x2 < xDelta:
+    while x2 < xDelta and patchCount < 10:
         j = 0
-        while y2 + yOffset * j < yDelta:
+        while y2 + yOffset * j < yDelta and patchCount < 10:
             croppedPatch = image[y1 + yOffset * j : y2 + yOffset * j, x1 : x2]
             saveLocation = os.path.join(outputFolder, folderName, imageName + "_" + str(i) + ".jpg")
             global numOfPatches
@@ -97,6 +98,7 @@ def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: s
             cv2.imwrite(saveLocation, croppedPatch)
             i += 1
             j += 1
+            patchCount += 1
         x1 += xOffset
         x2 += xOffset
     
