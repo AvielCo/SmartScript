@@ -1,8 +1,7 @@
 .vscode/
-input/
 output/
 logger.log
 .idea/
 patches_output/
 __pycache__/
-
+logs/
