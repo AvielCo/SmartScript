@@ -1,6 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Flatten
-
+from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.layers import Dense , Conv1D,MaxPooling1D , LSTM , Embedding, Dropout, Flatten
 from keras.layers import Bidirectional
@@ -63,7 +63,10 @@ def buildData(cacheFlag=False):
 
 df, y = buildData(False)
 df = np.asarray(df)
-y = np.asarray(y)
+y = to_categorical(y)
+print("HI")
+
+print(y)
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent)
 
 #create model
@@ -73,7 +76,6 @@ model.add(Conv2D(64, kernel_size=3, activation="relu", input_shape=(df.shape[1],
 model.add(Flatten())
 model.add(Dense(1, activation="softmax"))
 
-
         #save the best model
 checkpiont=ModelCheckpoint('test1.h5', monitor='val_loss', verbose=1, save_best_only=True,
                                    save_weights_only=True, mode='auto', period=1)
@@ -81,9 +83,11 @@ tensorboard = TensorBoard(log_dir='./logs/test1', histogram_freq=2,write_graph=T
 model.compile(loss='binary_crossentropy',
                       optimizer="SGD",
                       metrics=['accuracy'])
-model.fit(X_train, y_train,
-                       batch_size=32, validation_split=0.2,
-                       epochs=100, verbose=2, callbacks=[tensorboard,checkpiont])
-print(111)
+
+model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
+
+#model.fit(X_train, y_train,
+#                       batch_size=32, validation_split=0.2,
+#                       epochs=100, verbose=2, callbacks=[tensorboard, checkpiont])
 scores = model.evaluate(X_test, y_test, verbose=1)
 print("Test accuracy:" , scores[1]*100)
