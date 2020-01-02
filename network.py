@@ -84,7 +84,8 @@ model.compile(loss='binary_crossentropy',
                       optimizer="SGD",
                       metrics=['accuracy'])
 
-model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
+model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
+                       epochs=100, verbose=2, callbacks=[checkpiont] )
 
 #model.fit(X_train, y_train,
 #                       batch_size=32, validation_split=0.2,
