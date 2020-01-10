@@ -5,3 +5,4 @@ logger.log
 patches_output/
 __pycache__/
 logs/
+input/

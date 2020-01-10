@@ -2,7 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Flatten
 from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint, EarlyStopping
-from keras.layers import Dense , Conv2D, MaxPooling2D , LSTM , Embedding, Dropout, Flatten
+from keras.layers import Dense, Conv2D, MaxPooling2D, LSTM, Embedding, Dropout, Flatten
 from keras.layers import Bidirectional
 from keras.models import Sequential
 from keras.callbacks import TensorBoard
@@ -27,7 +27,7 @@ def loadPatchesFromPath(path: str):
         dataset = []
         ashkenazi = True
         if not path[path.rfind(os.path.sep) + 1:].startswith('A'): # Starts with 'A' means Ashkenazi script
-               ashkenazi = False
+                ashkenazi = False
         try:
                 patchesNames = os.listdir(path)
         except FileNotFoundError:
@@ -66,11 +66,7 @@ def buildData(cacheFlag=False):
 df, y = buildData(False)
 df = np.asarray(df)
 y = to_categorical(y)
-<<<<<<< HEAD
-=======
 print("HI")
-
->>>>>>> 5f6512c121f07af16ccdf30f2acd114d893e1ff8
 print(y)
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent)
 
@@ -81,7 +77,6 @@ X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent
 model = Sequential()
 #add model layers
 
-<<<<<<< HEAD
 model.add(Conv2D(64,(3,3), activation="relu", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
@@ -89,19 +84,12 @@ model.add(Dense(units = 128, activation = 'relu'))
 model.add(Dense(units = 2, activation="softmax"))
 
 #save the best model
-=======
-        #save the best model
->>>>>>> 5f6512c121f07af16ccdf30f2acd114d893e1ff8
-checkpiont=ModelCheckpoint('test1.h5', monitor='val_loss', verbose=1, save_best_only=True,
+checkpoint=ModelCheckpoint('test1.h5', monitor='val_loss', verbose=1, save_best_only=True,
                                    save_weights_only=True, mode='auto', period=1)
 tensorboard = TensorBoard(log_dir='./logs/test1', histogram_freq=2,write_graph=True, write_images=True)
 model.compile(loss='binary_crossentropy',
                       optimizer="SGD",
                       metrics=['accuracy'])
-
-<<<<<<< HEAD
-
-
 
 #fit arguments
 train_datagen = ImageDataGenerator()
@@ -116,16 +104,14 @@ validation_data = test_set,
 validation_steps = 2000)
 
 # model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
-#           verbose=2, callbacks=[checkpiont])
+#           verbose=2, callbacks=[checkpoint])
 
 
-=======
 model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
-                       epochs=100, verbose=2, callbacks=[checkpiont] )
+                       epochs=100, verbose=2, callbacks=[checkpoint] )
 
 #model.fit(X_train, y_train,
 #                       batch_size=32, validation_split=0.2,
-#                       epochs=100, verbose=2, callbacks=[tensorboard, checkpiont])
->>>>>>> 5f6512c121f07af16ccdf30f2acd114d893e1ff8
+#                       epochs=100, verbose=2, callbacks=[tensorboard, checkpoint])
 scores = model.evaluate(X_test, y_test, verbose=1)
-print("Test accuracy:" , scores[1]*100)
+print("Test accuracy:", scores[1]*100)

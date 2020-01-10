@@ -1,10 +1,8 @@
-from cv2 import cv2
 import os
 import logging
-from datetime import datetime
-import threading
 import concurrent.futures
-import numpy as np
+from datetime import datetime
+from cv2 import cv2
 
 # import matplotlib.pyplot as plt
 
@@ -29,9 +27,9 @@ outputFolder = os.path.join(projectDir, "output")
 
 cropDimensions = {"A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin": 200, "pageNum": 2},
                   "A2": {"x1": 1000, "y1": 550, "x2": 3300, "y2": 3650, "margin": 800, "pageNum": 2},
-                  "B1": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2},
+                  "B1": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2}, # PNX_MANUSCRIPTS000041052-1_IE73769634
                   "B2": {"x1": 180, "y1": 130, "x2": 1600, "y2": 2200, "margin": 330, "pageNum": 2}, # PNX_MANUSCRIPTS003017087-1_IE70795069
-                  "B3": {"x1": 950, "y1": 400, "x2": 2900, "y2": 2850, "margin": 350, "pageNum": 2}, # PNX_MANUSCRIPTS000041052-1_IE73769634
+                  "B3": {"x1": 950, "y1": 400, "x2": 2900, "y2": 2850, "margin": 350, "pageNum": 2}, 
                   "I": {"x1": 750, "y1": 700, "x2": 3200, "y2": 4500, "margin": 0, "pageNum": 1}
                   }
 patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200 // 3}
@@ -97,9 +95,9 @@ def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: s
     x2, y2 = patchDimensions["x"], patchDimensions["y"]
     xOffset, yOffset = patchDimensions["xOffset"], patchDimensions["yOffset"]
     i = 1
-    while x2 < xDelta and patchCount < 10:
+    while x2 < xDelta:
         j = 0
-        while y2 + yOffset * j < yDelta and patchCount < 10:
+        while y2 + yOffset * j < yDelta:
             croppedPatch = image[y1 + yOffset * j: y2 + yOffset * j, x1: x2]
             saveLocation = os.path.join(outputFolder, folderName, imageName + "_" + str(i) + ".jpg")
             global numOfPatches
