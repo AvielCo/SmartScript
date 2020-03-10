@@ -64,10 +64,13 @@ def buildData(cacheFlag=False):
         crop.logging.info("Data build ended, execution time: " + str(datetime.now() - startTime))
         return dataset, classes
 
-df, y = buildData(True)
+df, y = buildData(False)
 df = np.asarray(df)
 y = to_categorical(y)
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
+
+
+
 
 
 #create model
