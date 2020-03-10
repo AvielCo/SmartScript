@@ -64,19 +64,15 @@ def buildData(cacheFlag=False):
         crop.logging.info("Data build ended, execution time: " + str(datetime.now() - startTime))
         return dataset, classes
 
-df, y = buildData(False)
+df, y = buildData(True)
 df = np.asarray(df)
 y = to_categorical(y)
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
 
-
-
-
-
 #create model
 model = Sequential()
-#add model layers
 
+#add model layers
 model.add(Conv2D(64,(3,3), activation="relu", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
@@ -84,7 +80,7 @@ model.add(Dense(units = 128, activation = 'relu'))
 model.add(Dense(units = 2, activation="softmax"))
 
 #save the best model
-checkpoint=ModelCheckpoint('test1.h5', monitor='val_loss', verbose=1, save_best_only=True,
+checkpoint = ModelCheckpoint('test1.h5', monitor='val_loss', verbose=1, save_best_only=True,
                                    save_weights_only=True, mode='auto', period=1)
 tensorboard = TensorBoard(log_dir='./logs/test1', histogram_freq=2,write_graph=True, write_images=True)
 model.compile(loss='binary_crossentropy',
@@ -96,7 +92,6 @@ train_datagen = ImageDataGenerator()
 test_datagen = ImageDataGenerator()
 training_set = train_datagen.flow(X_train, y= y_train)
 test_set = test_datagen.flow(X_test, y=y_test)
-
 model.fit_generator(training_set,
 steps_per_epoch = len(X_train),
 epochs = 25,
@@ -105,8 +100,6 @@ validation_steps = 2000)
 
 # model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
 #           verbose=2, callbacks=[checkpoint])
-
-
 model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
                        epochs=100, verbose=2, callbacks=[checkpoint] )
 
