@@ -6,3 +6,4 @@ patches_output/
 __pycache__/
 logs/
 input/
+ScannedScripts/

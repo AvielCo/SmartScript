@@ -66,11 +66,7 @@ def buildData(cacheFlag=False):
 
 df, y = buildData(True)
 df = np.asarray(df)
-print(df.head())
-exit()
 y = to_categorical(y)
-print("HI")
-print(y)
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
 
 
@@ -115,4 +111,5 @@ model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, vali
 #                       batch_size=32, validation_split=0.2,
 #                       epochs=100, verbose=2, callbacks=[tensorboard, checkpoint])
 scores = model.evaluate(X_test, y_test, verbose=1)
-print("Test accuracy:", scores[1]*100)
+print("Test accuracy: ", scores[1]*100)
+crop.logging.info("Test accuracy: " + str(scores[1]*100))
