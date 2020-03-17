@@ -14,6 +14,7 @@ import os
 import random
 
 from keras_preprocessing.image import ImageDataGenerator
+from tensorflow import keras
 
 import crop
 from datetime import datetime
@@ -78,10 +79,10 @@ model = Sequential()
 model.add(Conv2D(64,(3,3), activation="relu", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
-model.add(Dense(units = 128, activation = 'relu'))
-model.add(Dense(units = 64, activation = 'relu'))
+model.add(Dense(units = 128, activation = 'sigmoid'))
+model.add(Dense(units = 64, activation = 'sigmoid'))
 model.add(Dense(units = 32, activation = 'relu'))
-model.add(Dense(units = 16, activation = 'relu'))
+model.add(Dense(units = 16, activation = 'sigmoid'))
 model.add(Dense(units = 2, activation="softmax"))
 
 #save the best model
@@ -90,9 +91,14 @@ checkpoint = ModelCheckpoint('test1.h5', monitor='val_acc', verbose=1, save_best
 logDir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1,write_graph=True, write_images=True)
-model.compile(loss='binary_crossentropy',
-                      optimizer="SGD",
-                      metrics=['accuracy'])
+
+sgd = keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+
+model.compile( loss = "categorical_crossentropy",
+               optimizer = sgd,
+               metrics=['accuracy']
+             )
+
 
 
 #fit arguments
@@ -102,14 +108,14 @@ training_set = train_datagen.flow(X_train, y= y_train)
 test_set = test_datagen.flow(X_test, y=y_test)
 model.fit_generator(training_set,
 steps_per_epoch = len(X_train),
-epochs = 16,
+epochs = 4,
 validation_data = test_set,
 validation_steps = 2000)
 
 # model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
 #           verbose=2, callbacks=[checkpoint])
 model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
-                       epochs=16, verbose=2, callbacks=[checkpoint] )
+                       epochs=4, verbose=2, callbacks=[checkpoint] )
 
 #model.fit(X_train, y_train,
 #                       batch_size=32, validation_split=0.2,
