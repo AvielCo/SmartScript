@@ -88,7 +88,7 @@ model.add(Dense(units = 2, activation="softmax"))
 #save the best model
 checkpoint = ModelCheckpoint('test1.h5', monitor='val_acc', verbose=1, save_best_only=True,
                                    save_weights_only=True, mode='auto', period=1)
-logDir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+logDir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1,write_graph=True, write_images=True)
 
