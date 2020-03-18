@@ -92,7 +92,7 @@ logDir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1,write_graph=True, write_images=True)
 
-sgd = keras.optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 model.compile( loss = "categorical_crossentropy",
                optimizer = sgd,
