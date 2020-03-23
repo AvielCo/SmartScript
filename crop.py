@@ -25,16 +25,17 @@ outputFolder = os.path.join(projectDir, "output")
 
 # Single page dimensions
 
-cropDimensions = {"A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin": 200, "pageNum": 2},
-                  "A2": {"x1": 1000, "y1": 550, "x2": 3300, "y2": 3650, "margin": 800, "pageNum": 2},
-                  "B1": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2}, # PNX_MANUSCRIPTS000041052-1_IE73769634
-                  "B2": {"x1": 180, "y1": 130, "x2": 1600, "y2": 2200, "margin": 330, "pageNum": 2}, # PNX_MANUSCRIPTS003017087-1_IE70795069
-                  "B3": {"x1": 950, "y1": 400, "x2": 2900, "y2": 2850, "margin": 350, "pageNum": 2}, 
-                  "I": {"x1": 750, "y1": 700, "x2": 3200, "y2": 4500, "margin": 0, "pageNum": 1}
+cropDimensions = {#"A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin": 200, "pageNum": 2},
+                  #"A2": {"x1": 1000, "y1": 550, "x2": 3300, "y2": 3650, "margin": 800, "pageNum": 2},
+                  #"B1": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2}, # PNX_MANUSCRIPTS000041052-1_IE73769634
+                  #"B2": {"x1": 180, "y1": 130, "x2": 1600, "y2": 2200, "margin": 330, "pageNum": 2}, # PNX_MANUSCRIPTS003017087-1_IE70795069
+                  #"B3": {"x1": 950, "y1": 400, "x2": 2900, "y2": 2850, "margin": 350, "pageNum": 2}, 
+                  #"I": {"x1": 750, "y1": 700, "x2": 3200, "y2": 4500, "margin": 0, "pageNum": 1},
+                  "A3": {"x1": 1000, "y1": 700, "x2": 3200, "y2":3750, "margin": 700, "pageNum": 2}
                   }
 patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200 // 3}
 
-numOfThreads = 3
+numOfThreads = 4 
 
 
 def cropSinglePage(imageName: str, dimensionsDict: dict, folderName: str):
@@ -85,7 +86,10 @@ def runThreads(folderName: str, dimensionsDict: dict):
     chunks = list(listToChunks(imagesInput, i))
     with concurrent.futures.ThreadPoolExecutor(max_workers=numOfThreads) as executor:
         for i in range(numOfThreads):
-            executor.submit(cropFiles, chunks[i], dimensionsDict, folderName)
+            try:
+                executor.submit(cropFiles, chunks[i], dimensionsDict, folderName)
+            except IndexError:
+                continue
 
 
 def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: str):
