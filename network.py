@@ -19,6 +19,8 @@ from tensorflow import keras
 import crop
 from datetime import datetime
 from sklearn.model_selection import train_test_split
+from batchFiles import DataGenerator
+
 
 trainPercent = 0.7
 testPercent = 1 - trainPercent
@@ -70,7 +72,6 @@ def buildData(cacheFlag=False):
 df, y = buildData()
 df = np.asarray(df)
 y = to_categorical(y)
-X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
 
 #create model
 model = Sequential()
@@ -98,11 +99,10 @@ model.add(Dense(units = 2, activation="softmax"))
 #save the best model
 checkpoint = ModelCheckpoint('test1.h5', monitor='val_acc', verbose=1, save_best_only=True,
                                    save_weights_only=True, mode='auto', period=1)
-logDir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 
+logDir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1,write_graph=True, write_images=True)
 
-#sgd = sgd(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 model.compile( loss = "categorical_crossentropy",
                optimizer = "SGD",
@@ -110,26 +110,30 @@ model.compile( loss = "categorical_crossentropy",
              )
 
 
+iter11_df,iter21_df,iter11_y,iter21_y=train_test_split(df, y, test_size=0.5,random_state=42)
+iter11_df,iter12_df,iter11_y,iter12_y=train_test_split(iter11_df, iter11_y, test_size=0.5,random_state=42)
+iter21_df,iter22_df,iter21_y,iter22_y=train_test_split(iter21_df, iter21_y, test_size=0.5,random_state=42)
 
-#fit arguments
-train_datagen = ImageDataGenerator()
-test_datagen = ImageDataGenerator()
-training_set = train_datagen.flow(X_train, y= y_train)
-test_set = test_datagen.flow(X_test, y=y_test)
-model.fit_generator(training_set,
-		steps_per_epoch = len(X_train),
-		epochs = 32,
-		validation_data = test_set,
-		validation_steps = 2000)
 
-# model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
-#           verbose=2, callbacks=[checkpoint])
-model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
-                       epochs=32, verbose=2, callbacks=[checkpoint] )
+iters=[(iter11_df,iter11_y),(iter12_df,iter12_y),(iter21_df,iter21_y),(iter22_df,iter22_y)]
 
-#model.fit(X_train, y_train,
-#                       batch_size=32, validation_split=0.2,
-#                       epochs=100, verbose=2, callbacks=[tensorboard, checkpoint])
-scores = model.evaluate(X_test, y_test, verbose=1)
-print("Test accuracy: ", scores[1]*100)
-crop.logging.info("Test accuracy: " + str(scores[1]*100))
+for (iter_df,iter_y) in iters:
+        X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent, random_state=42)
+
+        #fit arguments
+        train_datagen = ImageDataGenerator()
+        test_datagen = ImageDataGenerator()
+        training_set = train_datagen.flow(X_train, y= y_train)
+        test_set = test_datagen.flow(X_test, y=y_test)
+        model.fit_generator(training_set,
+                steps_per_epoch = len(X_train),
+                epochs = 32,
+                validation_data = test_set,
+                validation_steps = 2000)
+
+        model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
+                               epochs=32, verbose=2, callbacks=[checkpoint,tensorboard] )
+
+        scores = model.evaluate(X_test, y_test, verbose=1)
+        print("Test accuracy: ", scores[1]*100)
+        crop.logging.info("Test accuracy: " + str(scores[1]*100))
