@@ -10,3 +10,5 @@ input/
 input/*
 ScannedScripts/
 *.h5
+ngrok
+temp*

@@ -1,11 +1,9 @@
 import os
 import logging
+from pytz import timezone
 import concurrent.futures
-from datetime import datetime
+from datetime import datetime, timedelta
 from cv2 import cv2
-
-# import matplotlib.pyplot as plt
-
 
 # Global variables
 
@@ -13,8 +11,13 @@ numOfImagesCropped = 0
 numOfPatches = 0
 # Logger
 handlers = [logging.FileHandler('logger.log', mode="w"), logging.StreamHandler()]
-logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s - %(message)s', datefmt="%H:%M:%S",
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s - %(message)s', datefmt="%d/%m/%y - %H:%M:%S",
                     handlers=handlers)
+
+def timetz(*args):
+    return datetime.now(tz).timetuple()
+tz = timezone('Asia/Jerusalem')
+logging.Formatter.converter = timetz
 
 # Dirs
 projectDir = os.getcwd()
@@ -25,18 +28,18 @@ outputFolder = os.path.join(projectDir, "output")
 
 # Single page dimensions
 
-cropDimensions = {#"A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin": 200, "pageNum": 2},
-                  #"A2": {"x1": 1000, "y1": 550, "x2": 3300, "y2": 3650, "margin": 800, "pageNum": 2},
-                  #"B1": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2}, # PNX_MANUSCRIPTS000041052-1_IE73769634
-                  #"B2": {"x1": 180, "y1": 130, "x2": 1600, "y2": 2200, "margin": 330, "pageNum": 2}, # PNX_MANUSCRIPTS003017087-1_IE70795069
-                  #"B3": {"x1": 950, "y1": 400, "x2": 2900, "y2": 2850, "margin": 350, "pageNum": 2}, 
-                  #"I": {"x1": 750, "y1": 700, "x2": 3200, "y2": 4500, "margin": 0, "pageNum": 1},
+cropDimensions = {"A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin": 200, "pageNum": 2},
+                  "A2": {"x1": 1000, "y1": 550, "x2": 3300, "y2": 3650, "margin": 800, "pageNum": 2},
+                  "B1": {"x1": 700, "y1": 400, "x2": 2800, "y2": 3600, "margin": 300, "pageNum": 2}, # PNX_MANUSCRIPTS000041052-1_IE73769634
+                  "B2": {"x1": 180, "y1": 130, "x2": 1600, "y2": 2200, "margin": 330, "pageNum": 2}, # PNX_MANUSCRIPTS003017087-1_IE70795069
+                  "B3": {"x1": 950, "y1": 400, "x2": 2900, "y2": 2850, "margin": 350, "pageNum": 2}, 
+                  "I": {"x1": 750, "y1": 700, "x2": 3200, "y2": 4500, "margin": 0, "pageNum": 1},
                   "A3": {"x1": 1000, "y1": 700, "x2": 3200, "y2":3750, "margin": 700, "pageNum": 2}
                   }
+
 patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200 // 3}
 
 numOfThreads = 4 
-
 
 def cropSinglePage(imageName: str, dimensionsDict: dict, folderName: str):
     img = cv2.imread(os.path.join(inputFolder, folderName, imageName), cv2.IMREAD_GRAYSCALE)
@@ -101,6 +104,7 @@ def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: s
     i = 1
     while x2 < xDelta:
         j = 0
+#edited for testing
         while y2 + yOffset * j < yDelta:
             croppedPatch = image[y1 + yOffset * j: y2 + yOffset * j, x1: x2]
             saveLocation = os.path.join(outputFolder, folderName, imageName + "_" + str(i) + ".jpg")
