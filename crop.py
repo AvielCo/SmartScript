@@ -39,7 +39,18 @@ cropDimensions = {"A1": {"x1": 1000, "y1": 350, "x2": 2750, "y2": 2800, "margin"
 
 patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200 // 3}
 
-numOfThreads = 4 
+numOfThreads = 2
+
+def getMinResolution():
+    height = width = 200000
+    for key in cropDimensions.keys():
+        if cropDimensions[key]["x2"] - cropDimensions[key]["x1"] < width:
+            width = cropDimensions[key]["x2"] - cropDimensions[key]["x1"]
+        if cropDimensions[key]["y2"] - cropDimensions[key]["y1"] < height:
+            height = cropDimensions[key]["y2"] - cropDimensions[key]["y1"]
+    return {"height": height, "width": width}
+
+RESIZE_UNITS = getMinResolution()
 
 def cropSinglePage(imageName: str, dimensionsDict: dict, folderName: str):
     img = cv2.imread(os.path.join(inputFolder, folderName, imageName), cv2.IMREAD_GRAYSCALE)
@@ -51,11 +62,9 @@ def cropSinglePage(imageName: str, dimensionsDict: dict, folderName: str):
     delta = dimensionsDict["x2"] - dimensionsDict["x1"]
     for _ in range(dimensionsDict["pageNum"]):
         croppedImage = img[y1:y2, x1:x2]
-        # saveLocation = os.path.join(outputFolder, imageName) 
+        croppedImage = cv2.resize(croppedImage, (RESIZE_UNITS["width"], RESIZE_UNITS["height"]))
         saveName = imageName[:-4]  # Get the name of the image without the extension (e.g. without '.jpg')
-        cropToPatches(croppedImage, saveName, dimensionsDict["x2"] - dimensionsDict["x1"],
-                      dimensionsDict["y2"] - dimensionsDict["y1"], folderName)
-        # cv2.imwrite(saveLocation, croppedImage)
+        cropToPatches(croppedImage, saveName, RESIZE_UNITS["width"], RESIZE_UNITS["height"], folderName)
         x1 += delta + dimensionsDict["margin"]
         x2 += delta + dimensionsDict["margin"]
         imageName = imageName[:-4] + "2.jpg"
@@ -96,15 +105,12 @@ def runThreads(folderName: str, dimensionsDict: dict):
 
 
 def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: str):
-    # image = cv2.imread(os.path.join(outputFolder, imageName))
-    patchCount = 0
     x1 = y1 = 0
     x2, y2 = patchDimensions["x"], patchDimensions["y"]
     xOffset, yOffset = patchDimensions["xOffset"], patchDimensions["yOffset"]
     i = 1
     while x2 < xDelta:
         j = 0
-#edited for testing
         while y2 + yOffset * j < yDelta:
             croppedPatch = image[y1 + yOffset * j: y2 + yOffset * j, x1: x2]
             saveLocation = os.path.join(outputFolder, folderName, imageName + "_" + str(i) + ".jpg")
@@ -113,7 +119,6 @@ def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: s
             cv2.imwrite(saveLocation, croppedPatch)
             i += 1
             j += 1
-            patchCount += 1
         x1 += xOffset
         x2 += xOffset
 
