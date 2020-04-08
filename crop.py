@@ -4,6 +4,7 @@ from pytz import timezone
 import concurrent.futures
 from datetime import datetime, timedelta
 from cv2 import cv2
+import subprocess
 
 # Global variables
 
@@ -129,6 +130,7 @@ def preProcessingMain():
     except FileNotFoundError:
         logging.error("Input file '" + inputFolder + "' not found.")
         return
+    subprocess.call("rm -rf " + outputFolder + os.sep + "*", shell=True)
     for name in foldersName:
         logging.info("Start cropping the folder " + name + ".")
         try:
@@ -141,9 +143,9 @@ def preProcessingMain():
 
 def main():
     startTime = datetime.now()
-    logging.info("PreProcessing Script started")
+    logging.info("Crop Script started")
     preProcessingMain()
-    logging.info("PreProcessing Script ended, execution time: " + str(datetime.now() - startTime))
+    logging.info("Crop Script ended, execution time: " + str(datetime.now() - startTime))
     logging.info(str(numOfImagesCropped) + " Images have been cropped into " + str(numOfPatches) + " Patches.")
 
 

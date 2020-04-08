@@ -15,11 +15,11 @@ import random
 import tensorflow as tf
 from keras_preprocessing.image import ImageDataGenerator
 from tensorflow import keras
-
+import gc
 import crop
 from datetime import datetime
 from sklearn.model_selection import train_test_split
-from batchFiles import DataGenerator
+# from batchFiles import DataGenerator
 
 
 trainPercent = 0.7
@@ -76,29 +76,45 @@ def buildData(cacheFlag=False):
         crop.logging.info("Data build ended, execution time: " + str(datetime.now() - startTime))
         return dataset, classes
 
-df, y = buildData()
+df1, y1 = buildData(True)
+crop.logging.info("Calling Garbage Collector")
+gc.collect()
+crop.logging.info("Done")
 crop.logging.info("Converting data to Numpy array")
-df = np.asarray(df)
+df = np.asarray(df1)
+crop.logging.info("Calling Garbage Collector")
+del df1
+gc.collect()
+crop.logging.info("Done")
 crop.logging.info("Converting Y to categorical matrix")
-y = to_categorical(y)
+y = to_categorical(y1)
+crop.logging.info("Calling Garbage Collector")
+del y1
+gc.collect()
+crop.logging.info("Done")
 crop.logging.info("Splitting data to train and test")
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
-
+crop.logging.info("Calling Garbage Collector")
+inputShape = (df.shape[1],df.shape[2], df.shape[3])
+del y
+del df
+gc.collect()
+crop.logging.info("Done")
 
 #create model
 model = Sequential()
 
 #add model layers
-model.add(Conv2D(32,(3,3), activation="sigmoid", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
+model.add(Conv2D(32,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
+model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
+model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(128,(3,3), activation="relu", input_shape=(df.shape[1],df.shape[2], df.shape[3])))
+model.add(Conv2D(128,(3,3), activation="relu", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
 
@@ -120,10 +136,6 @@ model.compile( loss = "categorical_crossentropy",
                optimizer = "SGD",
                metrics=['accuracy']
              )
-
-
-
-
 
 #fit arguments
 train_datagen = ImageDataGenerator()

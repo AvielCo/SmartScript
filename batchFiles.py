@@ -1,55 +1,86 @@
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten
+from keras.utils import to_categorical
+from keras.callbacks import ModelCheckpoint, EarlyStopping
+from keras.layers import Dense, Conv2D, MaxPooling2D, LSTM, Embedding, Dropout, Flatten
+from keras.layers import Bidirectional
+from keras.models import Sequential
+from keras.callbacks import TensorBoard
+from keras.optimizers import rmsprop
+from keras.models import load_model
 import numpy as np
-import keras
+from cv2 import cv2
+import os
+import random
+import tensorflow as tf
+from keras_preprocessing.image import ImageDataGenerator
+from tensorflow import keras
 
-class DataGenerator(keras.utils.Sequence):
-    'Generates data for Keras'
-    def __init__(self, list_IDs, labels, batch_size=32, dim=(32,32,32), n_channels=1,
-                 n_classes=10, shuffle=True):
-        'Initialization'
-        self.dim = dim
-        self.batch_size = batch_size
-        self.labels = labels
-        self.list_IDs = list_IDs
-        self.n_channels = n_channels
-        self.n_classes = n_classes
-        self.shuffle = shuffle
-        self.on_epoch_end()
+import crop
+from datetime import datetime
+from sklearn.model_selection import train_test_split
+from batchFiles import DataGenerator
 
-    def __len__(self):
-        'Denotes the number of batches per epoch'
-        return int(np.floor(len(self.list_IDs) / self.batch_size))
 
-    def __getitem__(self, index):
-        'Generate one batch of data'
-        # Generate indexes of the batch
-        indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+trainPercent = 0.7
+testPercent = 1 - trainPercent
 
-        # Find list of IDs
-        list_IDs_temp = [self.list_IDs[k] for k in indexes]
+# Get data after the PreProcessing
+def loadPatchesFromPath(path: str):
+        dataset = []
+        ashkenazi = True
+        if not path[path.rfind(os.path.sep) + 1:].startswith('A'): # Starts with 'A' means Ashkenazi script
+                ashkenazi = False
+        try:
+                patchesNames = os.listdir(path)
+        except FileNotFoundError:
+                crop.logging.error("Output file '" + path + "' not found.")
+                return
+        for patch in patchesNames:
+                dataset.append(tuple((cv2.imread(os.path.join(path, patch)), ashkenazi)))
+        return dataset
 
-        # Generate data
-        X, y = self.__data_generation(list_IDs_temp)
+def shuffleDataset(dataset: list):
+        random.shuffle(dataset)
+        return dataset
 
-        return X, y
+def splitDataset(dataset: list):
 
-    def on_epoch_end(self):
-        'Updates indexes after each epoch'
-        self.indexes = np.arange(len(self.list_IDs))
-        if self.shuffle == True:
-            np.random.shuffle(self.indexes)
+        data, classes = zip(*dataset)
+        return list(data), list(classes)
 
-    def __data_generation(self, list_IDs_temp):
-        'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)
-        # Initialization
-        X = np.empty((self.batch_size, *self.dim, self.n_channels))
-        y = np.empty((self.batch_size), dtype=int)
 
-        # Generate data
-        for i, ID in enumerate(list_IDs_temp):
-            # Store sample
-            X[i,] = np.load('data/' + ID + '.npy')
 
-            # Store class
-            y[i] = self.labels[ID]
+def buildData(cacheFlag=False):
+        startTime = datetime.now()
+        crop.logging.info("Start to build the data for the Neural Network.")
+        if not cacheFlag:
+                crop.main() # PreProcessing run
+        try:
+                outputFolders = os.listdir(crop.outputFolder)
+        except FileNotFoundError:
+                crop.logging.error("Output file '" + str(crop.outputFolder) + "' not found.")
+                exit(1)
+        dataset = []
+        for name in outputFolders:
+                dataset += loadPatchesFromPath(os.path.join(crop.outputFolder, name))
+        #datasets are X, labels are y
+        dataset, classes = splitDataset(shuffleDataset(dataset))
+        crop.logging.info("Data build ended, execution time: " + str(datetime.now() - startTime))
+        return dataset, classes
 
-        return X, keras.utils.to_categorical(y, num_classes=self.n_classes)
+df, y = buildData(True)
+df = np.asarray(df)
+y = to_categorical(y)
+X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
+
+
+#create model
+model = load_model('test1.h5')
+
+model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2, epochs=32)
+
+scores = model.evaluate(X_test, y_test, verbose=1)
+print("Test accuracy: ", scores[1]*100)
+crop.logging.info("Test accuracy: " + str(scores[1]*100))
+
