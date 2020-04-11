@@ -7,6 +7,7 @@ from keras.layers import Bidirectional
 from keras.models import Sequential
 from keras.callbacks import TensorBoard
 from keras.optimizers import rmsprop
+from keras import optimizers
 from keras.models import load_model
 import numpy as np
 from cv2 import cv2
@@ -40,7 +41,7 @@ def loadPatchesFromPath(path: str):
                 return
         for patch in patchesNames:
                 patchesCount += 1
-                dataset.append(tuple((cv2.imread(os.path.join(path, patch)), ashkenazi)))
+                dataset.append(tuple((cv2.imread(os.path.join(path, patch), cv2.IMREAD_GRAYSCALE), ashkenazi)))
                 if patchesCount % 10000 == 0:
                     crop.logging.info("Loaded " + str(patchesCount) + "/" + str(patchesNum) + " Patches from " + os.path.basename(path) + ".")
         return dataset
@@ -95,7 +96,7 @@ crop.logging.info("Done")
 crop.logging.info("Splitting data to train and test")
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
 crop.logging.info("Calling Garbage Collector")
-inputShape = (df.shape[1],df.shape[2], df.shape[3])
+inputShape = (df.shape[1],df.shape[2])
 del y
 del df
 gc.collect()
@@ -109,7 +110,7 @@ crop.logging.info("Adding model layers")
 model.add(Conv2D(32,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(64,(3,3), activation="relu", input_shape=inputShape))
+model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
 model.add(Conv2D(64,(3,3), activation="relu", input_shape=inputShape))
@@ -119,9 +120,9 @@ model.add(Conv2D(128,(3,3), activation="relu", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
 
-#model.add(Dense(units = 256, activation = 'relu'))
 model.add(Dense(units = 128, activation = 'relu'))
-model.add(Dense(units = 64, activation = 'relu'))
+model.add(Dense(units = 128, activation = 'relu'))
+model.add(Dense(units = 64, activation = 'sigmoid'))
 model.add(Dense(units = 32, activation = 'sigmoid'))
 model.add(Dense(units = 2, activation="softmax"))
 
@@ -133,9 +134,12 @@ checkpoint = ModelCheckpoint('test1.h5', monitor='val_acc', verbose=1, save_best
 logDir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1,write_graph=True, write_images=True)
 
+
+adam = optimizers.Adam(lr=0.005)
+
 crop.logging.info("Compiling model")
 model.compile( loss = "binary_crossentropy",
-               optimizer = "adam",
+               optimizer = adam,
                metrics=['accuracy']
              )
 
@@ -157,13 +161,13 @@ crop.logging.info("Model summary:")
 crop.logging.info(model.summary())
 crop.logging.info("Running the model")
 model.fit_generator(training_set,
-		steps_per_epoch = len(X_train)//32,
-		epochs = 32,
+		steps_per_epoch = len(X_train)//128,
+		epochs = 16,
 		validation_data = test_set,
 		validation_steps = 2000)
 crop.logging.info("Done")
-model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=32, validation_split=0.2,
-                               epochs=32, verbose=2, callbacks=[checkpoint,tensorboard] )
+model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=128, validation_split=0.2,
+                               epochs=16, verbose=2, callbacks=[checkpoint,tensorboard] )
 scores = model.evaluate(X_test, y_test, verbose=1)
 #print("Test accuracy: ", scores[1]*100)
 crop.logging.info("Test accuracy: " + str(scores[1]*100))
