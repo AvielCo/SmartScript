@@ -11,13 +11,13 @@ import subprocess
 numOfImagesCropped = 0
 numOfPatches = 0
 # Logger
-handlers = [logging.FileHandler('logger.log', mode="w"), logging.StreamHandler()]
+tz = timezone('Asia/Jerusalem')
+handlers = [logging.FileHandler('logs/' + str(datetime.now(tz)) + '_logger.log', mode="w"), logging.StreamHandler()]
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)s - %(message)s', datefmt="%d/%m/%y - %H:%M:%S",
                     handlers=handlers)
 
 def timetz(*args):
     return datetime.now(tz).timetuple()
-tz = timezone('Asia/Jerusalem')
 logging.Formatter.converter = timetz
 
 # Dirs

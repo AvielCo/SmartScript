@@ -5,7 +5,7 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.layers import Dense, Conv2D, MaxPooling2D, LSTM, Embedding, Dropout, Flatten
 from keras.layers import Bidirectional
 from keras.models import Sequential
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard, CSVLogger
 from keras.optimizers import rmsprop
 from keras import optimizers
 from keras.models import load_model
@@ -25,6 +25,7 @@ from sklearn.model_selection import train_test_split
 
 trainPercent = 0.7
 testPercent = 1 - trainPercent
+
 
 # Get data after the PreProcessing
 def loadPatchesFromPath(path: str):
@@ -87,6 +88,9 @@ crop.logging.info("Calling Garbage Collector")
 del df1
 gc.collect()
 crop.logging.info("Done")
+crop.logging.info("Reshaping Grayscale data for Conv2D dimesions")
+df = df.reshape(df.shape[0], df.shape[1], df.shape[2], 1)
+crop.logging.info("Done")
 crop.logging.info("Converting Y to categorical matrix")
 y = to_categorical(y1)
 crop.logging.info("Calling Garbage Collector")
@@ -94,9 +98,9 @@ del y1
 gc.collect()
 crop.logging.info("Done")
 crop.logging.info("Splitting data to train and test")
-X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent,random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=testPercent, random_state=42)
 crop.logging.info("Calling Garbage Collector")
-inputShape = (df.shape[1],df.shape[2])
+inputShape = (df.shape[1],df.shape[2], df.shape[3])
 del y
 del df
 gc.collect()
@@ -107,22 +111,22 @@ model = Sequential()
 
 #add model layers
 crop.logging.info("Adding model layers")
+model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=inputShape ))
+model.add(MaxPooling2D(pool_size=(2,2)))
+
 model.add(Conv2D(32,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
-model.add(Conv2D(64,(3,3), activation="sigmoid", input_shape=inputShape))
+model.add(Conv2D(32,(3,3), activation="sigmoid", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
 
 model.add(Conv2D(64,(3,3), activation="relu", input_shape=inputShape))
 model.add(MaxPooling2D(pool_size=(2,2)))
-
-model.add(Conv2D(128,(3,3), activation="relu", input_shape=inputShape))
-model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
 
-model.add(Dense(units = 128, activation = 'relu'))
-model.add(Dense(units = 128, activation = 'relu'))
-model.add(Dense(units = 64, activation = 'sigmoid'))
+model.add(Dense(units = 128, activation = 'sigmoid'))
+model.add(Dense(units = 128, activation = 'sigmoid'))
+model.add(Dense(units = 64, activation = 'relu'))
 model.add(Dense(units = 32, activation = 'sigmoid'))
 model.add(Dense(units = 2, activation="softmax"))
 
@@ -133,9 +137,10 @@ checkpoint = ModelCheckpoint('test1.h5', monitor='val_acc', verbose=1, save_best
 
 logDir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1,write_graph=True, write_images=True)
+csv_logger = CSVLogger('log.csv', append=True, separator=';')
 
 
-adam = optimizers.Adam(lr=0.005)
+adam = optimizers.Adam(lr=0.001)
 
 crop.logging.info("Compiling model")
 model.compile( loss = "binary_crossentropy",
@@ -146,10 +151,10 @@ model.compile( loss = "binary_crossentropy",
 #fit arguments
 crop.logging.info("Fitting arguments:")
 crop.logging.info("Fit train datagen")
-train_datagen = ImageDataGenerator(brightness_range=[0.2,1.0])
+train_datagen = ImageDataGenerator()
 crop.logging.info("Done")
 crop.logging.info("Fit test datagen")
-test_datagen = ImageDataGenerator(brightness_range=[0.2,1.0])
+test_datagen = ImageDataGenerator()
 crop.logging.info("Done")
 crop.logging.info("Fit training set")
 training_set = train_datagen.flow(X_train, y= y_train)
@@ -162,12 +167,12 @@ crop.logging.info(model.summary())
 crop.logging.info("Running the model")
 model.fit_generator(training_set,
 		steps_per_epoch = len(X_train)//128,
-		epochs = 16,
+		epochs = 32,
 		validation_data = test_set,
 		validation_steps = 2000)
 crop.logging.info("Done")
 model.fit(X_train, y_train, validation_data=(X_test, y_test),batch_size=128, validation_split=0.2,
-                               epochs=16, verbose=2, callbacks=[checkpoint,tensorboard] )
+                               epochs=32, verbose=2, callbacks=[checkpoint, tensorboard, csv_logger] )
 scores = model.evaluate(X_test, y_test, verbose=1)
 #print("Test accuracy: ", scores[1]*100)
 crop.logging.info("Test accuracy: " + str(scores[1]*100))
