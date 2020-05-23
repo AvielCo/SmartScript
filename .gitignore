@@ -12,3 +12,7 @@ ScannedScripts/
 *.h5
 ngrok
 temp*
+old/
+flask_project/__pycache__/
+flask_project/images/
+flask_project/static/*
