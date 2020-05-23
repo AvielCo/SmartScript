@@ -137,6 +137,7 @@ def runThreads(folderName: str, dimensionsDict: dict):
         os.mkdir(OUTPUT_PATH) # Create output folder
     if not os.path.exists(os.path.join(OUTPUT_PATH, folderName)): 
         os.mkdir(os.path.join(OUTPUT_PATH, folderName)) # Create a folder inside output folder
+    global NUM_OF_THREADS
     if NUM_OF_THREADS == 1: # Prevent division by zero
         NUM_OF_THREADS += 1
     i = round(len(imagesInput) // (NUM_OF_THREADS - 1))
