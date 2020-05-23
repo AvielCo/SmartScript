@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+{% block body %}
+<style>
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">User Profile</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-3 col-lg-3 "> </div>
+                    <div class=" col-md-9 col-lg-9 ">
+                        <table class="table table-user-information">
+                            <tbody>
+                                <tr>
+                                    <td> <b>Personal Information:</b></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Name:</td>
+                                    <td> {{ name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Email:</td>
+                                    <td> {{ email }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Username:</td>
+                                    <td>{{ username }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Registered at:</td>
+                                    <td> {{ regTime }} </td>
+                                </tr>
+                                <tr>
+                                    <td><a href="/resetPassword">Change password</a></td>
+                                    <td></td>
+                                </tr>
+                                {% if admin %}
+                                    <tr>
+                                        <td><a href="/admin">Admin Tools</a></td>
+                                        <td></td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
