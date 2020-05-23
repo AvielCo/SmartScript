@@ -30,9 +30,7 @@ def runPredict(folderID):
     model = load_model(MODEL_NAME)
     df = buildData(folderID)
     df = np.asarray(df)
-    print(df.shape)
     df = df.reshape(df.shape[0], df.shape[1], df.shape[2], 1)
-    print(len(df))
     prediction = model.predict(df, batch_size=1, verbose=1, steps=None)
     cou1, cou2, sum1, sum2 = 0, 0, 0, 0
     for i in prediction:
@@ -45,7 +43,7 @@ def runPredict(folderID):
     summ= sum1+sum2
     ashkenazipresents = ((cou2 / len(df)) + (sum2 / summ)) * 0.5
     notAshkenazipresents = ((cou1 / len(df)) + (sum1 / summ)) * 0.5
-    results = {"ashkenazi": str(round(ashkenazipresents * 100, 6)), "notAshkenazi": str(round(notAshkenazipresents * 100, 6))}
+    results = {"ashkenazi": str(round(ashkenazipresents * 100, 3)), "notAshkenazi": str(round(notAshkenazipresents * 100, 3))}
     print("Ashkenazi % : " + results["ashkenazi"])
     print("Not Ashkenazi % : " + results["notAshkenazi"])
     shutil.rmtree(os.path.join(PATCHES_PATH, folderID), ignore_errors=True)

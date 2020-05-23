@@ -96,8 +96,6 @@ configure_uploads(app, photos)
 
 @app.route('/')
 def index():
-    # return "<h1>Matani Send Nudes !!!</h1>"
-    # return "<h1>Galin Shabat Shalommmmmm <3 !!!</h1>"
     return render_template("index.html")
 
 @app.route("/about")
@@ -435,7 +433,7 @@ def verifyResetPass():
             session['resetAttempts'] = 0
             return redirect(url_for('index'))
         
-        resetAttempts += 1
+        session['resetAttempts'] += 1
         flash('Token is incorrect', 'danger')
         return render_template('verifyResetPass.html', form=form)
     return render_template('verifyResetPass.html', form=form)
@@ -445,7 +443,7 @@ def verifyResetPass():
 def upload():
     if request.method == 'POST' and 'image' in request.files:
         imageName = photos.save(request.files['image'])
-        folderID = str(randrange(1000,10000))
+        folderID = str(randrange(1000, 100000))
         if not os.path.exists(IMAGES_PATH):
             os.mkdir(IMAGES_PATH)
         os.mkdir(os.path.join(IMAGES_PATH, folderID)) # Make a folder with the generated folderID for each client

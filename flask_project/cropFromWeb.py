@@ -71,6 +71,10 @@ def cropToPatches(image, imageName: str, xDelta: int, yDelta: int, folderName: s
 
 
 def preProcessingMain(folderID):
+    global numOfImagesCropped
+    numOfImagesCropped = 0
+    global numOfPatches
+    numOfPatches = 0
     try:
         folderName = os.path.join(inputFolder,folderID)
     except FileNotFoundError:
@@ -87,7 +91,6 @@ def main(folderID):
     preProcessingMain(folderID)
     print("Crop Script ended, execution time: " + str(datetime.now() - startTime))
     print(str(numOfImagesCropped) + " Images have been cropped into " + str(numOfPatches) + " Patches.")
-
 
 if __name__ == "__main__":
     main("123")
