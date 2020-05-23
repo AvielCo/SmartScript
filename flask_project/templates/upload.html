@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('upload') }}">
+    <H1>Upload an image for the model</H1>
+    <br/>
+    <br/>
+    <div>
+        <input type="file" name="image">
+    </div>
+    <br/>
+    {% if imageName != "" %}
+    <div>Results for Image {{ imageName }}:</div>
+    <br/>
+    <div>Match to Ashkenazi: {{ ashkenazi }}%</div>
+    <br/>
+    <div>Match to Not Ashkenazi: {{ notAshkenazi }}%</div>
+    {% else %}
+    <div>
+        <input type="submit">
+    </div>
+    {% endif %}
+
+</form>
+{% endblock %}
