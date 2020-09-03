@@ -45,31 +45,28 @@ CURSIVE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, CURSIVE)
 SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
 SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
 
-# Page details
-# Single page dimensions
-
+# Patch dimensions
 PATCH_DIMENSIONS = {"x": 500, "y": 500, "xOffset": 500 // 2, "yOffset": 500 // 2}
 
 
-def cropSinglePage(imageName: str, folderName: str):
+def cropSinglePage(image_name: str, folder_name: str, path: str):
     """
     This function crops a single page from the scan (by its dimensions).
 
     Parameters:
     imageName (str): The name of the scanned image.
-    dimensionsDict (dict): The dimensions of the scanned image.
     folderName (str): The name of the folder that the scan is saved in.
     """
-    print(os.path.join(INPUT_PATH, folderName, imageName))
-    img = cv2.imread(os.path.join(INPUT_PATH, folderName, imageName),
+    print(os.path.join(path, folder_name, image_name))
+    img = cv2.imread(os.path.join(path, folder_name, image_name),
                      0)  # Read the image from the folder with grayscale mode
-    originalName = imageName  # For the log
+    original_name = image_name  # For the log
     dims = img.shape
     h, w = dims[0], dims[1]
-    saveName = os.path.splitext(imageName)[0]
-    newImg = RGBtoBW(img)
-    cropToPatches(newImg, saveName, w, h, folderName)
-    logging.info("[" + inspect.stack()[0][3] + "] - " + "Image " + originalName + " Cropped successfully.")
+    save_name = os.path.splitext(image_name)[0]
+    new_img = RGBtoBW(img)
+    cropToPatches(new_img, save_name, w, h, folder_name)
+    logging.info("[" + inspect.stack()[0][3] + "] - " + "Image " + original_name + " Cropped successfully.")
 
 
 def RGBtoBW(img):
@@ -78,7 +75,7 @@ def RGBtoBW(img):
     return thresh
 
 
-def cropFiles(imagesInput, folderName: str):
+def cropFiles(images_input, folder_name: str, path: str):
     """
     This function calls cropSinglePage for each image in the imagesInput list, with its dimensions and input folder name.
 
@@ -87,12 +84,13 @@ def cropFiles(imagesInput, folderName: str):
     dimensionsDict (dict): The dimensions of the images.
     folderName (str): Input folder of the images.
     """
-    for imageName in imagesInput:
-        cropSinglePage(imageName, folderName)
+    for image_name in images_input:
+        cropSinglePage(image_name, folder_name, path)
+        return
 
 
 def listToChunks(l, n):
-    """fu ck u em ilia
+    """
     This function divides the images into chunks so that the threads could work on each chunk.
 
     Prameters:
@@ -106,33 +104,58 @@ def listToChunks(l, n):
         yield l[i:i + n]
 
 
-def runThreads(folderName: str):
+def runThreads(input_path: str, folder_name: str):
+    #                                                -2          -1
+    # input_path example: C:\\...\\project\\input\\cursive
+    # folder_name example: AshkenaziCursive
+    full_input_path = os.path.join(input_path, folder_name)
     """
     This function creates output folders and runs threads on each chunk of images.
 
     Parameters:
     folderName(str): The name of the images folder inside output folder.
-    dimensionsDict(dict): The dimension of the scanned images.
     """
-    path = os.path.join(INPUT_PATH, folderName)
+
     try:
-        imagesInput = os.listdir(path)  # Get all of the images from the current folder
+        images_input = os.listdir(full_input_path)  # Get all of the images from the current folder
+        for img in images_input:
+            "".join(img.split())
     except FileNotFoundError:
-        logging.error("[" + inspect.stack()[0][3] + "] - Input file '" + path + "' not found.")
+        logging.error("[" + inspect.stack()[0][3] + "] - Input file '" + input_path + "' not found.")
         return
-    if not os.path.exists(OUTPUT_PATH):
-        os.mkdir(OUTPUT_PATH)  # Create output folder
-    if not os.path.exists(os.path.join(OUTPUT_PATH, folderName)):
-        os.mkdir(os.path.join(OUTPUT_PATH, folderName))  # Create a folder inside output folder
+
+    unfiltered_path = ""
+    if input_path == CURSIVE_INPUT_PATH:
+        unfiltered_path = os.path.join(CURSIVE_UNFILTERED_PATH, folder_name)
+    elif input_path == SQUARE_INPUT_PATH:
+        unfiltered_path = os.path.join(SQUARE_UNFILTERED_PATH, folder_name)
+    elif input_path == SEMI_SQUARE_INPUT_PATH:
+        unfiltered_path = os.path.join(SEMI_SQUARE_UNFILTERED_PATH, folder_name)
+
+    if not os.path.exists(unfiltered_path):
+        os.makedirs(unfiltered_path)
+
+    output_path = ""
+    if input_path == CURSIVE_INPUT_PATH:
+        output_path = os.path.join(CURSIVE_OUTPUT_PATH, folder_name)
+    elif input_path == SQUARE_INPUT_PATH:
+        output_path = os.path.join(SQUARE_OUTPUT_PATH, folder_name)
+    elif input_path == SEMI_SQUARE_INPUT_PATH:
+        output_path = os.path.join(SEMI_SQUARE_OUTPUT_PATH, folder_name)
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
     global NUM_OF_THREADS
     if NUM_OF_THREADS == 1:  # Prevent division by zero
         NUM_OF_THREADS += 1
-    i = round(len(imagesInput) // (NUM_OF_THREADS - 1))
-    chunks = list(listToChunks(imagesInput, i))  # Divide the images into chunks for the threads
+    i = round(len(images_input) // (NUM_OF_THREADS - 1))
+    chunks = list(listToChunks(images_input, i))  # Divide the images into chunks for the threads
     with concurrent.futures.ThreadPoolExecutor(max_workers=NUM_OF_THREADS) as executor:  # A thread pool for the threads
         for i in range(NUM_OF_THREADS):
             try:
-                executor.submit(cropFiles, chunks[i], folderName)  # Add thread to the pool with its chunk
+                executor.submit(cropFiles, chunks[i], folder_name, input_path)  # Add thread to the pool with its chunk
+                return
             except IndexError:
                 continue
 
@@ -208,16 +231,18 @@ def preProcessingMain():
     logging.info("[" + inspect.stack()[0][3] + "] - " + "Deleting output folder")
     # subprocess.call("rm -rf " + OUTPUT_PATH + os.sep + "*", shell=True) # Delete output folder
     logging.info("[" + inspect.stack()[0][3] + "] - " + "Done")
-    for name in foldersName:
-        logging.info("[" + inspect.stack()[0][3] + "] - " + "Start cropping the folder " + name + ".")
-        try:
-            runThreads(name)  # Pass the folder name and its dimensions
-            logging.info("[" + inspect.stack()[0][3] + "] - " + "Cropping of " + name + " succeeded.")
-        except KeyError:
-            logging.error("[" + inspect.stack()[0][
-                3] + "] - File name doesn't match to the dimensions dictionary's key.")  # In case the folder name is incorrect,
-            # or the dimensions dict doesn't contain the folder dimensions
-            logging.error("[" + inspect.stack()[0][3] + "] - Cropping of " + name + " Failed.")
+    for input_path in folders_names:
+        for subdir, dirs, files in os.walk(input_path):
+            for dir in dirs:
+                logging.info("[" + inspect.stack()[0][3] + "] - " + "Start cropping the folder " + subdir + ".")
+                try:
+                    runThreads(subdir, dir)  # Pass the folder name and its dimensions
+                    logging.info("[" + inspect.stack()[0][3] + "] - " + "Cropping of " + subdir + " succeeded.")
+                except KeyError:
+                    logging.error("[" + inspect.stack()[0][
+                        3] + "] - File name doesn't match to the dimensions dictionary's key.")  # In case the folder name is incorrect,
+                    # or the dimensions dict doesn't contain the folder dimensions
+                    logging.error("[" + inspect.stack()[0][3] + "] - Cropping of " + subdir + " Failed.")
 
 
 def checkIfFolderExists(input_path):
@@ -252,8 +277,6 @@ def createFolders():
         os.makedirs(SEMI_SQUARE_OUTPUT_PATH)
 
 
-
-
 def main():
     """
     Main function with execution time logging.
@@ -261,7 +284,7 @@ def main():
     startTime = datetime.now()
     logging.info("[" + inspect.stack()[0][3] + "] - " + "Crop Script started")
     createFolders()
-    # preProcessingMain()
+    preProcessingMain()
     logging.info(
         "[" + inspect.stack()[0][3] + "] - " + "Crop Script ended, execution time: " + str(datetime.now() - startTime))
     logging.info(
