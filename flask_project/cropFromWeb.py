@@ -21,6 +21,7 @@ patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200 // 3}
 
 RESIZE_UNITS = {"height": 2070, "width": 1420}
 
+
 def cropSinglePage(imageName: str, folderName: str):
     img = cv2.imread(os.path.join(inputFolder, folderName, imageName), cv2.IMREAD_GRAYSCALE)
     originalName = imageName
@@ -36,6 +37,7 @@ def cropFiles(imagesInput, folderName: str):
     for imageName in imagesInput:
         cropSinglePage(imageName, folderName)
         os.remove(os.path.join(inputFolder, folderName, imageName))
+
 
 def runThreads(folderName: str):
     path = folderName
@@ -76,9 +78,9 @@ def preProcessingMain(folderID):
     global numOfPatches
     numOfPatches = 0
     try:
-        folderName = os.path.join(inputFolder,folderID)
+        folderName = os.path.join(inputFolder, folderID)
     except FileNotFoundError:
-        logging.error("Input file '" + os.path.join(inputFolder,folderID) + "' not found.")
+        logging.error("Input file '" + os.path.join(inputFolder, folderID) + "' not found.")
         return
     print("Start cropping the folder " + folderName + ".")
     runThreads(folderName)
@@ -91,6 +93,7 @@ def main(folderID):
     preProcessingMain(folderID)
     print("Crop Script ended, execution time: " + str(datetime.now() - startTime))
     print(str(numOfImagesCropped) + " Images have been cropped into " + str(numOfPatches) + " Patches.")
+
 
 if __name__ == "__main__":
     main("123")

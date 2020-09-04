@@ -3,9 +3,10 @@ import inspect
 import logging
 import os
 from datetime import datetime
-import numpy as np
+
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 from PIL import Image
 from pytz import timezone
 
@@ -38,9 +39,11 @@ SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SQUARE)
 CURSIVE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, CURSIVE)
 SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
 SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
+BUFFER_PATH = os.path.join(PROJECT_DIR, 'buffer')
+BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, 'buffer_img.jpg')
 
 # Patch dimensions
-PATCH_DIMENSIONS = {"x": 500, "y": 500, "xOffset": 500 // 2, "yOffset": 500 // 2}
+PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 400 // 2, "yOffset": 400 // 2}
 
 
 def cropSinglePage(image_name: str, folder_name: str, path: str):
@@ -54,7 +57,7 @@ def cropSinglePage(image_name: str, folder_name: str, path: str):
 
     full_img_path = os.path.join(path, folder_name, image_name)
     cropImageEdges(full_img_path)
-    img = cv2.imread(full_img_path, 0)  # Read the image from the folder with grayscale mode
+    img = cv2.imread(BUFFER_IMG_PATH, 0)  # Read the image from the folder with grayscale mode
     image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
     dims = img.shape
     h, w = dims[0], dims[1]
@@ -65,7 +68,6 @@ def cropSinglePage(image_name: str, folder_name: str, path: str):
 
 def RGBtoBW(img):
     _, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    cv2.imwrite("test.jpg", thresh)
     return thresh
 
 
@@ -73,11 +75,12 @@ def cropImageEdges(image_path):
     Image.MAX_IMAGE_PIXELS = None
     img = Image.open(image_path)
     w, h = img.size
-    coords = (h * 0.10, w * 0.10, h * 0.90, w * 0.90)
+    w_c, h_c = 0.10, 0.10
+    coords = (w * w_c, h * h_c, w * (1 - w_c), h * (1 - h_c))
     np_img = np.array(img.crop(coords))
-    cv2.imshow("asd", np_img)
-    cv2.waitKey(0)
-    return np_img
+    if os.path.exists(BUFFER_IMG_PATH):
+        os.remove(BUFFER_IMG_PATH)
+    cv2.imwrite(BUFFER_IMG_PATH, np_img)
 
 
 def cropFiles(images_input, folder_name: str, path: str):
@@ -93,7 +96,7 @@ def cropFiles(images_input, folder_name: str, path: str):
         cropSinglePage(image_name, folder_name, path)
 
 
-def listToChunks(l, n):
+def listToChunks(lis, n):
     """
     This function divides the images into chunks so that the threads could work on each chunk.
 
@@ -104,12 +107,12 @@ def listToChunks(l, n):
     Returns:
     list: each chunk as a list of images.
     """
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
+    for i in range(0, len(lis), n):
+        yield lis[i:i + n]
 
 
 def runThreads(input_path: str, folder_name: str):
-    #                                                -2          -1
+    #                                        -2          -1
     # input_path example: C:\\...\\project\\input\\cursive
     # folder_name example: AshkenaziCursive
     full_input_path = os.path.join(input_path, folder_name)
@@ -164,68 +167,70 @@ def cropToPatches(image, folder_name: str, shape_type: str, image_name: str, ima
     folderName (str): The name of the output folder.
     """
     x1 = y1 = 0
-    x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 300X200)
-    xOffset, yOffset = PATCH_DIMENSIONS["xOffset"], PATCH_DIMENSIONS[
+    x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 500X500)
+    x_offset, y_offset = PATCH_DIMENSIONS["xOffset"], PATCH_DIMENSIONS[
         "yOffset"]  # The offset of the patch (defined as 1/3 the size of the patch)
-    saveLocation = str
+    save_location = str
     i = 1  # Index for naming each patch
     while x2 < image_width:  # End of pixels row
         j = 0  # Index for Y axis offset
-        while y2 + yOffset * j < image_height:  # End of pixels col
-            croppedPatch = image[y1 + yOffset * j: y2 + yOffset * j, x1: x2]  # Extract the pixels of the selected patch
-            saveLocation = os.path.join(OUTPUT_PATH,
-                                        shape_type,  # cursive / square / semi square
-                                        folder_name,  # for example AshkenaziCursive
-                                        image_name + "_" + str(i) + ".jpg"  # image_i.jpg
-                                        )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
+        while y2 + y_offset * j < image_height:  # End of pixels col
+            cropped_patch = image[y1 + y_offset * j: y2 + y_offset * j,
+                            x1: x2]  # Extract the pixels of the selected patch
+            save_location = os.path.join(OUTPUT_PATH,
+                                         shape_type,  # cursive / square / semi square
+                                         folder_name,  # for example AshkenaziCursive
+                                         image_name + "_" + str(i) + ".jpg"  # image_i.jpg
+                                         )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
             global NUM_OF_PATCHES
             NUM_OF_PATCHES += 1  # Patches counter
-            if isGoodPatch(croppedPatch):
-                plt.imsave(saveLocation, croppedPatch)  # Save the patch to the output folder
+            if isGoodPatch(cropped_patch):
+                cv2.imwrite(save_location, cropped_patch)  # Save the patch to the output folder
             i += 1
             j += 1
-        x1 += xOffset
-        x2 += xOffset
-    print("Successfully cropped to patches {0} in {1}".format(image_name, saveLocation))
+        x1 += x_offset
+        x2 += x_offset
+    print("Successfully cropped to patches {0} in {1}".format(image_name, save_location))
 
 
 def countPixels(img):
     n = PATCH_DIMENSIONS['x'] // 2
     h, w = img.shape
-    splitted_img = []
+    split_img = []
     k = 0
     for y in range(0, h, n):
         for x in range(0, w, n):
             y1 = y + n
             x1 = x + n
-            splitted_img.insert(k, img[y: y1, x:x1])
+            split_img.insert(k, img[y: y1, x:x1])
             k += 1
 
     black_pixels_avg = []
     for i in range(4):
-        darkPixels = n * n - cv2.countNonZero(splitted_img[i])
-        black_pixels_avg.insert(i, darkPixels / (n ** 2))
+        dark_pixels = n ** 2 - cv2.countNonZero(split_img[i])
+        black_pixels_avg.insert(i, dark_pixels / (n ** 2))
     return black_pixels_avg
 
 
 def isGoodPatch(cropped_patch):
     black_pixels_avg = countPixels(cropped_patch)
-    delta: float = 0.25
+    delta_black = 0.25
+    delta_white = 0.05
     sub: float
+    count = 0
     for i in range(len(black_pixels_avg)):
-        sub = black_pixels_avg[i] - delta
-        print("{} - {}".format(i, sub))
-        if (0.3 < sub) or (sub <= 0):
+        if black_pixels_avg[i] < delta_white:
+            count += 1
+        if black_pixels_avg[i] > delta_black:
+            count += 1
+        if count >= 2:
             return False
-    print("{} - accepted\nblack pixels - {} ".format(cropped_patch, black_pixels_avg))
-    cv2.imshow("ss", cropped_patch)
-    cv2.waitKey(0)
     return True
 
 
 def preProcessingMain():
     """
-    This function loads the folder names from the input folder and executes the crop algorithm on each name, with its crop dimestions.
+    This function loads the folder names from the input folder and executes the crop algorithm on each name, with its crop dimentions.
     """
     folders_names = []
     try:
@@ -253,27 +258,21 @@ def preProcessingMain():
                     logging.error("[" + inspect.stack()[0][3] + "] - Cropping of " + subdir + " Failed.")
 
 
-def checkIfFolderExists(input_path):
-    if os.path.exists(input_path):
-        return True
-    return False
-
-
 def createFolders():
     # CREATE INPUT PATHS
-    if not checkIfFolderExists(CURSIVE_INPUT_PATH):
+    if not os.path.exists(CURSIVE_INPUT_PATH):
         os.makedirs(CURSIVE_INPUT_PATH)
-    if not checkIfFolderExists(SQUARE_INPUT_PATH):
+    if not os.path.exists(SQUARE_INPUT_PATH):
         os.makedirs(SQUARE_INPUT_PATH)
-    if not checkIfFolderExists(SEMI_SQUARE_INPUT_PATH):
+    if not os.path.exists(SEMI_SQUARE_INPUT_PATH):
         os.makedirs(SEMI_SQUARE_INPUT_PATH)
 
     # CREATE OUTPUT PATHS
-    if not checkIfFolderExists(CURSIVE_OUTPUT_PATH):
+    if not os.path.exists(CURSIVE_OUTPUT_PATH):
         os.makedirs(CURSIVE_OUTPUT_PATH)
-    if not checkIfFolderExists(SQUARE_OUTPUT_PATH):
+    if not os.path.exists(SQUARE_OUTPUT_PATH):
         os.makedirs(SQUARE_OUTPUT_PATH)
-    if not checkIfFolderExists(SEMI_SQUARE_OUTPUT_PATH):
+    if not os.path.exists(SEMI_SQUARE_OUTPUT_PATH):
         os.makedirs(SEMI_SQUARE_OUTPUT_PATH)
 
 

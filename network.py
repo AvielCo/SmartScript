@@ -32,7 +32,7 @@ session = InteractiveSession(config=config)
 # Get data after the PreProcessing
 def loadPatchesFromPath(path: str):
     """
-    This function loads patches from a given path, and gives labels (boolean of Ashkenazi or not) to the patches from the same path.
+    This function loads patches from a given path, and gives labels to the patches from the same path.
 
     Parameters:
     path (str): Path to folder with patches.
@@ -41,23 +41,18 @@ def loadPatchesFromPath(path: str):
     list: The loaded patches with the labels.
     """
     dataset = []
-    ashkenazi = True  # Default value for label
-    patchesCount = 0  # For logging
-    if not path[path.rfind(os.path.sep) + 1:].startswith('A'):  # Starts with 'A' means Ashkenazi script
-        ashkenazi = False
+    patches_count = 0  # For logging
+    shape_type = path.split('\\')[-1]
     try:
-        patchesNames = os.listdir(path)
-        patchesNum = len(patchesNames)
+        classes = os.listdir(path)
     except FileNotFoundError:
         crop.logging.error("[" + inspect.stack()[0][3] + "] - Output file '" + path + "' not found.")
         return
-    for patch in patchesNames:
-        patchesCount += 1
-        dataset.append(tuple((cv2.imread(os.path.join(path, patch), cv2.IMREAD_GRAYSCALE),
-                              ashkenazi)))  # Append a tuple of a single patch with its label
-        if patchesCount % 10000 == 0:  # For the logger
-            crop.logging.info("[" + inspect.stack()[0][3] + "] - Loaded " + str(patchesCount) + "/" + str(
-                patchesNum) + " Patches from " + os.path.basename(path) + ".")
+    for c in classes:
+        patches = os.listdir(os.path.join(path, c))
+        for patch in patches:
+            patches_count += 1
+            dataset.append(tuple((cv2.imread(os.path.join(path, c, patch), 0), shape_type)))
     return dataset
 
 
@@ -104,7 +99,7 @@ def buildData(runCrop=False):
     if runCrop:
         crop.main()  # PreProcessing run
     try:
-        outputFolders = os.listdir(crop.outputFolder)
+        outputFolders = os.listdir(crop.OUTPUT_PATH)
     except FileNotFoundError:
         crop.logging.error("[" + inspect.stack()[0][3] + "] - Output file '" + str(crop.outputFolder) + "' not found.")
         exit(1)
@@ -113,7 +108,7 @@ def buildData(runCrop=False):
     for name in outputFolders:
         crop.logging.info("[" + inspect.stack()[0][3] + "] - Loading patches from " + name + " Folder.")
         dataset += loadPatchesFromPath(
-            os.path.join(crop.outputFolder, name))  # Append the patches list from each output folder
+            os.path.join(crop.OUTPUT_PATH, name))  # Append the patches list from each output folder
         crop.logging.info("[" + inspect.stack()[0][3] + "] - Finished loading from " + name + " Folder.")
     # Dataset is X, classes (labels) are Y
     dataset, classes = splitDataset(shuffleDataset(dataset))
@@ -180,7 +175,7 @@ model.add(Dense(units=128, activation='sigmoid'))
 model.add(Dense(units=128, activation='sigmoid'))
 model.add(Dense(units=64, activation='relu'))
 model.add(Dense(units=32, activation='sigmoid'))
-model.add(Dense(units=2, activation="softmax"))
+model.add(Dense(units=3, activation="softmax"))
 
 # Save the best model
 crop.logging.info("Creating checkpoint")
@@ -193,7 +188,7 @@ tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1, write_graph=True, wr
 adam = optimizers.Adam(lr=0.0001)
 
 crop.logging.info("Compiling model")
-model.compile(loss="binary_crossentropy",
+model.compile(loss="categorial_crossentropy",
               optimizer=adam,
               metrics=['accuracy']
               )
