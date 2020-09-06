@@ -190,7 +190,7 @@ def cropToPatches(image, folder_name: str, shape_type: str, image_name: str, ima
             j += 1
         x1 += x_offset
         x2 += x_offset
-    print("Successfully cropped to patches {0} in {1}".format(image_name, save_location))
+    print("Successfully cropped to patches {0} in {1}, with shape: {2}".format(image_name, save_location, shape_type))
 
 
 def countPixels(img):
@@ -274,6 +274,9 @@ def createFolders():
         os.makedirs(SQUARE_OUTPUT_PATH)
     if not os.path.exists(SEMI_SQUARE_OUTPUT_PATH):
         os.makedirs(SEMI_SQUARE_OUTPUT_PATH)
+
+    if not os.path.exists(BUFFER_PATH):
+        os.makedirs(BUFFER_PATH)
 
 
 def main():

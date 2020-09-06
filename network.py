@@ -1,24 +1,23 @@
-import os
 import gc
-import sys
-import crop
-import random
 import inspect
-import numpy as np
-from cv2 import cv2
+import os
+import random
+import sys
 from datetime import datetime
 
-# Deep learning imports
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import optimizers
-from tensorflow.keras.utils import to_categorical
-from sklearn.model_selection import train_test_split
+import cv2
+import numpy as np
 from keras_preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import load_model, Sequential
+from sklearn.model_selection import train_test_split
 from tensorflow.compat.v1 import InteractiveSession, ConfigProto
-from tensorflow.keras.callbacks import TensorBoard, CSVLogger, ModelCheckpoint, EarlyStopping
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, LSTM, Embedding, Dropout, Flatten
+# Deep learning imports
+from tensorflow.keras import optimizers
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import to_categorical
+
+import crop
 
 trainPercent = 0.7
 testPercent = 1 - trainPercent
@@ -27,6 +26,8 @@ testPercent = 1 - trainPercent
 config = ConfigProto()
 config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)
+
+CLASSES_VALUE = {'cursive': 0, 'semi_square': 1, 'square': 2}
 
 
 # Get data after the PreProcessing
@@ -52,7 +53,8 @@ def loadPatchesFromPath(path: str):
         patches = os.listdir(os.path.join(path, c))
         for patch in patches:
             patches_count += 1
-            dataset.append(tuple((cv2.imread(os.path.join(path, c, patch), 0), shape_type)))
+            dataset.append(tuple((cv2.imread(os.path.join(path, c, patch), 0), CLASSES_VALUE[shape_type])))
+    print('collected dataset: of {}'.format(shape_type))
     return dataset
 
 
@@ -136,9 +138,13 @@ del df1
 gc.collect()
 crop.logging.info("Done")
 crop.logging.info("Reshaping Grayscale data for Conv2D dimesions")
-df = df.reshape(df.shape[0], df.shape[1], df.shape[2], 1)
+df = df.reshape((df.shape[0], df.shape[1], df.shape[2], 1))
 crop.logging.info("Done")
 crop.logging.info("Converting Y to categorical matrix")
+# 0 1 2 3...
+# 1 0 0 ...
+# 0 0 1 ...
+# 0 1 0 ...
 y = to_categorical(y1)
 crop.logging.info("Calling Garbage Collector")
 del y1
@@ -179,8 +185,8 @@ model.add(Dense(units=3, activation="softmax"))
 
 # Save the best model
 crop.logging.info("Creating checkpoint")
-checkpoint = ModelCheckpoint('test1.h5', monitor='val_acc', verbose=1, save_best_only=True,
-                             save_weights_only=True, mode='auto', period=1)
+checkpoint = ModelCheckpoint('test.h5', monitor='val_acc', verbose=1, save_best_only=True,
+                             save_weights_only=True, mode='auto', save_freq=1)
 
 logDir = "logs/fit/" + datetime.now().strftime("%d-%m_%H:%M:%S")
 tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1, write_graph=True, write_images=True)
@@ -188,7 +194,7 @@ tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1, write_graph=True, wr
 adam = optimizers.Adam(lr=0.0001)
 
 crop.logging.info("Compiling model")
-model.compile(loss="categorial_crossentropy",
+model.compile(loss="categorical_crossentropy",
               optimizer=adam,
               metrics=['accuracy']
               )
@@ -213,13 +219,16 @@ crop.logging.info("Running the model")
 batchSize = 128
 model.fit(training_set,
           steps_per_epoch=len(X_train) // batchSize,
-          epochs=16,
+          epochs=5,
           validation_data=test_set,
-          validation_steps=2000)
+          validation_steps=1000)
 crop.logging.info("Done")
 crop.logging.info("Running validation")
-model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=batchSize, validation_split=0.2,
-          epochs=16, verbose=2, callbacks=[checkpoint, tensorboard])
+model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=batchSize, epochs=16, verbose=2,
+          callbacks=[checkpoint,
+                     tensorboard]
+          )
 scores = model.evaluate(X_test, y_test, verbose=1)
 crop.logging.info("Done")
 crop.logging.info("Test accuracy: " + str(scores[1] * 100))
+model.save('model_test.h5')
