@@ -15,6 +15,21 @@ projectDir = os.getcwd()
 inputFolder = os.path.join(projectDir, "images")
 outputFolder = os.path.join(projectDir, "images")
 
+# Dirs
+INPUT_PATH = os.path.join(PROJECT_DIR, "input")
+OUTPUT_PATH = os.path.join(PROJECT_DIR, "output")
+CURSIVE = "cursive"
+SEMI_SQUARE = "semi_square"
+SQUARE = "square"
+CURSIVE_INPUT_PATH = os.path.join(INPUT_PATH, CURSIVE)
+SEMI_SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SEMI_SQUARE)
+SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SQUARE)
+CURSIVE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, CURSIVE)
+SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
+SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
+BUFFER_PATH = os.path.join(PROJECT_DIR, 'buffer')
+BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, 'buffer_img.jpg')
+
 # Page details
 
 patchDimensions = {"x": 300, "y": 200, "xOffset": 100, "yOffset": 200 // 3}
