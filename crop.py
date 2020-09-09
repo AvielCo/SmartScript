@@ -6,6 +6,7 @@ from datetime import datetime
 import cv2
 import numpy as np
 from PIL import Image
+from PIL import UnidentifiedImageError
 
 # Dirs
 PROJECT_DIR = os.getcwd()
@@ -89,13 +90,16 @@ def cropToPatches(image, folder_name: str, shape_type: str, image_name: str, ima
         while y2 + y_offset * j < image_height:  # End of pixels col
             cropped_patch = image[y1 + y_offset * j: y2 + y_offset * j,
                             x1: x2]  # Extract the pixels of the selected patch
+            items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
+            if items_in_folder >= 2000:
+                return False
             save_location = os.path.join(OUTPUT_PATH,
                                          shape_type,  # cursive / square / semi square
                                          folder_name,  # for example AshkenaziCursive
                                          image_name + "_" + str(i) + ".jpg"  # image_i.jpg
                                          )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
-            total_patches_cropped += 1
             if isGoodPatch(cropped_patch):
+                total_patches_cropped += 1
                 cv2.imwrite(save_location, cropped_patch)  # Save the patch to the output folder
             i += 1
             j += 1
@@ -104,6 +108,7 @@ def cropToPatches(image, folder_name: str, shape_type: str, image_name: str, ima
 
     total_images_cropped += 1
     print("Successfully cropped to patches {0} in {1}, with shape: {2}".format(image_name, save_location, shape_type))
+    return True
 
 
 def RGBtoBW(img):
@@ -113,7 +118,12 @@ def RGBtoBW(img):
 
 def cropImageEdges(image_path):
     Image.MAX_IMAGE_PIXELS = None
-    img = Image.open(image_path)
+    try:
+        img = Image.open(image_path)
+    except UnidentifiedImageError:
+        return
+    except FileNotFoundError:
+        return
     w, h = img.size
     w_c, h_c = 0.10, 0.10
     coords = (w * w_c, h * h_c, w * (1 - w_c), h * (1 - h_c))
@@ -139,8 +149,9 @@ def cropSinglePage(image_name: str, folder_name: str, path: str):
     dims = img.shape
     h, w = dims[0], dims[1]
     new_img = RGBtoBW(img)
-    cropToPatches(new_img, folder_name, path.split('\\')[-1], image_name_no_extension, w, h)
+    t = cropToPatches(new_img, folder_name, path.split('\\')[-1], image_name_no_extension, w, h)
     print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
+    return t
 
 
 def cropFiles(images_input, folder_name: str, path: str):
@@ -153,7 +164,9 @@ def cropFiles(images_input, folder_name: str, path: str):
     folderName (str): Input folder of the images.
     """
     for image_name in images_input:
-        cropSinglePage(image_name, folder_name, path)
+        t = cropSinglePage(image_name, folder_name, path)
+        if not t:
+            return
 
 
 def runThreads(input_path: str, folder_name: str):

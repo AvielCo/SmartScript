@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 from keras_preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
+from tensorflow.compat.v1 import InteractiveSession, ConfigProto
 from tensorflow.keras import optimizers
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten
@@ -18,19 +19,58 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.utils import to_categorical
 from tensorflow.python.keras.callbacks import TensorBoard
 from tensorflow.python.keras.layers import AveragePooling2D
+from tensorflow_core.python.keras.saving.save import load_model
 
 import crop
 
 trainPercent = 0.7
 testPercent = 1 - trainPercent
-
 # GPU configuration
-# config = ConfigProto()
-# config.gpu_options.allow_growth = True
-# session = InteractiveSession(config=config)
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
+# Const variables
 
 CLASSES_VALUE = {'cursive': 0, 'semi_square': 1, 'square': 2}
+
+# Path #1 for best val_loss
+CHECKPOINT_PATH_1 = os.path.join(crop.PROJECT_DIR,
+                                 'checkpoints',
+                                 'val_loss',
+                                 'model.{epoch:02d}-{val_loss:.2f}_val_loss.h5')
+
+# Path #2 for best val_categorical_accuracy
+CHECKPOINT_PATH_2 = os.path.join(crop.PROJECT_DIR,
+                                 'checkpoints',
+                                 'val_categorical_accuracy',
+                                 'model.{epoch:02d}-{val_categorical_accuracy:.2f}_val_categorical_accuracy.h5')
+
+LOG_PATH = os.path.join(crop.PROJECT_DIR, "logs", "fit")
+
+# Batch size for fit function for each step in epoch
+BATCH_SIZE = 32
+
+
+def progress(count, total, suffix=''):
+    """
+    Showing progress bar on loops
+    Args:
+        count: current iteration
+        total: total iterations
+        suffix: ''
+
+    Returns: None
+    """
+
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
+    sys.stdout.flush()  # As suggested by Rom Ruben
 
 
 # Get data after the PreProcessing
@@ -54,7 +94,9 @@ def loadPatchesFromPath(path: str):
         return
     for c in classes:
         patches = os.listdir(os.path.join(path, c))
-        for patch in patches:
+        print("Collecting patches from {}".format(os.path.join(path, c)))
+        for i, patch in enumerate(patches):
+            progress(i + 1, len(patches))
             patches_count += 1
             dataset.append(tuple((cv2.imread(os.path.join(path, c, patch), 0), CLASSES_VALUE[shape_type])))
     print('collected dataset: of {}'.format(shape_type))
@@ -122,7 +164,7 @@ def buildData(runCrop=False):
     return dataset, classes
 
 
-def LeNet_5_Architecture(input_shape):
+def LeNet_5_architecture(input_shape):
     return Sequential([
         Conv2D(6, kernel_size=5, strides=1, activation='tanh', input_shape=input_shape, padding='same'),  # C1
         AveragePooling2D(),  # S2
@@ -154,18 +196,16 @@ def default_model_architecture(input_shape):
     ])
 
 
+startTime = datetime.now()
 # Cache flag from command line
+runCrop = False
 try:
-    runCrop = False
     if sys.argv[1] == "True" or sys.argv[1] == "true":
         runCrop = True
 except IndexError:
     pass
 
-df1, y1 = buildData(False)  # True = Starting crop process
-print("Calling Garbage Collector")
-gc.collect()
-print("Done")
+df1, y1 = buildData(runCrop)  # True = Starting crop process
 print("Converting data to Numpy array")
 df = np.asarray(df1)
 print("Calling Garbage Collector")
@@ -196,58 +236,58 @@ gc.collect()
 print("Done")
 
 # Create model
-model = LeNet_5_Architecture(inputShape)
+print('Loading model...')
+model = load_model('BestModel.h5')
+if model is None:
+    print('No model found, creating..')
+    model = LeNet_5_architecture(inputShape)
+    print("Compiling model")
+    model.compile(loss=categorical_crossentropy,
+                  optimizer=optimizers.Adam(lr=0.00001),
+                  metrics=[categorical_accuracy])
 
+print('Done')
 # Save the best model
 print("Creating checkpoint")
-CHECKPOINT_PATH = os.path.join(crop.PROJECT_DIR, 'bestModel.h5')
-checkpoint = ModelCheckpoint(CHECKPOINT_PATH, monitor='val_acc', verbose=1, save_best_only=True,
-                             save_weights_only=True, mode='auto', save_freq='epoch')
 
-logDir = os.path.join("logs", "fit")
-tensorboard = TensorBoard(log_dir=logDir, histogram_freq=1, write_graph=False, write_images=True)
+if not os.path.exists(os.path.join(crop.PROJECT_DIR, 'checkpoints', 'val_loss')):
+    os.makedirs(os.path.join(crop.PROJECT_DIR, 'checkpoints', 'val_loss'))
 
-adam = optimizers.Adam(lr=0.0005)
+if not os.path.exists(os.path.join(crop.PROJECT_DIR, 'checkpoints', 'val_categorical_accuracy')):
+    os.makedirs(os.path.join(crop.PROJECT_DIR, 'checkpoints', 'val_categorical_accuracy'))
 
-print("Compiling model")
-model.compile(loss=categorical_crossentropy,
-              optimizer=adam,
-              metrics=[categorical_accuracy]
-              )
+checkpoint_val_loss = ModelCheckpoint(CHECKPOINT_PATH_1,
+                                      monitor='val_loss',
+                                      verbose=1,
+                                      save_best_only=True,
+                                      save_weights_only=False,
+                                      mode='min', save_freq='epoch')
 
-# Fit arguments
-print("Fitting arguments:")
-print("Fit train datagen")
-train_datagen = ImageDataGenerator(dtype='uint8')
-print("Done")
-print("Fit test datagen")
-test_datagen = ImageDataGenerator(dtype='uint8')
-print("Done")
-print("Fit training set")
-training_set = train_datagen.flow(X_train, y=y_train)
-print("Done")
-print("Fit test set")
-test_set = test_datagen.flow(X_test, y=y_test)
-print("Done")
-print("Model summary:")
+checkpoint_val_categorial_accuracy = ModelCheckpoint(CHECKPOINT_PATH_2,
+                                                     monitor='val_categorical_accuracy',
+                                                     verbose=1,
+                                                     save_best_only=True,
+                                                     save_weights_only=False,
+                                                     mode='max', save_freq='epoch')
+
+tensorboard = TensorBoard(log_dir=LOG_PATH, histogram_freq=1, write_graph=False, write_images=True)
+
 model.summary(print_fn=print)
 print("Running the model")
-batchSize = 128
 
-model.fit(training_set,
-          steps_per_epoch=len(X_train) // batchSize,
-          epochs=2,
-          validation_data=test_set,
-          validation_steps=len(X_test) // batchSize,
-          callbacks=[checkpoint]
-          )
-print("Done")
-print("Running validation")
-model.fit(X_train, y_train, validation_data=(X_test, y_test), batch_size=batchSize, epochs=2,
-          callbacks=[checkpoint,
-                     tensorboard]
-          )
+
+# Train the model
+model.fit(X_train, y_train,
+          validation_data=(X_test, y_test),
+          batch_size=BATCH_SIZE,
+          epochs=50,
+          callbacks=[checkpoint_val_loss,
+                     checkpoint_val_categorial_accuracy,
+                     tensorboard])
+
+# Take the scores
 scores = model.evaluate(X_test, y_test, verbose=1)
-print("Done")
-print("Test accuracy: " + str(scores[1] * 100))
-model.save('testingSave')
+
+print(scores)
+print("Done training.\nThe process took: {}\nTest accuracy: {}".format(str(datetime.now() - startTime),
+                                                                       str(scores[1] * 100)))
