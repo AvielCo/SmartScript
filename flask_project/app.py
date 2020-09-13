@@ -94,7 +94,7 @@ mail = Mail(app)
 URL_SERIALYZER = URLSafeTimedSerializer(APP_SECRET_KEY)
 TOKEN_SERIALIZER = TimedSerializer(APP_SECRET_KEY)
 
-# images handle
+# patches handle
 photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = IMAGES_PATH
 configure_uploads(app, photos)

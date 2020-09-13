@@ -8,24 +8,9 @@ import numpy as np
 from PIL import Image
 from PIL import UnidentifiedImageError
 
-# Dirs
-PROJECT_DIR = os.getcwd()
-INPUT_PATH = os.path.join(PROJECT_DIR, "input")
-OUTPUT_PATH = os.path.join(PROJECT_DIR, "output")
-CURSIVE = "cursive"
-SEMI_SQUARE = "semi_square"
-SQUARE = "square"
-CURSIVE_INPUT_PATH = os.path.join(INPUT_PATH, CURSIVE)
-SEMI_SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SEMI_SQUARE)
-SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SQUARE)
-CURSIVE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, CURSIVE)
-SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
-SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
-BUFFER_PATH = os.path.join(PROJECT_DIR, 'buffer')
-BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, 'buffer_img.jpg')
-
-# Patch dimensions
-PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 400 // 2, "yOffset": 400 // 2}
+from consts import OUTPUT_PATH, BUFFER_IMG_PATH, CURSIVE_INPUT_PATH, CURSIVE_OUTPUT_PATH, SQUARE_INPUT_PATH, \
+    SQUARE_OUTPUT_PATH, SEMI_SQUARE_INPUT_PATH, SEMI_SQUARE_OUTPUT_PATH, INPUT_PATH, BUFFER_PATH, PATCH_DIMENSIONS, \
+    PREDICT_OUTPUT_PATH, PREDICT_BUFFER_IMG_PATH
 
 total_images_cropped = 0
 total_patches_cropped = 0
@@ -66,7 +51,7 @@ def isGoodPatch(cropped_patch):
     return True
 
 
-def cropToPatches(image, folder_name: str, shape_type: str, image_name: str, image_width: int, image_height: int):
+def cropToPatches(image, image_width, image_height, image_name, folder_name, shape_type):
     """
     This function takes a page, crops it into patches of 300X200 pixels and saves them in output folder.
 
@@ -90,14 +75,21 @@ def cropToPatches(image, folder_name: str, shape_type: str, image_name: str, ima
         while y2 + y_offset * j < image_height:  # End of pixels col
             cropped_patch = image[y1 + y_offset * j: y2 + y_offset * j,
                             x1: x2]  # Extract the pixels of the selected patch
-            items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-            if items_in_folder >= 2000:
-                return False
-            save_location = os.path.join(OUTPUT_PATH,
-                                         shape_type,  # cursive / square / semi square
-                                         folder_name,  # for example AshkenaziCursive
-                                         image_name + "_" + str(i) + ".jpg"  # image_i.jpg
-                                         )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
+            if shape_type is not None:
+                items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
+                if items_in_folder >= 2000:
+                    return False
+                save_location = os.path.join(OUTPUT_PATH,
+                                             shape_type,  # cursive / square / semi square
+                                             folder_name,  # for example AshkenaziCursive
+                                             image_name + "_" + str(i) + ".jpg"  # image_i.jpg
+                                             )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
+
+            else:
+                save_location = os.path.join(os.getcwd(),
+                                             PREDICT_OUTPUT_PATH,
+                                             folder_name,
+                                             image_name + "_" + str(i) + ".jpg")
             if isGoodPatch(cropped_patch):
                 total_patches_cropped += 1
                 cv2.imwrite(save_location, cropped_patch)  # Save the patch to the output folder
@@ -116,24 +108,32 @@ def RGBtoBW(img):
     return thresh
 
 
-def cropImageEdges(image_path):
+def cropImageEdges(image_path, is_predict):
     Image.MAX_IMAGE_PIXELS = None
     try:
         img = Image.open(image_path)
     except UnidentifiedImageError:
-        return
+        new_path = image_path.rsplit('\\', 1)[0]
+        new_path += '\\new_image.jpg'
+        os.rename(image_path,
+                  new_path)
     except FileNotFoundError:
         return
     w, h = img.size
     w_c, h_c = 0.10, 0.10
     coords = (w * w_c, h * h_c, w * (1 - w_c), h * (1 - h_c))
     np_img = np.array(img.crop(coords))
-    if os.path.exists(BUFFER_IMG_PATH):
-        os.remove(BUFFER_IMG_PATH)
-    cv2.imwrite(BUFFER_IMG_PATH, np_img)
+    if not is_predict:
+        path = BUFFER_IMG_PATH
+    else:
+        path = PREDICT_BUFFER_IMG_PATH
+
+    if os.path.exists(path):
+        os.remove(path)
+    cv2.imwrite(path, np_img)
 
 
-def cropSinglePage(image_name: str, folder_name: str, path: str):
+def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=False):
     """
     This function crops a single page from the scan (by its dimensions).
 
@@ -141,15 +141,24 @@ def cropSinglePage(image_name: str, folder_name: str, path: str):
     imageName (str): The name of the scanned image.
     folderName (str): The name of the folder that the scan is saved in.
     """
+    if is_predict:
+        buffer_path = PREDICT_BUFFER_IMG_PATH
+        shape_type = None
+        full_img_path = os.path.join(os.getcwd(), path, folder_name, image_name)
+    else:
+        buffer_path = BUFFER_IMG_PATH
+        shape_type = path.split('\\')[-1]
+        full_img_path = os.path.join(path, folder_name, image_name)
 
-    full_img_path = os.path.join(path, folder_name, image_name)
-    cropImageEdges(full_img_path)
-    img = cv2.imread(BUFFER_IMG_PATH, 0)  # Read the image from the folder with grayscale mode
+    cropImageEdges(full_img_path, is_predict)
+    img = cv2.imread(buffer_path, 0)  # Read the image from the folder with grayscale mode
     image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
     dims = img.shape
     h, w = dims[0], dims[1]
     new_img = RGBtoBW(img)
-    t = cropToPatches(new_img, folder_name, path.split('\\')[-1], image_name_no_extension, w, h)
+    t = cropToPatches(new_img, w, h, image_name_no_extension, folder_name, shape_type)
+    if folder_name != 'AshkenaziSquare' and not is_predict:
+        os.remove(full_img_path)
     print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
     return t
 
@@ -159,26 +168,26 @@ def cropFiles(images_input, folder_name: str, path: str):
     This function calls cropSinglePage for each image in the imagesInput list, with its dimensions and input folder name
 
     Parameters:
-    imagesInput (list): List of images from the same input folder.
-    dimensionsDict (dict): The dimensions of the images.
-    folderName (str): Input folder of the images.
+    imagesInput (list): List of patches from the same input folder.
+    dimensionsDict (dict): The dimensions of the patches.
+    folderName (str): Input folder of the patches.
     """
     for image_name in images_input:
-        t = cropSinglePage(image_name, folder_name, path)
+        t = cropSinglePage(path, folder_name, image_name)
         if not t:
             return
 
 
 def runThreads(input_path: str, folder_name: str):
     """
-    This function creates output folders and runs threads on each chunk of images.
+    This function creates output folders and runs threads on each chunk of patches.
 
     Parameters:
-    folderName(str): The name of the images folder inside output folder.
+    folderName(str): The name of the patches folder inside output folder.
     """
     full_input_path = os.path.join(input_path, folder_name)
     try:
-        images_input = os.listdir(full_input_path)  # Get all of the images from the current folder
+        images_input = os.listdir(full_input_path)  # Get all of the patches from the current folder
         for img in images_input:
             "".join(img.split())
     except FileNotFoundError:
@@ -201,7 +210,8 @@ def runThreads(input_path: str, folder_name: str):
 
 def preProcessingMain():
     """
-    This function loads the folder names from the input folder and executes the crop algorithm on each name, with its crop dimentions.
+    This function loads the folder names from the input folder and executes the crop algorithm on each name, with its
+     crop dimensions.
     """
     folders_names = []
     try:

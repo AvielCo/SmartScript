@@ -1,0 +1,50 @@
+import os
+
+CURSIVE = "cursive"
+SEMI_SQUARE = "semi_square"
+SQUARE = "square"
+INPUT = "input"
+OUTPUT = "output"
+BUFFER = "buffer"
+CHECKPOINTS = "checkpoints"
+PROJECT_DIR = os.getcwd()
+INPUT_PATH = os.path.join(PROJECT_DIR, INPUT)
+OUTPUT_PATH = os.path.join(PROJECT_DIR, OUTPUT)
+CURSIVE_INPUT_PATH = os.path.join(INPUT_PATH, CURSIVE)
+SEMI_SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SEMI_SQUARE)
+SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SQUARE)
+CURSIVE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, CURSIVE)
+SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
+SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
+BUFFER_PATH = os.path.join(PROJECT_DIR, BUFFER)
+PREDICT_BUFFER_PATH = os.path.join(PROJECT_DIR, BUFFER)
+BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, 'buffer_img.jpg')
+PREDICT_BUFFER_IMG_PATH = os.path.join(PREDICT_BUFFER_PATH, 'buffer_img.jpg')
+PREDICT_OUTPUT_PATH = os.path.join("patches")
+PREDICT_INPUT_PATH = os.path.join("raw_images")
+
+CLASSES_VALUE = {CURSIVE: 0, SEMI_SQUARE: 1, SQUARE: 2}
+
+# Path #1 for best val_loss
+CHECKPOINT_PATH_LOSS = os.path.join(PROJECT_DIR,
+                                    CHECKPOINTS,
+                                    'val_loss',
+                                    'model.epoch={epoch:02d}-val_loss={val_loss:.2f}.h5')
+
+# Path #2 for best val_categorical_accuracy
+CHECKPOINT_PATH_CAT_ACC = os.path.join(PROJECT_DIR,
+                                       'checkpoints',
+                                       'val_categorical_accuracy',
+                                       'model.epoch={epoch:02d}-val_cat_acc={val_categorical_accuracy:.2f}.h5')
+
+# Path #3 for best val_categorical_accuracy
+CHECKPOINT_PATH_ACC = os.path.join(PROJECT_DIR,
+                                   'checkpoints',
+                                   'val_accuracy',
+                                   'model.epoch={epoch:02d}-val_accuracy={val_accuracy:.2f}.h5')
+
+CHECKPOINT_PATH_BEST = os.path.join(PROJECT_DIR, 'BestModel.h5')
+
+LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
+
+PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 400 // 2, "yOffset": 400 // 2}

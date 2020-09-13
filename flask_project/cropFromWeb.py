@@ -1,6 +1,5 @@
 import os
 import logging
-from pytz import timezone
 import concurrent.futures
 from datetime import datetime, timedelta
 from cv2 import cv2
@@ -12,8 +11,8 @@ numOfPatches = 0
 
 # Dirs
 projectDir = os.getcwd()
-inputFolder = os.path.join(projectDir, "images")
-outputFolder = os.path.join(projectDir, "images")
+inputFolder = os.path.join(projectDir, "patches")
+outputFolder = os.path.join(projectDir, "patches")
 
 # Dirs
 INPUT_PATH = os.path.join(PROJECT_DIR, "input")
