@@ -8,9 +8,9 @@ import numpy as np
 from PIL import Image
 from PIL import UnidentifiedImageError
 
-from consts import OUTPUT_PATH, BUFFER_IMG_PATH, CURSIVE_INPUT_PATH, CURSIVE_OUTPUT_PATH, SQUARE_INPUT_PATH, \
+from consts import OUTPUT_PATH, CURSIVE_INPUT_PATH, CURSIVE_OUTPUT_PATH, SQUARE_INPUT_PATH, \
     SQUARE_OUTPUT_PATH, SEMI_SQUARE_INPUT_PATH, SEMI_SQUARE_OUTPUT_PATH, INPUT_PATH, BUFFER_PATH, PATCH_DIMENSIONS, \
-    PREDICT_OUTPUT_PATH, PREDICT_BUFFER_IMG_PATH
+    PREDICT_OUTPUT_PATH, PREDICT_BUFFER_PATH
 
 total_images_cropped = 0
 total_patches_cropped = 0
@@ -109,6 +109,20 @@ def RGBtoBW(img):
 
 
 def cropImageEdges(image_path, is_predict):
+    if not is_predict:
+        path = BUFFER_PATH
+    else:
+        path = PREDICT_BUFFER_PATH
+
+    img_path = os.path.join(path, "buffer_img.jpg")
+    if os.path.exists(img_path):
+        os.remove(img_path)
+    img_path_left = os.path.join(path, "buffer_img_1.jpg")
+    img_path_right = os.path.join(path, "buffer_img_2.jpg")
+    if os.path.exists(img_path_left) or os.path.exists(img_path_right):
+        os.remove(img_path_left)
+        os.remove(img_path_right)
+
     Image.MAX_IMAGE_PIXELS = None
     try:
         img = Image.open(image_path)
@@ -122,15 +136,20 @@ def cropImageEdges(image_path, is_predict):
     w, h = img.size
     w_c, h_c = 0.10, 0.10
     coords = (w * w_c, h * h_c, w * (1 - w_c), h * (1 - h_c))
-    np_img = np.array(img.crop(coords))
-    if not is_predict:
-        path = BUFFER_IMG_PATH
+    img = img.crop(coords)
+    img.save("aaaa.jpg")
+    w, h = img.size
+    ratio = h / w
+    if ratio < 1:
+        left = (0, 0, w / 2 - ((w / 2) * 0.03), h)
+        right = (w / 2 + ((w / 2) * 0.03), 0, w, h)
+        left_side = np.array(img.crop(left))
+        right_side = np.array(img.crop(right))
+        cv2.imwrite(img_path_left, cv2.cvtColor(left_side, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(img_path_right, cv2.cvtColor(right_side, cv2.COLOR_RGB2BGR))
     else:
-        path = PREDICT_BUFFER_IMG_PATH
-
-    if os.path.exists(path):
-        os.remove(path)
-    cv2.imwrite(path, np_img)
+        np_img = np.array(img)
+        cv2.imwrite(img_path, cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR))
 
 
 def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=False):
@@ -142,24 +161,34 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
     folderName (str): The name of the folder that the scan is saved in.
     """
     if is_predict:
-        buffer_path = PREDICT_BUFFER_IMG_PATH
+        buffer_path = PREDICT_BUFFER_PATH
         shape_type = None
         full_img_path = os.path.join(os.getcwd(), path, folder_name, image_name)
     else:
-        buffer_path = BUFFER_IMG_PATH
+        buffer_path = BUFFER_PATH
         shape_type = path.split('\\')[-1]
         full_img_path = os.path.join(path, folder_name, image_name)
-
+    t = True
     cropImageEdges(full_img_path, is_predict)
-    img = cv2.imread(buffer_path, 0)  # Read the image from the folder with grayscale mode
-    image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
-    dims = img.shape
-    h, w = dims[0], dims[1]
-    new_img = RGBtoBW(img)
-    t = cropToPatches(new_img, w, h, image_name_no_extension, folder_name, shape_type)
+    for _, _, files in os.walk(buffer_path):
+        i = 0
+        for file in files:
+            file_path = os.path.join(buffer_path, file)
+            img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
+            image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
+            if i == 0:
+                image_name_no_extension = image_name_no_extension + "_left"
+            else:
+                image_name_no_extension = image_name_no_extension + "_right"
+            dims = img.shape
+            h, w = dims[0], dims[1]
+            new_img = RGBtoBW(img)
+            t = cropToPatches(new_img, w, h, image_name_no_extension, folder_name, shape_type)
+            i += 1
+            print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
     if folder_name != 'AshkenaziSquare' and not is_predict:
-        os.remove(full_img_path)
-    print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
+        pass
+        # os.remove(full_img_path)
     return t
 
 

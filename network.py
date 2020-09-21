@@ -10,6 +10,7 @@ import cv2
 import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.compat.v1 import InteractiveSession, ConfigProto
+from tensorflow.compat.v1.logging import set_verbosity, ERROR, DEBUG, INFO, WARN
 from tensorflow.keras import optimizers
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
@@ -20,6 +21,8 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.python.keras.callbacks import EarlyStopping, LearningRateScheduler, TensorBoard
 from tensorflow.python.keras.layers import AveragePooling2D
 from tensorflow_core.python.keras.saving.save import load_model
+
+set_verbosity((ERROR, DEBUG, INFO, WARN))
 
 import crop
 from consts import CLASSES_VALUE, CHECKPOINT_PATH_LOSS, PROJECT_DIR, CHECKPOINT_PATH_ACC, CHECKPOINT_PATH_BEST, \
@@ -219,29 +222,6 @@ del df
 gc.collect()
 print("Done")
 
-# d = ImageDataGenerator()
-#
-# saved_time = datetime.now()
-# train_dataset = d.flow(
-#     X_train,
-#     y_train,
-#     batch_size=128
-# )
-# print('train_dataset Took: {}'.format(datetime.now() - saved_time))
-#
-# saved_time = datetime.now()
-# test_dataset = d.flow(
-#     X_test,
-#     y_test,
-#     batch_size=128
-# )
-# print('test_dataset Took: {}'.format(datetime.now() - saved_time))
-#
-# saved_time = datetime.now()
-# del X_test, y_test, X_train, y_train
-# gc.collect()
-# print('delete Took: {}'.format(datetime.now() - saved_time))
-
 # Create model
 print('Loading model...')
 if os.path.exists(os.path.join(os.getcwd(), 'BestModel.h5')):
@@ -249,10 +229,6 @@ if os.path.exists(os.path.join(os.getcwd(), 'BestModel.h5')):
 else:
     print('No model found, creating..')
     model = AlexNet_architecture(inputShape)
-    # print("Compiling model")
-    # model.compile(loss=categorical_crossentropy,
-    #              optimizer=optimizers.Adam(lr=0.00002),
-    #              metrics=[categorical_accuracy])
 
 print('Done')
 # Save the best model
