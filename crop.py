@@ -51,7 +51,7 @@ def isGoodPatch(cropped_patch):
     return True
 
 
-def cropToPatches(image, image_width, image_height, image_name, folder_name, shape_type):
+def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, folder_name, shape_type):
     """
     This function takes a page, crops it into patches of 300X200 pixels and saves them in output folder.
 
@@ -73,8 +73,10 @@ def cropToPatches(image, image_width, image_height, image_name, folder_name, sha
     while x2 < image_width:  # End of pixels row
         j = 0  # Index for Y axis offset
         while y2 + y_offset * j < image_height:  # End of pixels col
-            cropped_patch = image[y1 + y_offset * j: y2 + y_offset * j,
+            bw_cropped_patch = bw_img[y1 + y_offset * j: y2 + y_offset * j,
                             x1: x2]  # Extract the pixels of the selected patch
+            gray_cropped_patch = grayscale_img[y1 + y_offset * j: y2 + y_offset * j,
+                            x1: x2]
             if shape_type is not None:
                 items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
                 if items_in_folder >= 2000:
@@ -90,9 +92,9 @@ def cropToPatches(image, image_width, image_height, image_name, folder_name, sha
                                              PREDICT_OUTPUT_PATH,
                                              folder_name,
                                              image_name + "_" + str(i) + ".jpg")
-            if isGoodPatch(cropped_patch):
+            if isGoodPatch(bw_cropped_patch):
                 total_patches_cropped += 1
-                cv2.imwrite(save_location, cropped_patch)  # Save the patch to the output folder
+                cv2.imwrite(save_location, gray_cropped_patch)  # Save the patch to the output folder
             i += 1
             j += 1
         x1 += x_offset
@@ -174,16 +176,16 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
         i = 0
         for file in files:
             file_path = os.path.join(buffer_path, file)
-            img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
+            grayscale_img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
             image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
             if i == 0:
                 image_name_no_extension = image_name_no_extension + "_left"
             else:
                 image_name_no_extension = image_name_no_extension + "_right"
-            dims = img.shape
+            dims = grayscale_img.shape
             h, w = dims[0], dims[1]
-            new_img = RGBtoBW(img)
-            t = cropToPatches(new_img, w, h, image_name_no_extension, folder_name, shape_type)
+            bw_img = RGBtoBW(grayscale_img) # Open pic in BW
+            t = cropToPatches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
             i += 1
             print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
     if folder_name != 'AshkenaziSquare' and not is_predict:

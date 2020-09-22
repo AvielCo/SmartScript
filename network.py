@@ -183,7 +183,7 @@ def default_model_architecture(input_shape):
     ])
 
 
-runCrop = False
+runCrop = True
 try:
     if sys.argv[1] == "True" or sys.argv[1] == "true":
         runCrop = True
