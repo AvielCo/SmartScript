@@ -1,8 +1,13 @@
+import inspect
+import os
 import random
 import sys
 from datetime import datetime
 
 import cv2
+
+import crop
+from consts import CLASSES_VALUE
 
 
 def shuffleDataset(dataset: list):
@@ -31,6 +36,75 @@ def splitDataset(dataset: list):
     """
     data, classes = zip(*dataset)
     return list(data), list(classes)
+
+
+# Get data after the PreProcessing
+def loadPatchesFromPath(path: str, runCrop):
+    """
+    This function loads patches from a given path, and gives labels to the patches from the same path.
+
+    Parameters:
+    path (str): Path to folder with patches.
+
+    Returns:
+    list: The loaded patches with the labels.
+    """
+    dataset = []
+    patches_count = 0  # For logging
+    shape_type = path.split('\\')[-1]
+    try:
+        classes = os.listdir(path)
+    except FileNotFoundError:
+        crop.logging.error("[" + inspect.stack()[0][3] + "] - Output file '" + path + "' not found.")
+        return
+    for c in classes:
+        patches = os.listdir(os.path.join(path, c))
+        print("Collecting patches from {}".format(os.path.join(path, c)))
+        for i, patch in enumerate(patches):
+            # if not runCrop:
+            #    os.rename(os.path.join(path, c, patch), os.path.join(path, c, str(patches_count) + '.jpg'))
+            #    img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, str(patches_count) + '.jpg'), 0), 227, 227)
+            # else:
+            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 227, 227)
+            progress(i + 1, len(patches))
+
+            dataset.append(tuple((img, CLASSES_VALUE[shape_type])))
+            patches_count += 1
+    print('collected dataset: of {}'.format(shape_type))
+    return dataset
+
+
+def buildData(input_dir, runCrop=False):
+    """
+    This function builds the data from the output folders.
+
+    Parameters:
+    runCrop (bool): Cache flag.
+
+    Returns:
+    tuple: a tuple where tuple[0] is a list of the data and tuple[1] is the classes of the data.
+    """
+    startTime = datetime.now()
+    print("[" + inspect.stack()[0][3] + "] - Starting to build the data for the Neural Network.")
+    if runCrop:
+        crop.main(input_dir)  # PreProcessing run
+    try:
+        outputFolders = os.listdir(crop.OUTPUT_PATH)
+    except FileNotFoundError:
+        crop.logging.error("[" + inspect.stack()[0][3] + "] - Output file '" + str(crop.OUTPUT_PATH) + "' not found.")
+        exit(1)
+
+    dataset = []
+    for name in outputFolders:
+        print("[" + inspect.stack()[0][3] + "] - Loading patches from " + name + " Folder.")
+        dataset += loadPatchesFromPath(
+            os.path.join(crop.OUTPUT_PATH, name), runCrop)  # Append the patches list from each output folder
+        print("[" + inspect.stack()[0][3] + "] - Finished loading from " + name + " Folder.")
+    # Dataset is X, classes (labels) are Y
+    dataset, classes = splitDataset(shuffleDataset(dataset))
+    print(
+        "[" + inspect.stack()[0][3] + "] - Data build ended, execution time: " + str(datetime.now() - startTime))
+    return dataset, classes
 
 
 def progress(count, total, suffix=''):

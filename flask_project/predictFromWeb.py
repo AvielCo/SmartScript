@@ -1,19 +1,17 @@
 import os
 import shutil
 
-import numpy as np
 import cv2
+import numpy as np
 from tensorflow.keras.models import load_model
-import tensorflow as tf
 
-from consts import PREDICT_OUTPUT_PATH, PREDICT_INPUT_PATH
-from crop import cropToPatches, cropSinglePage
+from consts import PREDICT_OUTPUT_PATH
+from crop import cropSinglePage
 from general import maintain_aspect_ratio_resize
-
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 PATCHES_PATH = "patches"
-MODEL_NAME = os.path.join(os.getcwd(), 'model.epoch=45-val_accuracy=0.96.h5')
+MODEL_NAME = os.path.join(os.getcwd(), 'BestModel.h5')
 
 CLASSES_VALUE = {"cursive": 0, "semi_square": 1, "square": 2}
 
@@ -72,14 +70,14 @@ def runPredict(folderID):
     max_val = max(summ)
     print(f"{BColors.OKGREEN}")
     if max_val == summ[0]:
-        print("Done!\nCursive: {}".format((summ[0] * 100) / len(prediction)))
+        print("Done!\nCursive: {}%".format((summ[0] * 100) / len(prediction)))
     elif max_val == summ[1]:
-        print("Done!\nSemi Square: {}".format((summ[1] * 100) / len(prediction)))
+        print("Done!\nSemi Square: {}%".format((summ[1] * 100) / len(prediction)))
     else:
-        print("Done!\nSquare: {}".format((summ[2] * 100) / len(prediction)))
+        print("Done!\nSquare: {}%".format((summ[2] * 100) / len(prediction)))
     print(f"{BColors.ENDC}")
-    shutil.rmtree(os.path.join("patches", folderID))
-    shutil.rmtree(os.path.join("raw_images", folderID))
+    # shutil.rmtree(os.path.join("patches", folderID))
+    # shutil.rmtree(os.path.join("raw_images", folderID))
 
 
 runPredict("1")

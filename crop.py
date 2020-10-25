@@ -8,9 +8,9 @@ import numpy as np
 from PIL import Image
 from PIL import UnidentifiedImageError
 
-from consts import OUTPUT_PATH, CURSIVE_INPUT_PATH, CURSIVE_OUTPUT_PATH, SQUARE_INPUT_PATH, \
-    SQUARE_OUTPUT_PATH, SEMI_SQUARE_INPUT_PATH, SEMI_SQUARE_OUTPUT_PATH, INPUT_PATH, BUFFER_PATH, PATCH_DIMENSIONS, \
-    PREDICT_OUTPUT_PATH, PREDICT_BUFFER_PATH
+from consts import OUTPUT_PATH, CURSIVE_OUTPUT_PATH, SQUARE_OUTPUT_PATH, SEMI_SQUARE_OUTPUT_PATH, INPUT_PATH, \
+    BUFFER_PATH, PATCH_DIMENSIONS, \
+    PREDICT_OUTPUT_PATH, PREDICT_BUFFER_PATH, SEMI_SQUARE, CURSIVE, SQUARE
 
 total_images_cropped = 0
 total_patches_cropped = 0
@@ -74,17 +74,19 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
         j = 0  # Index for Y axis offset
         while y2 + y_offset * j < image_height:  # End of pixels col
             bw_cropped_patch = bw_img[y1 + y_offset * j: y2 + y_offset * j,
-                            x1: x2]  # Extract the pixels of the selected patch
+                               x1: x2]  # Extract the pixels of the selected patch
             gray_cropped_patch = grayscale_img[y1 + y_offset * j: y2 + y_offset * j,
-                            x1: x2]
+                                 x1: x2]
             if shape_type is not None:
                 items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-                if items_in_folder >= 2000:
+                if shape_type == 'cursive' and items_in_folder >= 4000:
+                    return False
+                if shape_type != 'cursive' and items_in_folder >= 2000:
                     return False
                 save_location = os.path.join(OUTPUT_PATH,
                                              shape_type,  # cursive / square / semi square
                                              folder_name,  # for example AshkenaziCursive
-                                             image_name + "_" + str(i) + ".jpg"  # image_i.jpg
+                                             str(total_patches_cropped) + "_" + str(i) + ".jpg"  # image_i.jpg
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
@@ -139,7 +141,6 @@ def cropImageEdges(image_path, is_predict):
     w_c, h_c = 0.10, 0.10
     coords = (w * w_c, h * h_c, w * (1 - w_c), h * (1 - h_c))
     img = img.crop(coords)
-    img.save("aaaa.jpg")
     w, h = img.size
     ratio = h / w
     if ratio < 1:
@@ -147,11 +148,20 @@ def cropImageEdges(image_path, is_predict):
         right = (w / 2 + ((w / 2) * 0.03), 0, w, h)
         left_side = np.array(img.crop(left))
         right_side = np.array(img.crop(right))
-        cv2.imwrite(img_path_left, cv2.cvtColor(left_side, cv2.COLOR_RGB2BGR))
-        cv2.imwrite(img_path_right, cv2.cvtColor(right_side, cv2.COLOR_RGB2BGR))
+        try:
+            cv2.imwrite(img_path_left, cv2.cvtColor(left_side, cv2.COLOR_RGB2BGR))
+            cv2.imwrite(img_path_right, cv2.cvtColor(right_side, cv2.COLOR_RGB2BGR))
+        except cv2.error as e:
+            print(e)
+            return False
     else:
         np_img = np.array(img)
-        cv2.imwrite(img_path, cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR))
+        try:
+            cv2.imwrite(img_path, cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR))
+        except cv2.error as e:
+            print(e)
+            return False
+    return True
 
 
 def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=False):
@@ -171,7 +181,9 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
         shape_type = path.split('\\')[-1]
         full_img_path = os.path.join(path, folder_name, image_name)
     t = True
-    cropImageEdges(full_img_path, is_predict)
+    if not cropImageEdges(full_img_path, is_predict):
+        os.remove(full_img_path)
+        return t
     for _, _, files in os.walk(buffer_path):
         i = 0
         for file in files:
@@ -184,13 +196,14 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
                 image_name_no_extension = image_name_no_extension + "_right"
             dims = grayscale_img.shape
             h, w = dims[0], dims[1]
-            bw_img = RGBtoBW(grayscale_img) # Open pic in BW
+            bw_img = RGBtoBW(grayscale_img)  # Open pic in BW
             t = cropToPatches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
             i += 1
+            if not t:
+                return t
             print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
     if folder_name != 'AshkenaziSquare' and not is_predict:
-        pass
-        # os.remove(full_img_path)
+        os.remove(full_img_path)
     return t
 
 
@@ -209,7 +222,7 @@ def cropFiles(images_input, folder_name: str, path: str):
             return
 
 
-def runThreads(input_path: str, folder_name: str):
+def runThreads(input_path: str, folder_name: str, type_):
     """
     This function creates output folders and runs threads on each chunk of patches.
 
@@ -226,11 +239,11 @@ def runThreads(input_path: str, folder_name: str):
         return
 
     output_path = ""
-    if input_path == CURSIVE_INPUT_PATH:
+    if type_ == CURSIVE:
         output_path = os.path.join(CURSIVE_OUTPUT_PATH, folder_name)
-    elif input_path == SQUARE_INPUT_PATH:
+    elif type_ == SQUARE:
         output_path = os.path.join(SQUARE_OUTPUT_PATH, folder_name)
-    elif input_path == SEMI_SQUARE_INPUT_PATH:
+    elif type_ == SEMI_SQUARE:
         output_path = os.path.join(SEMI_SQUARE_OUTPUT_PATH, folder_name)
 
     if not os.path.exists(output_path):
@@ -239,7 +252,7 @@ def runThreads(input_path: str, folder_name: str):
     cropFiles(images_input, folder_name, input_path)
 
 
-def preProcessingMain():
+def preProcessingMain(input_dir):
     """
     This function loads the folder names from the input folder and executes the crop algorithm on each name, with its
      crop dimensions.
@@ -247,9 +260,9 @@ def preProcessingMain():
     folders_names = []
     try:
         # Folders name from input folder (e.g. "AshkenaziCursive", "BizantyCursive"...)
-        folders_names.insert(0, CURSIVE_INPUT_PATH)
-        folders_names.insert(1, SQUARE_INPUT_PATH)
-        folders_names.insert(2, SEMI_SQUARE_INPUT_PATH)
+        folders_names.insert(0, os.path.join(input_dir, CURSIVE))
+        folders_names.insert(1, os.path.join(input_dir, SQUARE))
+        folders_names.insert(2, os.path.join(input_dir, SEMI_SQUARE))
     except FileNotFoundError:
         logging.error("[{}] - Input file '{}' not found.".format(inspect.stack()[0][3], INPUT_PATH))
         return  # The script can't run without input
@@ -257,19 +270,11 @@ def preProcessingMain():
         for subdir, dirs, files in os.walk(input_path):
             for cur_dir in dirs:
                 print("[{}] - Start cropping the folder {}.".format(inspect.stack()[0][3], subdir))
-                runThreads(subdir, cur_dir)
+                runThreads(subdir, cur_dir, input_path.split('\\')[-1])
                 print("[{}] - Done cropping {}".format(inspect.stack()[0][3], subdir))
 
 
 def createFolders():
-    # CREATE INPUT PATHS
-    if not os.path.exists(CURSIVE_INPUT_PATH):
-        os.makedirs(CURSIVE_INPUT_PATH)
-    if not os.path.exists(SQUARE_INPUT_PATH):
-        os.makedirs(SQUARE_INPUT_PATH)
-    if not os.path.exists(SEMI_SQUARE_INPUT_PATH):
-        os.makedirs(SEMI_SQUARE_INPUT_PATH)
-
     # CREATE OUTPUT PATHS
     if not os.path.exists(CURSIVE_OUTPUT_PATH):
         os.makedirs(CURSIVE_OUTPUT_PATH)
@@ -282,20 +287,16 @@ def createFolders():
         os.makedirs(BUFFER_PATH)
 
 
-def main():
+def main(input_dir):
     """
     Main function with execution time logging.
     """
     start_time = datetime.now()
     print("[{}] - Crop Script started".format(inspect.stack()[0][3]))
     createFolders()
-    preProcessingMain()
+    preProcessingMain(input_dir)
     print(
         "[{}] - Crop Script ended, execution time: {}".format(inspect.stack()[0][3], str(datetime.now() - start_time)))
     print(
         "[{}] - {} Images have been cropped into {} Patches.".format(inspect.stack()[0][3], str(total_images_cropped),
                                                                      str(total_patches_cropped)))
-
-
-if __name__ == "__main__":
-    main()
