@@ -1,11 +1,8 @@
 import inspect
 import logging
-import os
 from datetime import datetime
 
-from scipy import ndimage
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from PIL import UnidentifiedImageError
@@ -52,7 +49,7 @@ def isGoodPatch(cropped_patch):
 
 def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, folder_name, shape_type):
     """
-    This function takes a page, crops it into patches of 300X200 pixels and saves them in output folder.
+    This function takes a page, crops it into patches of 400x400 pixels and saves them in output folder.
 
     Parameters:
     image (list): List of pixels represented the RBG of the image.
@@ -66,7 +63,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     x1 = y1 = 0
     x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 500X500)
     x_offset, y_offset = PATCH_DIMENSIONS["xOffset"], PATCH_DIMENSIONS[
-        "yOffset"]  # The offset of the patch (defined as 1/3 the size of the patch)
+        "yOffset"]  # The offset of the patch (defined as 1/2 the size of the patch)
     save_location = str
     i = 1  # Index for naming each patch
     while x2 < image_width:  # End of pixels row
@@ -107,24 +104,15 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
 
 
 def RGBtoBW(img):
-    # img = cv2.GaussianBlur(img, (5, 5), 0)
+    '''
+    turn rgb image to black and white using thresh hold.
+    Args:
+        img: an image to crop to patches.
+    Returns: image that has been processed
+    '''
     img = cv2.medianBlur(img, 13)
-    # img = ndimage.filters.minimum_filter(img, 4)
     img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-    # th3 = cv2.medianBlur(th3, 7)
-
-    # _, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    # cv2.imwrite("b.jpg", img)
-
-    # f, axarr = plt.subplots(1,2)
-    # axarr[0].imshow(th3, cmap='gray')
-    # axarr[1].imshow(img, cmap='gray')
-    #
-    # plt.show()
-
     return img
-
-
 
 
 def cropImageEdges(image_path, is_predict):
@@ -158,7 +146,7 @@ def cropImageEdges(image_path, is_predict):
     img = img.crop(coords)
     w, h = img.size
     ratio = h / w
-    if ratio < 1:
+    if ratio < 1:  # page has 2 sides, so we have to divide them into 2 files, each has its own page
         left = (0, 0, w / 2 - ((w / 2) * 0.03), h)
         right = (w / 2 + ((w / 2) * 0.03), 0, w, h)
         left_side = np.array(img.crop(left))
@@ -169,7 +157,7 @@ def cropImageEdges(image_path, is_predict):
         except cv2.error as e:
             print(e)
             return False
-    else:
+    else:  # page has only 1 side
         np_img = np.array(img)
         try:
             cv2.imwrite(img_path, cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR))
@@ -217,7 +205,7 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
             if not t:
                 return t
             print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
-    if folder_name != 'AshkenaziSquare' and not is_predict:
+    if not is_predict:
         os.remove(full_img_path)
     return t
 

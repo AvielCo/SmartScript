@@ -48,3 +48,6 @@ CHECKPOINT_PATH_BEST = os.path.join(PROJECT_DIR, 'BestModel.h5')
 LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
 
 PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 200, "yOffset": 200}
+
+TRAIN_PERCENT = 0.7
+TEST_PERCENT = 1 - TRAIN_PERCENT
