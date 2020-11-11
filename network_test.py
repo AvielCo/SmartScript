@@ -3,11 +3,14 @@ import os
 import sys
 from datetime import datetime
 
+import cv2
 import numpy as np
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
 from general import buildData
+from sklearn.metrics import classification_report, confusion_matrix
+
 
 # Create model
 print('Loading model...')
@@ -19,13 +22,13 @@ else:
 
 start_time = datetime.now()
 # Cache flag from command line
-df1, y1 = buildData('input_test', False)  # True = Starting crop process
+df1, y1 = buildData('input', True)  # True = Starting crop process
 print("Converting data to Numpy array")
 saved_time = datetime.now()
 df = np.asarray(df1)
 print("Done, took: {}".format(datetime.now() - saved_time))
 print("Calling Garbage Collector")
-del df1
+# del df1
 gc.collect()
 print("Done")
 print("Reshaping Grayscale data for Conv2D dimesions")
@@ -33,7 +36,7 @@ df = df.reshape((df.shape[0], df.shape[1], df.shape[2], 1))
 print("Done")
 print("Converting Y to categorical matrix")
 saved_time = datetime.now()
-y = to_categorical(y1)
+y_true = to_categorical(y1)
 print("Done, took: {}".format(datetime.now() - saved_time))
 print("Calling Garbage Collector")
 del y1
@@ -42,11 +45,24 @@ print("Done")
 
 saved_time = datetime.now()
 
+Y_pred = model.predict(x=df, batch_size=128, verbose=1)
 
-scores = model.evaluate(x=df,
-                        y=y,
-                        verbose=1,
-                        batch_size=128)
+y_pred = np.argmax(Y_pred, axis=1)
+y_true = np.argmax(y_true, axis=1)
 
-print("Test score: {}%\nTook: {}".format(str(scores[1] * 100), datetime.now() - saved_time))
+j = 0
+for i in range(len(y_true)):
+    if y_pred[i] != y_true[i]:
+        cv2.imwrite(
+            os.path.join(os.getcwd(), "bad_patches", "{}_true={}_pred={}.jpg".format(str(j), y_true[i], y_pred[i])),
+            df1[i])
+        j += 1
+
+a = confusion_matrix(y_true, y_pred)
+
+print(a)
+
+b = classification_report(y_true, y_pred, labels=[0, 1, 2])
+print(b)
+print("Took: {}".format(datetime.now() - start_time))
 # shutil.rmtree(os.path.join(crop.OUTPUT_PATH))

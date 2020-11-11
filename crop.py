@@ -3,14 +3,14 @@ import logging
 import os
 from datetime import datetime
 
+from scipy import ndimage
 import cv2
+import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from PIL import UnidentifiedImageError
 
-from consts import OUTPUT_PATH, CURSIVE_OUTPUT_PATH, SQUARE_OUTPUT_PATH, SEMI_SQUARE_OUTPUT_PATH, INPUT_PATH, \
-    BUFFER_PATH, PATCH_DIMENSIONS, \
-    PREDICT_OUTPUT_PATH, PREDICT_BUFFER_PATH, SEMI_SQUARE, CURSIVE, SQUARE
+from consts import *
 
 total_images_cropped = 0
 total_patches_cropped = 0
@@ -38,8 +38,7 @@ def countPixels(img):
 def isGoodPatch(cropped_patch):
     black_pixels_avg = countPixels(cropped_patch)
     delta_black = 0.25
-    delta_white = 0.05
-    sub: float
+    delta_white = 0.10
     count = 0
     for i in range(len(black_pixels_avg)):
         if black_pixels_avg[i] < delta_white:
@@ -108,8 +107,24 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
 
 
 def RGBtoBW(img):
-    _, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    return thresh
+    # img = cv2.GaussianBlur(img, (5, 5), 0)
+    img = cv2.medianBlur(img, 13)
+    # img = ndimage.filters.minimum_filter(img, 4)
+    img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+    # th3 = cv2.medianBlur(th3, 7)
+
+    # _, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # cv2.imwrite("b.jpg", img)
+
+    # f, axarr = plt.subplots(1,2)
+    # axarr[0].imshow(th3, cmap='gray')
+    # axarr[1].imshow(img, cmap='gray')
+    #
+    # plt.show()
+
+    return img
+
+
 
 
 def cropImageEdges(image_path, is_predict):
@@ -261,8 +276,8 @@ def preProcessingMain(input_dir):
     try:
         # Folders name from input folder (e.g. "AshkenaziCursive", "BizantyCursive"...)
         folders_names.insert(0, os.path.join(input_dir, CURSIVE))
-        folders_names.insert(1, os.path.join(input_dir, SQUARE))
-        folders_names.insert(2, os.path.join(input_dir, SEMI_SQUARE))
+        folders_names.insert(1, os.path.join(input_dir, SEMI_SQUARE))
+        folders_names.insert(2, os.path.join(input_dir, SQUARE))
     except FileNotFoundError:
         logging.error("[{}] - Input file '{}' not found.".format(inspect.stack()[0][3], INPUT_PATH))
         return  # The script can't run without input
