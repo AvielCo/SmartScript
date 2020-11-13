@@ -58,6 +58,11 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     imageHeight (int): The height (Y axis) of the image.
     folderName (str): The name of the output folder.
     """
+    items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
+    if shape_type == 'cursive' and items_in_folder >= 4000:
+        return False
+    if shape_type != 'cursive' and items_in_folder >= 2000:
+        return False
     global total_images_cropped
     global total_patches_cropped
     x1 = y1 = 0
@@ -74,11 +79,6 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
             gray_cropped_patch = grayscale_img[y1 + y_offset * j: y2 + y_offset * j,
                                  x1: x2]
             if shape_type is not None:
-                items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-                if shape_type == 'cursive' and items_in_folder >= 4000:
-                    return False
-                if shape_type != 'cursive' and items_in_folder >= 2000:
-                    return False
                 save_location = os.path.join(OUTPUT_PATH,
                                              shape_type,  # cursive / square / semi square
                                              folder_name,  # for example AshkenaziCursive
@@ -99,7 +99,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
         x2 += x_offset
 
     total_images_cropped += 1
-    print("Successfully cropped to patches {0} in {1}, with shape: {2}".format(image_name, save_location, shape_type))
+    print(f"Successfully cropped to patches {image_name} in {save_location}, with shape: {shape_type}")
     return True
 
 
@@ -112,6 +112,7 @@ def RGBtoBW(img):
     '''
     img = cv2.medianBlur(img, 13)
     img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
     return img
 
 
@@ -204,7 +205,7 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
             i += 1
             if not t:
                 return t
-            print("[{}] - Image {} Cropped successfully.".format(inspect.stack()[0][3], image_name_no_extension))
+            print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
     if not is_predict:
         os.remove(full_img_path)
     return t
@@ -238,7 +239,7 @@ def runThreads(input_path: str, folder_name: str, type_):
         for img in images_input:
             "".join(img.split())
     except FileNotFoundError:
-        print("[{}] - Input file '{}' not found.".format(inspect.stack()[0][3], input_path))
+        print(f"[{inspect.stack()[0][3]}] - Input file '{input_path}' not found.")
         return
 
     output_path = ""
@@ -263,18 +264,21 @@ def preProcessingMain(input_dir):
     folders_names = []
     try:
         # Folders name from input folder (e.g. "AshkenaziCursive", "BizantyCursive"...)
-        folders_names.insert(0, os.path.join(input_dir, CURSIVE))
-        folders_names.insert(1, os.path.join(input_dir, SEMI_SQUARE))
-        folders_names.insert(2, os.path.join(input_dir, SQUARE))
+        for dirr in os.listdir(input_dir):
+            folders_names.append(os.path.join(input_dir, dirr))
+
     except FileNotFoundError:
-        logging.error("[{}] - Input file '{}' not found.".format(inspect.stack()[0][3], INPUT_PATH))
+        logging.error(f"[{inspect.stack()[0][3]}] - Input file '{INPUT_PATH}' not found.")
         return  # The script can't run without input
     for input_path in folders_names:
         for subdir, dirs, files in os.walk(input_path):
-            for cur_dir in dirs:
-                print("[{}] - Start cropping the folder {}.".format(inspect.stack()[0][3], subdir))
-                runThreads(subdir, cur_dir, input_path.split('\\')[-1])
-                print("[{}] - Done cropping {}".format(inspect.stack()[0][3], subdir))
+            if files:  # folder doesn't contains folder(s) => is internal folder (eg: Ashkenazi, Byzantine, Italian...)
+                pass
+            else:
+                for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
+                    print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
+                    runThreads(subdir, cur_dir, input_path.split('\\')[-1])
+                    print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
 
 
 def createFolders():
@@ -295,11 +299,9 @@ def main(input_dir):
     Main function with execution time logging.
     """
     start_time = datetime.now()
-    print("[{}] - Crop Script started".format(inspect.stack()[0][3]))
+    print(f"[{inspect.stack()[0][3]}] - Crop Script started")
     createFolders()
     preProcessingMain(input_dir)
+    print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     print(
-        "[{}] - Crop Script ended, execution time: {}".format(inspect.stack()[0][3], str(datetime.now() - start_time)))
-    print(
-        "[{}] - {} Images have been cropped into {} Patches.".format(inspect.stack()[0][3], str(total_images_cropped),
-                                                                     str(total_patches_cropped)))
+        f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")

@@ -38,7 +38,7 @@ df1, y1 = buildData('input', runCrop)  # True = Starting crop process
 print("Converting data to Numpy array")
 saved_time = datetime.now()
 df = np.asarray(df1)
-print("Done, took: {}".format(datetime.now() - saved_time))
+print(f"Done, took: {datetime.now() - saved_time}")
 print("Calling Garbage Collector")
 del df1
 gc.collect()
@@ -49,7 +49,7 @@ print("Done")
 print("Converting Y to categorical matrix")
 saved_time = datetime.now()
 y = to_categorical(y1)
-print("Done, took: {}".format(datetime.now() - saved_time))
+print(f"Done, took: {str(datetime.now() - saved_time)}")
 print("Calling Garbage Collector")
 del y1
 gc.collect()
@@ -58,7 +58,7 @@ print("Splitting data into train and test")
 saved_time = datetime.now()
 X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=TEST_PERCENT, random_state=42)
 inputShape = (df.shape[1], df.shape[2], df.shape[3])
-print("Done, took: {}".format(datetime.now() - saved_time))
+print(f"Done, took: {str(datetime.now() - saved_time)}")
 print("Calling Garbage Collector")
 del y
 del df
@@ -99,6 +99,6 @@ model.fit(X_train, y_train,
           batch_size=BATCH_SIZE,
           callbacks=callbacks)
 
-print("Done training.\nThe process took: {}".format(str(datetime.now() - start_time)))
+print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}")
 shutil.rmtree(os.path.join(crop.OUTPUT_PATH))
-print("Done training in loop. Time took to train: {} ".format(str(datetime.now() - prog_init_start_time)))
+print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")

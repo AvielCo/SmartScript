@@ -66,6 +66,9 @@ def crop_images(input_dir, avg_height):
                         i = cv2.imread(img_path)
                     print(f"\nimage: {img_path}")
                     h, w, _ = i.shape
+                    if h == avg_height:
+                        total_images += 1
+                        continue
                     ratio = h / w
                     print(f"old height: {h}, old width: {w}, ratio: {ratio}")
 
@@ -81,4 +84,4 @@ def crop_images(input_dir, avg_height):
                     total_images += 1
 
 
-crop_images("input_test", 4727)
+crop_images("input", 4727)

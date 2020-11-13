@@ -5,12 +5,11 @@ from datetime import datetime
 
 import cv2
 import numpy as np
+from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
 from general import buildData
-from sklearn.metrics import classification_report, confusion_matrix
-
 
 # Create model
 print('Loading model...')
@@ -26,7 +25,7 @@ df1, y1 = buildData('input', True)  # True = Starting crop process
 print("Converting data to Numpy array")
 saved_time = datetime.now()
 df = np.asarray(df1)
-print("Done, took: {}".format(datetime.now() - saved_time))
+print(f"Done, took: {str(datetime.now() - saved_time)}")
 print("Calling Garbage Collector")
 # del df1
 gc.collect()
@@ -37,7 +36,7 @@ print("Done")
 print("Converting Y to categorical matrix")
 saved_time = datetime.now()
 y_true = to_categorical(y1)
-print("Done, took: {}".format(datetime.now() - saved_time))
+print(f"Done, took: {str(datetime.now() - saved_time)}")
 print("Calling Garbage Collector")
 del y1
 gc.collect()
@@ -54,8 +53,7 @@ j = 0
 for i in range(len(y_true)):
     if y_pred[i] != y_true[i]:
         cv2.imwrite(
-            os.path.join(os.getcwd(), "bad_patches", "{}_true={}_pred={}.jpg".format(str(j), y_true[i], y_pred[i])),
-            df1[i])
+            os.path.join(os.getcwd(), "bad_patches", f"{str(j)}_true={y_true[i]}_pred={y_pred[i]}.jpg", df1[i]))
         j += 1
 
 a = confusion_matrix(y_true, y_pred)
@@ -64,5 +62,5 @@ print(a)
 
 b = classification_report(y_true, y_pred, labels=[0, 1, 2])
 print(b)
-print("Took: {}".format(datetime.now() - start_time))
+print(f"Took: {str(datetime.now() - start_time)}")
 # shutil.rmtree(os.path.join(crop.OUTPUT_PATH))

@@ -55,11 +55,11 @@ def loadPatchesFromPath(path: str, runCrop):
     try:
         classes = os.listdir(path)
     except FileNotFoundError:
-        crop.logging.error("[" + inspect.stack()[0][3] + "] - Output file '" + path + "' not found.")
+        print(f"[{inspect.stack()[0][3]}] - Output file {path} not found.")
         return
     for c in classes:
         patches = os.listdir(os.path.join(path, c))
-        print("Collecting patches from {}".format(os.path.join(path, c)))
+        print(f"Collecting patches from {os.path.join(path, c)}")
         for i, patch in enumerate(patches):
             # if not runCrop:
             #    os.rename(os.path.join(path, c, patch), os.path.join(path, c, str(patches_count) + '.jpg'))
@@ -70,7 +70,7 @@ def loadPatchesFromPath(path: str, runCrop):
 
             dataset.append(tuple((img, CLASSES_VALUE[shape_type])))
             patches_count += 1
-    print('collected dataset: of {}'.format(shape_type))
+    print(f"collected dataset: of {shape_type}")
     return dataset
 
 
@@ -85,25 +85,24 @@ def buildData(input_dir, runCrop=False):
     tuple: a tuple where tuple[0] is a list of the data and tuple[1] is the classes of the data.
     """
     startTime = datetime.now()
-    print("[" + inspect.stack()[0][3] + "] - Starting to build the data for the Neural Network.")
+    print(f"[{inspect.stack()[0][3]}] - Start building data for the Neural Network.")
     if runCrop:
         crop.main(input_dir)  # PreProcessing run
     try:
         outputFolders = os.listdir(crop.OUTPUT_PATH)
     except FileNotFoundError:
-        crop.logging.error("[" + inspect.stack()[0][3] + "] - Output file '" + str(crop.OUTPUT_PATH) + "' not found.")
+        print(f"[{inspect.stack()[0][3]}] - Output file {str(crop.OUTPUT_PATH)} not found.")
         exit(1)
 
     dataset = []
     for name in outputFolders:
-        print("[" + inspect.stack()[0][3] + "] - Loading patches from " + name + " Folder.")
+        print(f"[{inspect.stack()[0][3]}] - Loading patches from {name} Folder.")
         dataset += loadPatchesFromPath(
             os.path.join(crop.OUTPUT_PATH, name), runCrop)  # Append the patches list from each output folder
-        print("[" + inspect.stack()[0][3] + "] - Finished loading from " + name + " Folder.")
+        print(f"[{inspect.stack()[0][3]}] - Finished loading from {name} Folder.")
     # Dataset is X, classes (labels) are Y
     dataset, classes = splitDataset(shuffleDataset(dataset))
-    print(
-        "[" + inspect.stack()[0][3] + "] - Data build ended, execution time: " + str(datetime.now() - startTime))
+    print(f"[{inspect.stack()[0][3]}] - Data build ended, execution time: {str(datetime.now() - startTime)}")
     return dataset, classes
 
 
@@ -154,4 +153,4 @@ def maintain_aspect_ratio_resize(image, width=None, height=None, inter=cv2.INTER
 
 def curr_time():
     curr_time = datetime.now()
-    return str(curr_time.date()) + '-' + str(curr_time.hour) + '.' + str(curr_time.minute)
+    return f"{str(curr_time.date())}-{str(curr_time.hour)}.{str(curr_time.minute)}"

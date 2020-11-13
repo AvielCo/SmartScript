@@ -51,6 +51,10 @@ def AlexNet_architecture(input_shape):
         Dense(4096, activation='relu'),
         # Add Dropout
         Dropout(0.5),
+        Dense(3000, activation='relu'),
+        Dropout(0.5),
+        Dense(2000, activation='relu'),
+        Dropout(0.5),
         # 3rd Fully Connected Layer
         Dense(1000, activation='relu'),
         # Add Dropout
@@ -81,3 +85,6 @@ def default_model_architecture(input_shape):
         Dense(units=32, activation='relu'),
         Dense(units=3, activation="softmax"),
     ])
+
+# m = AlexNet_architecture((227, 227, 1))
+# m.summary(print_fn=print)
