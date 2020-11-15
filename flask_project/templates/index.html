@@ -1,8 +1,8 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block body %}
 
-<div class= "jumbotron text-center">
+<div class="jumbotron text-center">
     <h1>Welcome to Hebrew Manuscripts Classifier</h1>
     <p class="lead">This classifier application can classify between historical hebrew manuscripts</p>
     {% if session.logged_in == NULL %}

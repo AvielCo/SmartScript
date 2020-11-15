@@ -1,12 +1,12 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block body %}
-  <h1>Verification Token</h1>
-  <form action="verify2FA" method="POST">
+<h1>Verification Token</h1>
+<form action="verify2FA" method="POST">
     <div class="form-group">
-      <label>Insert token</label>
-      <input type="text" name="token" class="form-control" value="">
+        <label>Insert token</label>
+        <input type="text" name="token" class="form-control" value="">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+</form>
 {% endblock %}

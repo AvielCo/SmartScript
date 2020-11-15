@@ -8,14 +8,14 @@ from tensorflow.python.keras.layers import AveragePooling2D
 
 def LeNet_5_architecture(input_shape):
     m = Sequential([
-        Conv2D(6, kernel_size=5, strides=1, activation='tanh', input_shape=input_shape, padding='same'),  # C1
+        Conv2D(6, kernel_size=5, strides=1, activation="tanh", input_shape=input_shape, padding="same"),  # C1
         AveragePooling2D(),  # S2
-        Conv2D(16, kernel_size=5, strides=1, activation='tanh', padding='valid'),  # C3
+        Conv2D(16, kernel_size=5, strides=1, activation="tanh", padding="valid"),  # C3
         AveragePooling2D(),  # S4
         Flatten(),  # Flatten
-        Dense(120, activation='tanh'),  # C5
-        Dense(84, activation='tanh'),  # F6
-        Dense(3, activation='softmax')  # Output layer
+        Dense(120, activation="tanh"),  # C5
+        Dense(84, activation="tanh"),  # F6
+        Dense(3, activation="softmax")  # Output layer
     ])
     m.compile(loss=categorical_crossentropy,
               optimizer=optimizers.Adam(lr=0.00002),
@@ -25,66 +25,73 @@ def LeNet_5_architecture(input_shape):
 
 def AlexNet_architecture(input_shape):
     m = Sequential([
-        Conv2D(filters=96, input_shape=input_shape, activation='relu', kernel_size=(11, 11), strides=(4, 4),
-               padding='valid'),
+        Conv2D(filters=96, input_shape=input_shape, activation="relu", kernel_size=(11, 11), strides=(4, 4),
+               padding="valid"),
         # Max Pooling
-        MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='valid'),
+        MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"),
         # 2nd Convolutional Layer
-        Conv2D(filters=256, kernel_size=(11, 11), activation='relu', strides=(1, 1), padding='valid'),
+        Conv2D(filters=256, kernel_size=(11, 11), activation="relu", strides=(1, 1), padding="valid"),
         # Max Pooling
-        MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='valid'),
+        MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"),
         # 3rd Convolutional Layer
-        Conv2D(filters=384, kernel_size=(3, 3), activation='relu', strides=(1, 1), padding='valid'),
+        Conv2D(filters=384, kernel_size=(3, 3), activation="relu", strides=(1, 1), padding="valid"),
         # 4th Convolutional Layer
-        Conv2D(filters=384, kernel_size=(3, 3), activation='relu', strides=(1, 1), padding='valid'),
+        Conv2D(filters=384, kernel_size=(3, 3), activation="relu", strides=(1, 1), padding="valid"),
         # 5th Convolutional Layer
-        Conv2D(filters=256, kernel_size=(3, 3), activation='relu', strides=(1, 1), padding='valid'),
+        Conv2D(filters=256, kernel_size=(3, 3), activation="relu", strides=(1, 1), padding="valid"),
         # Max Pooling
-        MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding='valid'),
+        MaxPooling2D(pool_size=(2, 2), strides=(2, 2), padding="valid"),
         # Passing it to a Fully Connected layer
         Flatten(),
         # 1st Fully Connected Layer
-        Dense(4096, activation='relu'),
+        Dense(4096, activation="relu"),
         # Add Dropout to prevent overfitting
         Dropout(0.5),
         # 2nd Fully Connected Layer
-        Dense(4096, activation='relu'),
+        Dense(4096, activation="relu"),
         # Add Dropout
         Dropout(0.5),
-        Dense(3000, activation='relu'),
+        Dense(3000, activation="relu"),
         Dropout(0.5),
-        Dense(2000, activation='relu'),
+        Dense(2000, activation="relu"),
         Dropout(0.5),
         # 3rd Fully Connected Layer
-        Dense(1000, activation='relu'),
+        Dense(1000, activation="relu"),
         # Add Dropout
         Dropout(0.5),
         # Output Layer
-        Dense(3, activation='softmax')
-    ], 'AlexNet')
+        Dense(3, activation="softmax")
+    ], "AlexNet")
     m.compile(loss=categorical_crossentropy,
               optimizer=optimizers.SGD(learning_rate=0.0001),
-              metrics=['accuracy'])
+              metrics=["accuracy"])
     return m
 
 
 def default_model_architecture(input_shape):
-    return Sequential([
+    m = Sequential([
         Conv2D(64, (3, 3), activation="sigmoid", input_shape=input_shape),
         MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="sigmoid"),
+        Conv2D(32, (3, 3), activation="sigmoid"),
         MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="sigmoid"),
+        Conv2D(32, (3, 3), activation="sigmoid"),
         MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="relu"),
+        Conv2D(16, (3, 3), activation="relu"),
         MaxPooling2D(pool_size=(2, 2)),
         Flatten(),
-        Dense(units=128, activation='relu'),
-        Dense(units=128, activation='relu'),
-        Dense(units=64, activation='relu'),
-        Dense(units=32, activation='relu'),
+        Dense(units=128, activation="relu"),
+        Dense(units=64, activation="relu"),
+        Dense(units=16, activation="relu"),
+        Dense(units=16, activation="relu"),
         Dense(units=3, activation="softmax"),
-    ])
+    ], "default")
 
-# m = AlexNet_architecture((227, 227, 1))
-# m.summary(print_fn=print)
+    m.compile(loss=categorical_crossentropy,
+              optimizer=optimizers.SGD(learning_rate=0.0001),
+              metrics=["accuracy"])
+
+    return m
+
+
+m = default_model_architecture((200, 200, 1))
+m.summary(print_fn=print)

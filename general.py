@@ -7,7 +7,7 @@ from datetime import datetime
 import cv2
 
 import crop
-from consts import CLASSES_VALUE
+from consts import CLASSES_VALUE_MAIN_MODEL
 
 
 def shuffleDataset(dataset: list):
@@ -51,7 +51,7 @@ def loadPatchesFromPath(path: str, runCrop):
     """
     dataset = []
     patches_count = 0  # For logging
-    shape_type = path.split('\\')[-1]
+    shape_type = path.split("\\")[-1]
     try:
         classes = os.listdir(path)
     except FileNotFoundError:
@@ -62,19 +62,19 @@ def loadPatchesFromPath(path: str, runCrop):
         print(f"Collecting patches from {os.path.join(path, c)}")
         for i, patch in enumerate(patches):
             # if not runCrop:
-            #    os.rename(os.path.join(path, c, patch), os.path.join(path, c, str(patches_count) + '.jpg'))
-            #    img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, str(patches_count) + '.jpg'), 0), 227, 227)
+            #    os.rename(os.path.join(path, c, patch), os.path.join(path, c, str(patches_count) + ".jpg"))
+            #    img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, str(patches_count) + ".jpg"), 0), 227, 227)
             # else:
-            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 227, 227)
+            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 200, 200)
             progress(i + 1, len(patches))
 
-            dataset.append(tuple((img, CLASSES_VALUE[shape_type])))
+            dataset.append(tuple((img, CLASSES_VALUE_MAIN_MODEL[shape_type])))
             patches_count += 1
     print(f"collected dataset: of {shape_type}")
     return dataset
 
 
-def buildData(input_dir, runCrop=False):
+def buildData(input_dir, dirr, runCrop=False):
     """
     This function builds the data from the output folders.
 
@@ -89,7 +89,7 @@ def buildData(input_dir, runCrop=False):
     if runCrop:
         crop.main(input_dir)  # PreProcessing run
     try:
-        outputFolders = os.listdir(crop.OUTPUT_PATH)
+        outputFolders = os.listdir(dirr)
     except FileNotFoundError:
         print(f"[{inspect.stack()[0][3]}] - Output file {str(crop.OUTPUT_PATH)} not found.")
         exit(1)
@@ -98,7 +98,7 @@ def buildData(input_dir, runCrop=False):
     for name in outputFolders:
         print(f"[{inspect.stack()[0][3]}] - Loading patches from {name} Folder.")
         dataset += loadPatchesFromPath(
-            os.path.join(crop.OUTPUT_PATH, name), runCrop)  # Append the patches list from each output folder
+            os.path.join(dirr, name), runCrop)  # Append the patches list from each output folder
         print(f"[{inspect.stack()[0][3]}] - Finished loading from {name} Folder.")
     # Dataset is X, classes (labels) are Y
     dataset, classes = splitDataset(shuffleDataset(dataset))
@@ -106,13 +106,13 @@ def buildData(input_dir, runCrop=False):
     return dataset, classes
 
 
-def progress(count, total, suffix=''):
+def progress(count, total, suffix=""):
     """
     Showing progress bar on loops
     Args:
         count: current iteration
         total: total iterations
-        suffix: ''
+        suffix: ""
 
     Returns: None
     """
@@ -121,9 +121,9 @@ def progress(count, total, suffix=''):
     filled_len = int(round(bar_len * count / float(total)))
 
     percents = round(100.0 * count / float(total), 1)
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+    bar = "=" * filled_len + "-" * (bar_len - filled_len)
 
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
+    sys.stdout.write("[%s] %s%s ...%s\r" % (bar, percents, "%", suffix))
     sys.stdout.flush()  # As suggested by Rom Ruben
 
 

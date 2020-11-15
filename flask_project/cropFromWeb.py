@@ -1,9 +1,8 @@
-import os
 import logging
-import concurrent.futures
-from datetime import datetime, timedelta
+import os
+from datetime import datetime
+
 from cv2 import cv2
-import subprocess
 
 # Global variables
 numOfImagesCropped = 0
@@ -26,8 +25,8 @@ SQUARE_INPUT_PATH = os.path.join(INPUT_PATH, SQUARE)
 CURSIVE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, CURSIVE)
 SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
 SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
-BUFFER_PATH = os.path.join(PROJECT_DIR, 'buffer')
-BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, 'buffer_img.jpg')
+BUFFER_PATH = os.path.join(PROJECT_DIR, "buffer")
+BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, "buffer_img.jpg")
 
 # Page details
 
@@ -40,7 +39,7 @@ def cropSinglePage(imageName: str, folderName: str):
     img = cv2.imread(os.path.join(inputFolder, folderName, imageName), cv2.IMREAD_GRAYSCALE)
     originalName = imageName
     croppedImage = cv2.resize(img, (RESIZE_UNITS["width"], RESIZE_UNITS["height"]))
-    saveName = os.path.splitext(imageName)[0]  # Get the name of the image without the extension (e.g. without '.jpg')
+    saveName = os.path.splitext(imageName)[0]  # Get the name of the image without the extension (e.g. without ".jpg")
     cropToPatches(croppedImage, saveName, RESIZE_UNITS["width"], RESIZE_UNITS["height"], folderName)
     global numOfImagesCropped
     numOfImagesCropped += 1
@@ -58,7 +57,7 @@ def runThreads(folderName: str):
     try:
         imagesInput = os.listdir(path)
     except FileNotFoundError:
-        logging.error("Input file '" + path + "' not found.")
+        logging.error("Input file "" + path + "" not found.")
         return
     if not os.path.exists(outputFolder):
         os.mkdir(outputFolder)
@@ -94,7 +93,7 @@ def preProcessingMain(folderID):
     try:
         folderName = os.path.join(inputFolder, folderID)
     except FileNotFoundError:
-        logging.error("Input file '" + os.path.join(inputFolder, folderID) + "' not found.")
+        logging.error("Input file "" + os.path.join(inputFolder, folderID) + "" not found.")
         return
     print("Start cropping the folder " + folderName + ".")
     runThreads(folderName)

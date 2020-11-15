@@ -1,6 +1,5 @@
 .vscode/
-output/
-output/*
+
 logger.log
 .idea/
 patches_output/

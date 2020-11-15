@@ -2,7 +2,7 @@
   <div class="container">
     <div class="navbar-header">
       <a href="/">
-        <img src="{{url_for('static', filename='logo.png')}}" alt="logo" width=50 height=40 />
+          <img src="{{url_for(" static", filename="logo.png")}}" alt="logo" width=50 height=40 />
       </a>
       <a class="navbar-brand" href="/">Classifier</a>
     </div>
@@ -15,7 +15,7 @@
       <ul class="navbar-nav navbar-right">
         {% if session.logged_in %}
           <li class="nav-item"><a class="nav-link" href="/upload">Upload</a></li>
-          <li class="nav-item"><a class="nav-link" href="/profile">{{ session['username'] }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="/profile">{{ session["username"] }}</a></li>
           <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
         {% else %}
           <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>

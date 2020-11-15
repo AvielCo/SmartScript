@@ -1,5 +1,4 @@
 import os
-import shutil
 
 import cv2
 import numpy as np
@@ -9,22 +8,22 @@ from consts import PREDICT_OUTPUT_PATH
 from crop import cropSinglePage
 from general import maintain_aspect_ratio_resize
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 PATCHES_PATH = "patches"
-MODEL_NAME = os.path.join(os.getcwd(), 'BestModel.h5')
+MODEL_NAME = os.path.join(os.getcwd(), "BestModel.h5")
 
 CLASSES_VALUE = {"cursive": 0, "semi_square": 1, "square": 2}
 
 
 class BColors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
 
 
 # Get data after the PreProcessing

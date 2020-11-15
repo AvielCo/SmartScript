@@ -7,6 +7,12 @@ INPUT = "input"
 OUTPUT = "output"
 BUFFER = "buffer"
 CHECKPOINTS = "checkpoints"
+ASHKENAZI = "ashkenazi"
+SEPHARDIC = "sephardic"
+ITALIAN = "italian"
+BYZANTINE = "byzantine"
+ORIENTAL = "oriental"
+YEMENITE = "yemenite"
 PROJECT_DIR = os.getcwd()
 INPUT_PATH = os.path.join(PROJECT_DIR, INPUT)
 OUTPUT_PATH = os.path.join(PROJECT_DIR, OUTPUT)
@@ -18,32 +24,35 @@ SEMI_SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SEMI_SQUARE)
 SQUARE_OUTPUT_PATH = os.path.join(OUTPUT_PATH, SQUARE)
 BUFFER_PATH = os.path.join(PROJECT_DIR, BUFFER)
 PREDICT_BUFFER_PATH = os.path.join(PROJECT_DIR, BUFFER)
-BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, 'buffer_img.jpg')
-PREDICT_BUFFER_IMG_PATH = os.path.join(PREDICT_BUFFER_PATH, 'buffer_img.jpg')
+BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, "buffer_img.jpg")
+PREDICT_BUFFER_IMG_PATH = os.path.join(PREDICT_BUFFER_PATH, "buffer_img.jpg")
 PREDICT_OUTPUT_PATH = os.path.join("patches")
 PREDICT_INPUT_PATH = os.path.join("raw_images")
 
-CLASSES_VALUE = {CURSIVE: 0, SEMI_SQUARE: 1, SQUARE: 2}
+CLASSES_VALUE_MAIN_MODEL = {CURSIVE: 0, SEMI_SQUARE: 1, SQUARE: 2}
+CLASSES_VALUE_CURSIVE_MODEL = {ASHKENAZI: 0, ITALIAN: 1, SEPHARDIC: 2}
+CLASSES_VALUE_SEMI_SQUARE_MODEL = {ASHKENAZI: 0, BYZANTINE: 1, ITALIAN: 2, ORIENTAL: 3, SEPHARDIC: 4, YEMENITE: 5}
+CLASSES_VALUE_SQUARE_MODEL = CLASSES_VALUE_SEMI_SQUARE_MODEL
 
 # Path #1 for best val_loss
 CHECKPOINT_PATH_LOSS = os.path.join(PROJECT_DIR,
                                     CHECKPOINTS,
-                                    'val_loss',
-                                    'model.epoch={epoch:02d}-val_loss={val_loss:.2f}.h5')
+                                    "val_loss",
+                                    "model.epoch={epoch:02d}-val_loss={val_loss:.2f}.h5")
 
 # Path #2 for best val_categorical_accuracy
 CHECKPOINT_PATH_CAT_ACC = os.path.join(PROJECT_DIR,
-                                       'checkpoints',
-                                       'val_categorical_accuracy',
-                                       'model.epoch={epoch:02d}-val_cat_acc={val_categorical_accuracy:.2f}.h5')
+                                       "checkpoints",
+                                       "val_categorical_accuracy",
+                                       "model.epoch={epoch:02d}-val_cat_acc={val_categorical_accuracy:.2f}.h5")
 
 # Path #3 for best val_categorical_accuracy
 CHECKPOINT_PATH_ACC = os.path.join(PROJECT_DIR,
-                                   'checkpoints',
-                                   'val_accuracy',
-                                   'model.epoch={epoch:02d}-val_accuracy={val_accuracy:.2f}.h5')
+                                   "checkpoints",
+                                   "val_accuracy",
+                                   "model.epoch={epoch:02d}-val_accuracy={val_accuracy:.2f}.h5")
 
-CHECKPOINT_PATH_BEST = os.path.join(PROJECT_DIR, 'BestModel.h5')
+CHECKPOINT_PATH_BEST = os.path.join(PROJECT_DIR, "BestModel.h5")
 
 LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
 

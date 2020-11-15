@@ -17,8 +17,8 @@ def get_median_height(input_dir):
         folders_names.insert(1, os.path.join(input_dir, SEMI_SQUARE))
         folders_names.insert(2, os.path.join(input_dir, SQUARE))
     except FileNotFoundError:
-        logging.error("[{}] - Input file '{}' not found.".format(inspect.stack()[0][3], INPUT_PATH))
-        return  # The script can't run without input
+        logging.error("[{}] - Input file {} not found.".format(inspect.stack()[0][3], INPUT_PATH))
+        return  # The script can"t run without input
     for input_path in folders_names:
         for subdir, dirs, _ in os.walk(input_path):
             for cur_dir in dirs:
@@ -49,8 +49,8 @@ def crop_images(input_dir, avg_height):
         folders_names.insert(1, os.path.join(input_dir, SEMI_SQUARE))
         folders_names.insert(2, os.path.join(input_dir, SQUARE))
     except FileNotFoundError:
-        logging.error(f"[{inspect.stack()[0][3]}] - Input file '{INPUT_PATH}' not found.")
-        return  # The script can't run without input
+        logging.error(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.")
+        return  # The script can"t run without input
     for input_path in folders_names:
         for subdir, dirs, _ in os.walk(input_path):
             for cur_dir in dirs:
@@ -84,4 +84,4 @@ def crop_images(input_dir, avg_height):
                     total_images += 1
 
 
-crop_images("input", 4727)
+crop_images("input_test", 4727)

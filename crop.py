@@ -14,7 +14,7 @@ total_patches_cropped = 0
 
 
 def countPixels(img):
-    n = PATCH_DIMENSIONS['x'] // 2
+    n = PATCH_DIMENSIONS["x"] // 2
     h, w = img.shape
     split_img = []
     k = 0
@@ -58,11 +58,12 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     imageHeight (int): The height (Y axis) of the image.
     folderName (str): The name of the output folder.
     """
-    items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-    if shape_type == 'cursive' and items_in_folder >= 4000:
-        return False
-    if shape_type != 'cursive' and items_in_folder >= 2000:
-        return False
+    if shape_type is not None:
+        items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
+        if shape_type == "cursive" and items_in_folder >= 4000:
+            return False
+        if shape_type != "cursive" and items_in_folder >= 2000:
+            return False
     global total_images_cropped
     global total_patches_cropped
     x1 = y1 = 0
@@ -104,12 +105,12 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
 
 
 def RGBtoBW(img):
-    '''
+    """
     turn rgb image to black and white using thresh hold.
     Args:
         img: an image to crop to patches.
     Returns: image that has been processed
-    '''
+    """
     img = cv2.medianBlur(img, 13)
     img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
 
@@ -135,8 +136,8 @@ def cropImageEdges(image_path, is_predict):
     try:
         img = Image.open(image_path)
     except UnidentifiedImageError:
-        new_path = image_path.rsplit('\\', 1)[0]
-        new_path += '\\new_image.jpg'
+        new_path = image_path.rsplit("\\", 1)[0]
+        new_path += "\\new_image.jpg"
         os.rename(image_path,
                   new_path)
     except FileNotFoundError:
@@ -144,7 +145,11 @@ def cropImageEdges(image_path, is_predict):
     w, h = img.size
     w_c, h_c = 0.10, 0.10
     coords = (w * w_c, h * h_c, w * (1 - w_c), h * (1 - h_c))
-    img = img.crop(coords)
+    try:
+        img = img.crop(coords)
+    except OSError:
+        return False
+
     w, h = img.size
     ratio = h / w
     if ratio < 1:  # page has 2 sides, so we have to divide them into 2 files, each has its own page
@@ -182,7 +187,7 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
         full_img_path = os.path.join(os.getcwd(), path, folder_name, image_name)
     else:
         buffer_path = BUFFER_PATH
-        shape_type = path.split('\\')[-1]
+        shape_type = path.split("\\")[-1]
         full_img_path = os.path.join(path, folder_name, image_name)
     t = True
     if not cropImageEdges(full_img_path, is_predict):
@@ -239,7 +244,7 @@ def runThreads(input_path: str, folder_name: str, type_):
         for img in images_input:
             "".join(img.split())
     except FileNotFoundError:
-        print(f"[{inspect.stack()[0][3]}] - Input file '{input_path}' not found.")
+        print(f"[{inspect.stack()[0][3]}] - Input file {input_path} not found.")
         return
 
     output_path = ""
@@ -258,8 +263,13 @@ def runThreads(input_path: str, folder_name: str, type_):
 
 def preProcessingMain(input_dir):
     """
-    This function loads the folder names from the input folder and executes the crop algorithm on each name, with its
-     crop dimensions.
+    start the pre processing for the training of the model
+    Args:
+        input_dir: might be one of the following:
+                    1. "input"
+                    2. "input/cursive"
+                    3. "input/semi_square"
+                    4. "input/square"
     """
     folders_names = []
     try:
@@ -268,16 +278,16 @@ def preProcessingMain(input_dir):
             folders_names.append(os.path.join(input_dir, dirr))
 
     except FileNotFoundError:
-        logging.error(f"[{inspect.stack()[0][3]}] - Input file '{INPUT_PATH}' not found.")
-        return  # The script can't run without input
+        logging.error(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.")
+        return  # The script can"t run without input
     for input_path in folders_names:
         for subdir, dirs, files in os.walk(input_path):
-            if files:  # folder doesn't contains folder(s) => is internal folder (eg: Ashkenazi, Byzantine, Italian...)
+            if files:  # folder doesn"t contains folder(s) => is internal folder (eg: Ashkenazi, Byzantine, Italian...)
                 pass
             else:
                 for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
                     print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
-                    runThreads(subdir, cur_dir, input_path.split('\\')[-1])
+                    runThreads(subdir, cur_dir, input_path.split("\\")[-1])
                     print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
 
 
