@@ -1,5 +1,6 @@
 import inspect
-import logging
+import logging as log
+from datetime import datetime
 from dual_print import dual_print
 import cv2
 import numpy as np
@@ -41,6 +42,10 @@ def get_median_height(input_dir):
 
 
 def crop_images(input_dir, avg_height=4742):
+    log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
+                    datefmt="%H:%M:%S",
+                    filename=f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}",
+                    level=log.INFO)
     folders_names = []
     total_images = 0
     try:
@@ -49,7 +54,7 @@ def crop_images(input_dir, avg_height=4742):
         folders_names.insert(1, os.path.join(input_dir, SEMI_SQUARE))
         folders_names.insert(2, os.path.join(input_dir, SQUARE))
     except FileNotFoundError:
-        logging.error(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.")
+        dual_print(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.", "error")
         return  # The script can"t run without input
     for input_path in folders_names:
         for subdir, dirs, _ in os.walk(input_path):

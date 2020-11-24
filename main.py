@@ -1,7 +1,8 @@
 from evaluate_model import main as test_main
 from height import crop_images
 from network import main as train_main
-
+import logging as log
+from datetime import datetime
 
 print("Welcome\nWhat would you like to do?\nChoose an option from the menu:")
 first = "1"

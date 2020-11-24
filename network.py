@@ -1,9 +1,8 @@
 import gc
-from datetime import datetime
 import logging as log
-import numpy as np
-from dual_print import dual_print
+from datetime import datetime
 
+import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.compat.v1 import InteractiveSession, ConfigProto
 from tensorflow.keras.utils import to_categorical
@@ -11,6 +10,7 @@ from tensorflow_core.python.keras.saving.save import load_model
 
 from callbacks import *
 from consts import *
+from dual_print import dual_print
 from general import buildData
 from models import *
 
@@ -94,18 +94,18 @@ def main(input_folder, run_crop=True, times=1):
 
         # Train the model
         history = model.fit(X_train, y_train,
-                  validation_data=(X_test, y_test),
-                  epochs=50,
-                  verbose=0,
-                  batch_size=BATCH_SIZE,
-                  callbacks=callbacks)
+                            validation_data=(X_test, y_test),
+                            epochs=50,
+                            verbose=0,
+                            batch_size=BATCH_SIZE,
+                            callbacks=callbacks)
 
         dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}")
 
         i = 0
         while True:
             output_path_new_name = f"{crop.OUTPUT_PATH}_{str(i)}"
-            if not os.path.exists(output_path_new_name)
+            if not os.path.exists(output_path_new_name):
                 os.rename(crop.OUTPUT_PATH, output_path_new_name)
                 break
             i += 1
