@@ -41,7 +41,7 @@ def get_median_height(input_dir):
     crop_images(input_dir, int(h))
 
 
-def crop_images(input_dir, avg_height=4742):
+def crop_images(input_dir, avg_height=4727):
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}",
