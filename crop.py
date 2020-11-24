@@ -84,7 +84,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
                 save_location = os.path.join(OUTPUT_PATH,
                                              shape_type,  # cursive / square / semi square
                                              folder_name,  # for example AshkenaziCursive
-                                             str(total_patches_cropped) + "_" + str(i) + ".jpg"  # image_i.jpg
+                                             f"{total_patches_cropped}_(i).jpg"  # image_i.jpg
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
@@ -137,8 +137,8 @@ def cropImageEdges(image_path, is_predict):
     try:
         img = Image.open(image_path)
     except UnidentifiedImageError:
-        new_path = image_path.rsplit("\\", 1)[0]
-        new_path += "\\new_image.jpg"
+        new_path = image_path.rsplit("/", 1)[0]
+        new_path += "/new_image.jpg"
         os.rename(image_path,
                   new_path)
     except FileNotFoundError:
@@ -188,7 +188,7 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
         full_img_path = os.path.join(os.getcwd(), path, folder_name, image_name)
     else:
         buffer_path = BUFFER_PATH
-        shape_type = path.split("\\")[-1]
+        shape_type = path.split("/")[-1]
         full_img_path = os.path.join(path, folder_name, image_name)
     t = True
     if not cropImageEdges(full_img_path, is_predict):
@@ -279,7 +279,7 @@ def preProcessingMain(input_dir):
             folders_names.append(os.path.join(input_dir, dirr))
 
     except FileNotFoundError:
-        logging.error(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.")
+        dual_print(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.", "error")
         return  # The script can"t run without input
     for input_path in folders_names:
         for subdir, dirs, files in os.walk(input_path):
@@ -288,7 +288,7 @@ def preProcessingMain(input_dir):
             else:
                 for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
                     dual_print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
-                    runThreads(subdir, cur_dir, input_path.split("\\")[-1])
+                    runThreads(subdir, cur_dir, input_path.split("/")[-1])
                     dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
 
 
@@ -316,3 +316,5 @@ def main(input_dir):
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
+
+main("input")

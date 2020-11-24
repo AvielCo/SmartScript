@@ -102,7 +102,8 @@ def main(input_folder, run_crop=True, times=1):
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks)
 
-        dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}")
+        dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}"
+                   f"\n\n\n ------------------------------------------------------------")
 
         i = 0
         while True:

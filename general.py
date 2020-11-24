@@ -51,7 +51,7 @@ def loadPatchesFromPath(path: str, runCrop):
     """
     dataset = []
     patches_count = 0  # For logging
-    shape_type = path.split("\\")[-1]
+    shape_type = path.split("/")[-1]
     try:
         classes = os.listdir(path)
     except FileNotFoundError:
