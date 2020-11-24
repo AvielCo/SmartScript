@@ -316,5 +316,3 @@ def main(input_dir):
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
-
-main("input")
