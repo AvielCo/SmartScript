@@ -1,11 +1,12 @@
 import inspect
 import logging as log
 from datetime import datetime
-from dual_print import dual_print
+
 import cv2
 import numpy as np
 
 from consts import *
+from dual_print import dual_print
 
 
 def get_median_height(input_dir):
@@ -42,9 +43,10 @@ def get_median_height(input_dir):
 
 
 def crop_images(input_dir, avg_height=4727):
+    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}"
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
-                    filename=f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}",
+                    filename=filename,
                     level=log.INFO)
     folders_names = []
     total_images = 0
@@ -88,3 +90,5 @@ def crop_images(input_dir, avg_height=4727):
                     cv2.imwrite(img_path, i)
                     total_images += 1
     dual_print(f"Done changing height to {total_images} pictures")
+    log.shutdown()
+    os.rename(filename, filename + "__DONE.txt")

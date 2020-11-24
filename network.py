@@ -27,9 +27,11 @@ def main(input_folder, run_crop=True, times=1):
     BATCH_SIZE = 128
 
     prog_init_start_time = datetime.now()
+
+    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_train_on={input_folder}"
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
-                    filename=f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_train_on={input_folder}",
+                    filename=filename,
                     level=log.INFO)
     for j in range(times):
         start_time = datetime.now()
@@ -111,3 +113,5 @@ def main(input_folder, run_crop=True, times=1):
             i += 1
 
     dual_print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
+    log.shutdown()
+    os.rename(filename, filename + "__DONE.txt")

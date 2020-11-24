@@ -1,4 +1,5 @@
 import gc
+import logging as log
 import os
 import sys
 from datetime import datetime
@@ -15,6 +16,11 @@ from general import buildData
 
 
 def main(input_dir, run_crop=True):
+    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}"
+    log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
+                    datefmt="%H:%M:%S",
+                    filename=filename,
+                    level=log.INFO)
     # Create model
     dual_print("Loading model...")
     model = Model()
@@ -69,4 +75,6 @@ def main(input_dir, run_crop=True):
     b = classification_report(y_true, y_pred, labels=[0, 1, 2])
     dual_print(f"classification report: \n\t{b}\n")
     dual_print(f"Took: {str(datetime.now() - start_time)}")
+    log.shutdown()
+    os.rename(filename, filename + "__DONE.txt")
     # shutil.rmtree(os.path.join(crop.OUTPUT_PATH))
