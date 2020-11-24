@@ -36,7 +36,7 @@ def main(input_folder, run_crop=True, times=1):
     for j in range(times):
         start_time = datetime.now()
         # Cache flag from command line
-        df1, y1 = buildData(input_folder, f"output_{j}", run_crop)  # True = Starting crop process
+        df1, y1 = buildData(input_folder, "output", run_crop)  # True = Starting crop process
         dual_print("Converting data to Numpy array")
         log.info("Converting data to Numpy array")
         saved_time = datetime.now()
