@@ -91,7 +91,3 @@ def default_model_architecture(input_shape):
               metrics=["accuracy"])
 
     return m
-
-
-m = default_model_architecture((200, 200, 1))
-m.summary(print_fn=print)

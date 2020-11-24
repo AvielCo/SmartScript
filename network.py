@@ -1,7 +1,9 @@
 import gc
 from datetime import datetime
-
+import logging as log
 import numpy as np
+from dual_print import dual_print
+
 from sklearn.model_selection import train_test_split
 from tensorflow.compat.v1 import InteractiveSession, ConfigProto
 from tensorflow.keras.utils import to_categorical
@@ -13,7 +15,7 @@ from general import buildData
 from models import *
 
 
-def main(input_folder, run_crop=True):
+def main(input_folder, run_crop=True, times=1):
     # GPU configuration
     config = ConfigProto()
     config.gpu_options.allow_growth = True
@@ -25,51 +27,56 @@ def main(input_folder, run_crop=True):
     BATCH_SIZE = 128
 
     prog_init_start_time = datetime.now()
-    for j in range(7):
+    log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
+                    datefmt="%H:%M:%S",
+                    filename=f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_train_on={input_folder}",
+                    level=log.INFO)
+    for j in range(times):
         start_time = datetime.now()
         # Cache flag from command line
-        df1, y1 = buildData(input_folder, f"output_{j}", False)  # True = Starting crop process
-        print("Converting data to Numpy array")
+        df1, y1 = buildData(input_folder, f"output_{j}", run_crop)  # True = Starting crop process
+        dual_print("Converting data to Numpy array")
+        log.info("Converting data to Numpy array")
         saved_time = datetime.now()
         df = np.asarray(df1)
-        print(f"Done, took: {datetime.now() - saved_time}")
-        print("Calling Garbage Collector")
+        dual_print(f"Done, took: {datetime.now() - saved_time}")
+        dual_print("Calling Garbage Collector")
         del df1
         gc.collect()
-        print("Done")
-        print("Reshaping Grayscale data for Conv2D dimesions")
+        dual_print("Done")
+        dual_print("Reshaping Grayscale data for Conv2D dimesions")
         df = df.reshape((df.shape[0], df.shape[1], df.shape[2], 1))
-        print("Done")
-        print("Converting Y to categorical matrix")
+        dual_print("Done")
+        dual_print("Converting Y to categorical matrix")
         saved_time = datetime.now()
         y = to_categorical(y1)
-        print(f"Done, took: {str(datetime.now() - saved_time)}")
-        print("Calling Garbage Collector")
+        dual_print(f"Done, took: {str(datetime.now() - saved_time)}")
+        dual_print("Calling Garbage Collector")
         del y1
         gc.collect()
-        print("Done")
-        print("Splitting data into train and test")
+        dual_print("Done")
+        dual_print("Splitting data into train and test")
         saved_time = datetime.now()
         X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=TEST_PERCENT, random_state=42)
         inputShape = (df.shape[1], df.shape[2], df.shape[3])
-        print(f"Done, took: {str(datetime.now() - saved_time)}")
-        print("Calling Garbage Collector")
+        dual_print(f"Done, took: {str(datetime.now() - saved_time)}")
+        dual_print("Calling Garbage Collector")
         del y
         del df
         gc.collect()
-        print("Done")
+        dual_print("Done")
 
         # Create model
-        print("Loading model...")
+        dual_print("Loading model...")
         if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
             model = load_model("BestModel.h5")
         else:
-            print("No model found, creating..")
+            dual_print("No model found, creating..")
             model = default_model_architecture(inputShape)
 
-        print("Done")
+        dual_print("Done")
         # Save the best model
-        print("Creating callbacks")
+        dual_print("Creating callbacks")
 
         if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss")):
             os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss"))
@@ -83,17 +90,24 @@ def main(input_folder, run_crop=True):
         callbacks = [checkpoint_best, checkpoint_val_accuracy, tensorboard]
 
         model.summary(print_fn=print)
-        print("Running the model")
+        dual_print("Running the model")
 
         # Train the model
-        model.fit(X_train, y_train,
+        history = model.fit(X_train, y_train,
                   validation_data=(X_test, y_test),
                   epochs=50,
-                  verbose=1,
+                  verbose=0,
                   batch_size=BATCH_SIZE,
                   callbacks=callbacks)
 
-        print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}")
-        # shutil.rmtree(os.path.join(crop.OUTPUT_PATH))
-        # os.rename(crop.OUTPUT_PATH, f"{crop.OUTPUT_PATH}_{str(i)}")
-    print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
+        dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}")
+
+        i = 0
+        while True:
+            output_path_new_name = f"{crop.OUTPUT_PATH}_{str(i)}"
+            if not os.path.exists(output_path_new_name)
+                os.rename(crop.OUTPUT_PATH, output_path_new_name)
+                break
+            i += 1
+
+    dual_print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")

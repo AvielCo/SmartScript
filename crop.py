@@ -1,6 +1,7 @@
 import inspect
-import logging
+import logging as log
 from datetime import datetime
+from dual_print import dual_print
 
 import cv2
 import numpy as np
@@ -100,7 +101,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
         x2 += x_offset
 
     total_images_cropped += 1
-    print(f"Successfully cropped to patches {image_name} in {save_location}, with shape: {shape_type}")
+    dual_print(f"Successfully cropped to patches {image_name} in {save_location}, with shape: {shape_type}")
     return True
 
 
@@ -161,14 +162,14 @@ def cropImageEdges(image_path, is_predict):
             cv2.imwrite(img_path_left, cv2.cvtColor(left_side, cv2.COLOR_RGB2BGR))
             cv2.imwrite(img_path_right, cv2.cvtColor(right_side, cv2.COLOR_RGB2BGR))
         except cv2.error as e:
-            print(e)
+            dual_print(e, "error")
             return False
     else:  # page has only 1 side
         np_img = np.array(img)
         try:
             cv2.imwrite(img_path, cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR))
         except cv2.error as e:
-            print(e)
+            dual_print(e, "error")
             return False
     return True
 
@@ -210,7 +211,7 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
             i += 1
             if not t:
                 return t
-            print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
+            dual_print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
     if not is_predict:
         os.remove(full_img_path)
     return t
@@ -244,7 +245,7 @@ def runThreads(input_path: str, folder_name: str, type_):
         for img in images_input:
             "".join(img.split())
     except FileNotFoundError:
-        print(f"[{inspect.stack()[0][3]}] - Input file {input_path} not found.")
+        dual_print(f"[{inspect.stack()[0][3]}] - Input file {input_path} not found.")
         return
 
     output_path = ""
@@ -286,9 +287,9 @@ def preProcessingMain(input_dir):
                 pass
             else:
                 for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
-                    print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
+                    dual_print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
                     runThreads(subdir, cur_dir, input_path.split("\\")[-1])
-                    print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
+                    dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
 
 
 def createFolders():
@@ -309,9 +310,9 @@ def main(input_dir):
     Main function with execution time logging.
     """
     start_time = datetime.now()
-    print(f"[{inspect.stack()[0][3]}] - Crop Script started")
+    dual_print(f"[{inspect.stack()[0][3]}] - Crop Script started")
     createFolders()
     preProcessingMain(input_dir)
-    print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
-    print(
+    dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
+    dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
