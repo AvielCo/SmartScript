@@ -10,12 +10,13 @@ from tensorflow.keras import Model
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
+from dual_print import dual_print
 from general import buildData
 
 
 def main(input_dir, run_crop=True):
     # Create model
-    print("Loading model...")
+    dual_print("Loading model...")
     model = Model()
     if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
         model = load_model("BestModel.h5")
@@ -25,24 +26,24 @@ def main(input_dir, run_crop=True):
     start_time = datetime.now()
     # Cache flag rom command line
     df1, y1 = buildData(input_dir, run_crop)  # True = Starting crop process
-    print("Converting data to Numpy array")
+    dual_print("Converting data to Numpy array")
     saved_time = datetime.now()
     df = np.asarray(df1)
-    print(f"Done, took: {str(datetime.now() - saved_time)}")
-    print("Calling Garbage Collector")
+    dual_print(f"Done, took: {str(datetime.now() - saved_time)}")
+    dual_print("Calling Garbage Collector")
     # del df1
     gc.collect()
-    print("Done")
-    print("Reshaping Grayscale data for Conv2D dimesions")
+    dual_print("Done")
+    dual_print("Reshaping Grayscale data for Conv2D dimesions")
     df = df.reshape((df.shape[0], df.shape[1], df.shape[2], 1))
-    print("Done")
-    print("Converting Y to categorical matrix")
+    dual_print("Done")
+    dual_print("Converting Y to categorical matrix")
     saved_time = datetime.now()
     y_true = to_categorical(y1)
-    print(f"Done, took: {str(datetime.now() - saved_time)}")
-    print("Calling Garbage Collector")
+    dual_print(f"Done, took: {str(datetime.now() - saved_time)}")
+    dual_print("Calling Garbage Collector")
     gc.collect()
-    print("Done")
+    dual_print("Done")
 
     saved_time = datetime.now()
     eva = model.evaluate(x=df, y=y_true, batch_size=128)
@@ -62,10 +63,10 @@ def main(input_dir, run_crop=True):
             j += 1
 
     a = confusion_matrix(y_true, y_pred)
-    print(eva)
-    print(a)
+    dual_print(f"\nevaluate result [loss, accuracy]: {eva}\n")
+    dual_print(f"confusion matrix:\n\t{a}\n")
 
     b = classification_report(y_true, y_pred, labels=[0, 1, 2])
-    print(b)
-    print(f"Took: {str(datetime.now() - start_time)}")
+    dual_print(f"classification report: \n\t{b}\n")
+    dual_print(f"Took: {str(datetime.now() - start_time)}")
     # shutil.rmtree(os.path.join(crop.OUTPUT_PATH))
