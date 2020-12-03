@@ -75,6 +75,8 @@ def default_model_architecture(input_shape):
         Conv2D(32, (2, 2), padding="same", activation="sigmoid", input_shape=input_shape),
         MaxPooling2D((2, 2)),
         Flatten(),
+        Dense(128, activation="sigmoid"),
+        Dense(64, activation="sigmoid"),
         Dense(3, activation="softmax")
 
     ], "default")
@@ -84,3 +86,6 @@ def default_model_architecture(input_shape):
               metrics=["accuracy"])
 
     return m
+
+m = default_model_architecture((227,227, 1))
+m.summary(print_fn=print)
