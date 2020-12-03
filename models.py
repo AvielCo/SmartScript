@@ -69,7 +69,7 @@ def AlexNet_architecture(input_shape):
 
 def default_model_architecture(input_shape):
     m = Sequential([
-        Conv2D(16, (2, 2), padding="same", activation="relu", input_shape=input_shape),
+        Conv2D(32, (2, 2), padding="same", activation="relu", input_shape=input_shape),
         MaxPooling2D((4, 4)),
         Conv2D(32, (2, 2), padding="same", activation="relu"),
         MaxPooling2D((2, 2)),
@@ -85,7 +85,7 @@ def default_model_architecture(input_shape):
     ], "default")
 
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.SGD(learning_rate=0.0005),
+              optimizer=optimizers.SGD(learning_rate=0.001),
               metrics=["accuracy"])
 
     return m
