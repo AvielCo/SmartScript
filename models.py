@@ -76,7 +76,9 @@ def default_model_architecture(input_shape):
         MaxPooling2D((2, 2)),
         Flatten(),
         Dense(128, activation="sigmoid"),
+        Dropout(0.25),
         Dense(64, activation="sigmoid"),
+        Dropout(0.25),
         Dense(3, activation="softmax")
 
     ], "default")
