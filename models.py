@@ -1,10 +1,9 @@
 from tensorflow.keras import optimizers
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.metrics import categorical_accuracy
 from tensorflow.keras.models import Sequential
 from tensorflow.python.keras.layers import AveragePooling2D
-
 
 def LeNet_5_architecture(input_shape):
     m = Sequential([
@@ -72,7 +71,9 @@ def default_model_architecture(input_shape):
     m = Sequential([
         Conv2D(16, (2, 2), padding="same", activation="sigmoid", input_shape=input_shape),
         MaxPooling2D((4, 4)),
-        Conv2D(32, (2, 2), padding="same", activation="sigmoid", input_shape=input_shape),
+        Conv2D(32, (2, 2), padding="same", activation="sigmoid"),
+        MaxPooling2D((2, 2)),
+        Conv2D(32, (2, 2), padding="same", activation="sigmoid"),
         MaxPooling2D((2, 2)),
         Flatten(),
         Dense(128, activation="sigmoid"),
