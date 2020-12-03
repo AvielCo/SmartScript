@@ -4,7 +4,6 @@ import os
 import sys
 from datetime import datetime
 
-import cv2
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras import Model
