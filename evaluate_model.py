@@ -31,7 +31,7 @@ def main(input_dir, run_crop=True):
 
     start_time = datetime.now()
     # Cache flag rom command line
-    df1, y1 = buildData(input_dir, "output", run_crop)  # True = Starting crop process
+    df1, y1 = buildData(input_dir, "output_test", run_crop)  # True = Starting crop process
     dual_print("Converting data to Numpy array")
     saved_time = datetime.now()
     df = np.asarray(df1)
