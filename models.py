@@ -70,20 +70,13 @@ def AlexNet_architecture(input_shape):
 
 def default_model_architecture(input_shape):
     m = Sequential([
-        Conv2D(64, (3, 3), activation="sigmoid", input_shape=input_shape),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="sigmoid"),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="sigmoid"),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="relu"),
-        MaxPooling2D(pool_size=(2, 2)),
+        Conv2D(16, (2, 2), padding="same", activation="sigmoid", input_shape=input_shape),
+        MaxPooling2D((4, 4)),
+        Conv2D(32, (2, 2), padding="same", activation="sigmoid", input_shape=input_shape),
+        MaxPooling2D((2, 2)),
         Flatten(),
-        Dense(units=128, activation='relu'),
-        Dense(units=128, activation='relu'),
-        Dense(units=64, activation='relu'),
-        Dense(units=32, activation='relu'),
-        Dense(units=3, activation="softmax"),
+        Dense(3, activation="softmax")
+
     ], "default")
 
     m.compile(loss=categorical_crossentropy,
