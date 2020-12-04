@@ -322,6 +322,7 @@ def main(input_dir):
             i += 1
             continue
         os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, f"output_{i}"))
+        break
 
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
