@@ -61,9 +61,9 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     """
     if shape_type is not None:
         items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-        if shape_type == "cursive" and items_in_folder >= 4000:
+        if shape_type != "cursive" and items_in_folder >= 3500:
             return False
-        if shape_type != "cursive" and items_in_folder >= 2000:
+        elif shape_type == "cursive" and items_in_folder >= 7000:
             return False
     global total_images_cropped
     global total_patches_cropped
@@ -313,6 +313,16 @@ def main(input_dir):
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script started")
     createFolders()
     preProcessingMain(input_dir)
+
+    import time
+    time.sleep(1)
+    i = 0
+    while True:
+        if os.path.exists(os.path.join(PROJECT_DIR, f"output_{i}")):
+            i += 1
+            continue
+        os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, f"output_{i}"))
+
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")

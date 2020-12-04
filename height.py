@@ -39,10 +39,10 @@ def get_median_height(input_dir):
 
     h = np.median(height)
     dual_print(h)
-    crop_images(input_dir, int(h))
+    crop_images_height(input_dir, int(h))
 
 
-def crop_images(input_dir, avg_height=4727):
+def crop_images_height(input_dir, avg_height=4727):
     filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}"
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",

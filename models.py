@@ -96,5 +96,5 @@ def default_model_architecture(input_shape):
 
     return m
 
-m = default_model_architecture((227,227, 1))
-m.summary(print_fn=print)
+# m = default_model_architecture((227,227, 1))
+# m.summary(print_fn=print)

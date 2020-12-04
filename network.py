@@ -33,6 +33,8 @@ def main(input_folder, run_crop=True, times=1):
                     datefmt="%H:%M:%S",
                     filename=filename,
                     level=log.INFO)
+
+
     for j in range(times):
         start_time = datetime.now()
         # Cache flag from command line
@@ -101,18 +103,9 @@ def main(input_folder, run_crop=True, times=1):
                             verbose=0,
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks)
-
+        dual_print(f"history: *********************************\n\n{history.history}\n\n*********************************")
         dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}"
                    f"\n\n\n ------------------------------------------------------------")
-
-    ''' i = 0
-     while True:
-         output_path_new_name = f"{crop.OUTPUT_PATH}_{str(i)}"
-         if not os.path.exists(output_path_new_name):
-             os.rename(crop.OUTPUT_PATH, output_path_new_name)
-             break
-         i += 1
-         '''
 
     dual_print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
     log.shutdown()
