@@ -15,7 +15,7 @@ from general import buildData
 from models import *
 
 
-def main(input_folder, run_crop=True, times=1):
+def main(input_folder, run_crop=False, times=1):
     # GPU configuration
     config = ConfigProto()
     config.gpu_options.allow_growth = True
@@ -33,7 +33,6 @@ def main(input_folder, run_crop=True, times=1):
                     datefmt="%H:%M:%S",
                     filename=filename,
                     level=log.INFO)
-
 
     for j in range(times):
         start_time = datetime.now()
@@ -103,7 +102,8 @@ def main(input_folder, run_crop=True, times=1):
                             verbose=0,
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks)
-        dual_print(f"history: *********************************\n\n{history.history}\n\n*********************************")
+        dual_print(
+            f"history: *********************************\n\n{history.history}\n\n*********************************")
         dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}"
                    f"\n\n\n ------------------------------------------------------------")
 
