@@ -61,9 +61,9 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     """
     if shape_type is not None:
         items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-        if shape_type != "cursive" and items_in_folder >= 3500:
+        if shape_type == "cursive" and items_in_folder >= 4000:
             return False
-        elif shape_type == "cursive" and items_in_folder >= 7000:
+        if shape_type != "cursive" and items_in_folder >= 2000:
             return False
     global total_images_cropped
     global total_patches_cropped
@@ -84,7 +84,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
                 save_location = os.path.join(OUTPUT_PATH,
                                              shape_type,  # cursive / square / semi square
                                              folder_name,  # for example AshkenaziCursive
-                                             f"{total_patches_cropped}_(i).jpg"  # image_i.jpg
+                                             f"{total_patches_cropped}_{i}.jpg"  # image_i.jpg
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
@@ -242,8 +242,6 @@ def runThreads(input_path: str, folder_name: str, type_):
     full_input_path = os.path.join(input_path, folder_name)
     try:
         images_input = os.listdir(full_input_path)  # Get all of the patches from the current folder
-        for img in images_input:
-            "".join(img.split())
     except FileNotFoundError:
         dual_print(f"[{inspect.stack()[0][3]}] - Input file {input_path} not found.")
         return
