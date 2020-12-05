@@ -21,8 +21,6 @@ def main(input_folder):
     config.gpu_options.allow_growth = True
     session = InteractiveSession(config=config)
 
-    # Const variables
-
     # Batch size for fit function for each step in epoch
     BATCH_SIZE = 128
 
@@ -46,7 +44,7 @@ def main(input_folder):
 
     for j in range(times):
         start_time = datetime.now()
-        df1, y1 = buildData(input_folder, f"output_{times}")
+        df1, y1 = buildData(input_folder, f"output_{j}")
         dual_print("Converting data to Numpy array")
         log.info("Converting data to Numpy array")
         saved_time = datetime.now()

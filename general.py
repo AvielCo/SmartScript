@@ -80,24 +80,24 @@ def buildData(input_dir, dirr):
     Returns:
     tuple: a tuple where tuple[0] is a list of the data and tuple[1] is the classes of the data.
     """
-    startTime = datetime.now()
+    start_time = datetime.now()
     print(f"[{inspect.stack()[0][3]}] - Start building data for the Neural Network.")
     if not os.path.exists(os.path.join(PROJECT_DIR, dirr)):
         dirr = crop.main(input_dir, dirr)  # PreProcessing run
     try:
-        outputFolders = os.listdir(dirr)
+        output_folders = os.listdir(dirr)
     except FileNotFoundError:
         print(f"[{inspect.stack()[0][3]}] - Output file {str(crop.OUTPUT_PATH)} not found.")
         exit(1)
 
     dataset = []
-    for name in outputFolders:
+    for name in output_folders:
         print(f"[{inspect.stack()[0][3]}] - Loading patches from {name} Folder.")
         dataset += loadPatchesFromPath(os.path.join(dirr, name))  # Append the patches list from each output folder
         print(f"[{inspect.stack()[0][3]}] - Finished loading from {name} Folder.")
     # Dataset is X, classes (labels) are Y
     dataset, classes = splitDataset(shuffleDataset(dataset))
-    print(f"[{inspect.stack()[0][3]}] - Data build ended, execution time: {str(datetime.now() - startTime)}")
+    print(f"[{inspect.stack()[0][3]}] - Data build ended, execution time: {str(datetime.now() - start_time)}")
     return dataset, classes
 
 
