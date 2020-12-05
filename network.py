@@ -107,7 +107,7 @@ def main(input_folder, times):
         history = model.fit(X_train, y_train,
                             validation_data=(X_test, y_test),
                             epochs=25,
-                            verbose=1,
+                            verbose=2,
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks)
         dual_print(
