@@ -1,9 +1,7 @@
+from crop import main as crop_main
 from evaluate_model import main as test_main
 from height import crop_images_height
 from network import main as train_main
-from crop import main as crop_main
-import logging as log
-from datetime import datetime
 
 print("Welcome\nWhat would you like to do?\nChoose an option from the menu:")
 first = "1"
@@ -18,21 +16,21 @@ if first == "1":
     print("Choose model to train: ")
     while second != "1" or second != "2" or second != "3" or second != "4":
         second = input("\n\t1. main\n\t2. cursive\n\t3. semi square\n\t4. square\noption: ")
-        times = input("How many times (50 epochs each) you want to train the model?\n"
-                      "times(int) = [leave blank for default]")
+        times = int(input("How many times (50 epochs each) you want to train the model?\n"
+                          "times(int) = [leave blank for default]"))
         if not times:
-            times = 1
+            times = 0
         if second == "1":
-            train_main("input")
+            train_main("input", times)
             break
         elif second == "2":
-            train_main("input/cursive")
+            train_main("input/cursive", times)
             break
         elif second == "3":
-            train_main("input/semi_square")
+            train_main("input/semi_square", times)
             break
         elif second == "4":
-            train_main("input/square")
+            train_main("input/square", times)
             break
 
         print("An error has been occurred please choose again.")

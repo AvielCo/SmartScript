@@ -15,7 +15,7 @@ from general import buildData
 from models import *
 
 
-def main(input_folder):
+def main(input_folder, times):
     # GPU configuration
     config = ConfigProto()
     config.gpu_options.allow_growth = True
@@ -32,12 +32,12 @@ def main(input_folder):
                     filename=filename,
                     level=log.INFO)
 
-    times = 0
-    while True:
-        if os.path.exists(os.path.join(PROJECT_DIR, f"output_{times}")):
-            times += 1
-            continue
-        break
+    if times == 0:
+        while True:
+            if os.path.exists(os.path.join(PROJECT_DIR, f"output_{times}")):
+                times += 1
+                continue
+            break
 
     if times == 0:
         times = 1
