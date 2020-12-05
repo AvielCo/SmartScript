@@ -89,7 +89,7 @@ def default_model_architecture(input_shape):
     ], "default")
 
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.Adam(learning_rate=0.0009),
+              optimizer=optimizers.Adam(learning_rate=0.0005),
               metrics=["accuracy"])
 
     return m
