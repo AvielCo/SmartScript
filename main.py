@@ -70,7 +70,7 @@ elif first == "4":
         print("An error has been occurred please choose again.")
 
 elif first == "5":
-    times = int(input("How many times (50 epochs each) you want to train the model?[leave blank for 1]\n"
+    times = int(input("How many times you want to crop to patches?[blank = 1]\n"
                       "times(int) = "))
     if not times:
         times = 1
