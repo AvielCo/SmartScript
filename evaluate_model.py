@@ -13,10 +13,12 @@ from tensorflow_core.python.keras.saving.save import load_model
 
 from dual_print import dual_print
 from general import buildData
+from consts import PROJECT_DIR
 
 
 def main(input_dir, run_crop=True):
-    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}"
+    filename = os.path.join(PROJECT_DIR, "logs",
+                            f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=filename,

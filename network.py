@@ -26,7 +26,8 @@ def main(input_folder, times):
 
     prog_init_start_time = datetime.now()
 
-    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_train_on={input_folder}"
+    filename = os.path.join(PROJECT_DIR, "logs",
+                            f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_train_on={input_folder}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=filename,

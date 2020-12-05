@@ -19,7 +19,7 @@ def get_median_height(input_dir):
         folders_names.insert(1, os.path.join(input_dir, SEMI_SQUARE))
         folders_names.insert(2, os.path.join(input_dir, SQUARE))
     except FileNotFoundError:
-        logging.error("[{}] - Input file {} not found.".format(inspect.stack()[0][3], INPUT_PATH))
+        dual_print("[{}] - Input file {} not found.".format(inspect.stack()[0][3], INPUT_PATH), "error")
         return  # The script can"t run without input
     for input_path in folders_names:
         for subdir, dirs, _ in os.walk(input_path):
@@ -43,7 +43,8 @@ def get_median_height(input_dir):
 
 
 def crop_images_height(input_dir, avg_height=4727):
-    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}"
+    filename = os.path.join(PROJECT_DIR, "logs",
+                            f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_crop-images-on={input_dir}_with-height={avg_height}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=filename,
