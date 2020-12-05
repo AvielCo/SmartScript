@@ -16,10 +16,11 @@ if first == "1":
     print("Choose model to train: ")
     while second != "1" or second != "2" or second != "3" or second != "4":
         second = input("\n\t1. main\n\t2. cursive\n\t3. semi square\n\t4. square\noption: ")
-        times = int(input(
-            "How many times (50 epochs each) you want to train the model?[leave blank for amount of output folders]\n"
-            "times(int) = "))
-        if not times:
+        try:
+            times = int(input(
+                "How many times (50 epochs each) you want to train the model?[leave blank for amount of output folders]\n"
+                "times(int) = "))
+        except ValueError:
             times = 0
         if second == "1":
             train_main("input", times)
