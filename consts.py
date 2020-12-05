@@ -58,5 +58,5 @@ LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
 
 PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 200, "yOffset": 200}
 
-TRAIN_PERCENT = 0.7
+TRAIN_PERCENT = 0.8
 TEST_PERCENT = 1 - TRAIN_PERCENT
