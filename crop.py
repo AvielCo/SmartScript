@@ -1,7 +1,5 @@
 import inspect
-import logging as log
 from datetime import datetime
-from dual_print import dual_print
 
 import cv2
 import numpy as np
@@ -9,6 +7,7 @@ from PIL import Image
 from PIL import UnidentifiedImageError
 
 from consts import *
+from dual_print import dual_print
 
 total_images_cropped = 0
 total_patches_cropped = 0
@@ -285,7 +284,8 @@ def preProcessingMain(input_dir):
                 pass
             else:
                 for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
-                    dual_print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
+                    dual_print(
+                        f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
                     runThreads(subdir, cur_dir, input_path.split("/")[-1])
                     dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
 
@@ -303,7 +303,7 @@ def createFolders():
         os.makedirs(BUFFER_PATH)
 
 
-def main(input_dir, output_dir: str):
+def main(input_dir, output_dir: str = ""):
     """
     Main function with execution time logging.
     """
