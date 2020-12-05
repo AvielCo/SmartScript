@@ -109,7 +109,8 @@ def main(input_folder, times):
                             epochs=25,
                             verbose=2,
                             batch_size=BATCH_SIZE,
-                            callbacks=callbacks)
+                            callbacks=callbacks,
+                            shuffle=True)
         dual_print(
             f"history: *********************************\n\n{history.history}\n\n*********************************")
         dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}"
