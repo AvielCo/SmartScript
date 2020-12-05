@@ -303,7 +303,7 @@ def createFolders():
         os.makedirs(BUFFER_PATH)
 
 
-def main(input_dir):
+def main(input_dir, output_dir: str):
     """
     Main function with execution time logging.
     """
@@ -312,16 +312,21 @@ def main(input_dir):
     createFolders()
     preProcessingMain(input_dir)
 
-    import time
-    time.sleep(1)
-    i = 0
-    while True:
-        if os.path.exists(os.path.join(PROJECT_DIR, f"output_{i}")):
-            i += 1
-            continue
-        os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, f"output_{i}"))
-        break
+    if len(output_dir) > 0:
+        os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, output_dir))
+    else:
+        import time
+        time.sleep(1)
+        i = 0
+        while True:
+            if os.path.exists(os.path.join(PROJECT_DIR, f"output_{i}")):
+                i += 1
+                continue
+            os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, f"output_{i}"))
+            output_dir = f"output_{i}"
+            break
 
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
+    return output_dir

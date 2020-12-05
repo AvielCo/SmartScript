@@ -15,7 +15,7 @@ from general import buildData
 from models import *
 
 
-def main(input_folder, run_crop=False, times=1):
+def main(input_folder):
     # GPU configuration
     config = ConfigProto()
     config.gpu_options.allow_growth = True
@@ -34,10 +34,19 @@ def main(input_folder, run_crop=False, times=1):
                     filename=filename,
                     level=log.INFO)
 
+    times = 0
+    while True:
+        if os.path.exists(os.path.join(PROJECT_DIR, f"output_{times}")):
+            times += 1
+            continue
+        break
+
+    if times == 0:
+        times = 1
+
     for j in range(times):
         start_time = datetime.now()
-        # Cache flag from command line
-        df1, y1 = buildData(input_folder, "output_0", run_crop)  # True = Starting crop process
+        df1, y1 = buildData(input_folder, f"output_{times}")
         dual_print("Converting data to Numpy array")
         log.info("Converting data to Numpy array")
         saved_time = datetime.now()

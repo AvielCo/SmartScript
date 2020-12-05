@@ -23,16 +23,16 @@ if first == "1":
         if not times:
             times = 1
         if second == "1":
-            train_main("input", times=times)
+            train_main("input")
             break
         elif second == "2":
-            train_main("input/cursive", times=times)
+            train_main("input/cursive")
             break
         elif second == "3":
-            train_main("input/semi_square", times=times)
+            train_main("input/semi_square")
             break
         elif second == "4":
-            train_main("input/square", times=times)
+            train_main("input/square")
             break
 
         print("An error has been occurred please choose again.")

@@ -7,7 +7,7 @@ from datetime import datetime
 import cv2
 
 import crop
-from consts import CLASSES_VALUE_MAIN_MODEL
+from consts import *
 
 
 def shuffleDataset(dataset: list):
@@ -39,7 +39,7 @@ def splitDataset(dataset: list):
 
 
 # Get data after the PreProcessing
-def loadPatchesFromPath(path: str, runCrop):
+def loadPatchesFromPath(path: str):
     """
     This function loads patches from a given path, and gives labels to the patches from the same path.
 
@@ -61,10 +61,6 @@ def loadPatchesFromPath(path: str, runCrop):
         patches = os.listdir(os.path.join(path, c))
         print(f"Collecting patches from {os.path.join(path, c)}")
         for i, patch in enumerate(patches):
-            # if not runCrop:
-            #    os.rename(os.path.join(path, c, patch), os.path.join(path, c, str(patches_count) + ".jpg"))
-            #    img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, str(patches_count) + ".jpg"), 0), 227, 227)
-            # else:
             img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 200, 200)
             progress(i + 1, len(patches))
 
@@ -74,7 +70,7 @@ def loadPatchesFromPath(path: str, runCrop):
     return dataset
 
 
-def buildData(input_dir, dirr, runCrop=False):
+def buildData(input_dir, dirr):
     """
     This function builds the data from the output folders.
 
@@ -86,8 +82,8 @@ def buildData(input_dir, dirr, runCrop=False):
     """
     startTime = datetime.now()
     print(f"[{inspect.stack()[0][3]}] - Start building data for the Neural Network.")
-    if runCrop:
-        crop.main(input_dir)  # PreProcessing run
+    if not os.path.exists(os.path.join(PROJECT_DIR, dirr)):
+        dirr = crop.main(input_dir, dirr)  # PreProcessing run
     try:
         outputFolders = os.listdir(dirr)
     except FileNotFoundError:
@@ -97,8 +93,7 @@ def buildData(input_dir, dirr, runCrop=False):
     dataset = []
     for name in outputFolders:
         print(f"[{inspect.stack()[0][3]}] - Loading patches from {name} Folder.")
-        dataset += loadPatchesFromPath(
-            os.path.join(dirr, name), runCrop)  # Append the patches list from each output folder
+        dataset += loadPatchesFromPath(os.path.join(dirr, name))  # Append the patches list from each output folder
         print(f"[{inspect.stack()[0][3]}] - Finished loading from {name} Folder.")
     # Dataset is X, classes (labels) are Y
     dataset, classes = splitDataset(shuffleDataset(dataset))
