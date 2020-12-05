@@ -22,6 +22,7 @@ if first == "1":
                 "times(int) = "))
         except ValueError:
             times = 0
+        print(f"training the model for {times} times")
         if second == "1":
             train_main("input", times)
             break
