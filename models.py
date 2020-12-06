@@ -70,20 +70,24 @@ def AlexNet_architecture(input_shape):
 def default_model_architecture(input_shape):
     m = Sequential([
         Conv2D(32, (2, 2), padding="same", activation="relu", input_shape=input_shape),
+        BatchNormalization(),
         MaxPooling2D((4, 4)),
-        BatchNormalization(),
+        Dropout(0.3),
         Conv2D(32, (2, 2), padding="same", activation="relu"),
-        MaxPooling2D((2, 2)),
         BatchNormalization(),
+        MaxPooling2D((2, 2)),
+        Dropout(0.3),
         Conv2D(32, (2, 2), padding="same", activation="relu"),
-        MaxPooling2D((2, 2)),
         BatchNormalization(),
+        MaxPooling2D((2, 2)),
+        Dropout(0.3),
         Flatten(),
         Dense(128, activation="relu"),
+        BatchNormalization(),
         Dropout(0.3),
         Dense(64, activation="relu"),
+        BatchNormalization(),
         Dropout(0.3),
-        Dense(32, activation="relu"),
         Dense(3, activation="softmax")
 
     ], "default")
