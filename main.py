@@ -2,6 +2,7 @@ from crop import main as crop_main
 from evaluate_model import main as test_main
 from height import crop_images_height
 from network import main as train_main
+from consts import EPOCHS
 
 print("Welcome\nWhat would you like to do?\nChoose an option from the menu:")
 first = "1"
@@ -18,7 +19,7 @@ if first == "1":
         second = input("\n\t1. main\n\t2. cursive\n\t3. semi square\n\t4. square\noption: ")
         try:
             times = int(input(
-                "How many times (50 epochs each) you want to train the model?[leave blank for amount of output folders]\n"
+                f"How many times ({EPOCHS} epochs each) you want to train the model?[leave blank for amount of output folders]\n"
                 "times(int) = "))
         except ValueError:
             times = 0
