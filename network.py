@@ -22,7 +22,7 @@ def main(input_folder, times):
     session = InteractiveSession(config=config)
 
     # Batch size for fit function for each step in epoch
-    BATCH_SIZE = 128
+    BATCH_SIZE = 64
 
     prog_init_start_time = datetime.now()
 
