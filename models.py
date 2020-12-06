@@ -72,28 +72,26 @@ def default_model_architecture(input_shape):
         Conv2D(32, (2, 2), padding="same", activation="relu", input_shape=input_shape),
         BatchNormalization(),
         MaxPooling2D((4, 4)),
-        Dropout(0.3),
+        BatchNormalization(),
         Conv2D(32, (2, 2), padding="same", activation="relu"),
         BatchNormalization(),
         MaxPooling2D((2, 2)),
-        Dropout(0.3),
+        BatchNormalization(),
         Conv2D(32, (2, 2), padding="same", activation="relu"),
         BatchNormalization(),
         MaxPooling2D((2, 2)),
-        Dropout(0.3),
+        BatchNormalization(),
         Flatten(),
         Dense(128, activation="relu"),
-        BatchNormalization(),
-        Dropout(0.3),
+        Dropout(0.25),
         Dense(64, activation="relu"),
-        BatchNormalization(),
-        Dropout(0.3),
+        Dropout(0.25),
         Dense(3, activation="softmax")
 
     ], "default")
 
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.Adam(learning_rate=0.0001),
+              optimizer=optimizers.SGD(learning_rate=0.001),
               metrics=["accuracy"])
 
     return m
