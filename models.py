@@ -81,7 +81,7 @@ def default_model_architecture(input_shape):
         Flatten(),
         Dense(128, activation="relu"),
         Dropout(0.25),
-        Dense(64, activation="relu"),
+        Dense(256, activation="relu"),
         Dropout(0.25),
         Dense(3, activation="softmax")
 
