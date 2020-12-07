@@ -85,6 +85,9 @@ def default_model_architecture(input_shape):
         Dense(256, activation="relu"),
         Dropout(dropout_rate),
         Dense(128, activation="relu"),
+        Dropout(dropout_rate),
+        Dense(64, activation="relu"),
+        Dropout(dropout_rate),
         Dense(3, activation="softmax")
     ], "default")
 
@@ -94,5 +97,5 @@ def default_model_architecture(input_shape):
 
     return m
 
-# m = default_model_architecture((227,227, 1))
-# m.summary(print_fn=print)
+m = default_model_architecture((200,200, 1))
+m.summary(print_fn=print)
