@@ -61,3 +61,15 @@ PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 200, "yOffset": 200}
 TRAIN_PERCENT = 0.8
 TEST_PERCENT = 1 - TRAIN_PERCENT
 EPOCHS = 20
+
+models = ["main", CURSIVE, SEMI_SQUARE, SQUARE]
+description = '''
+                Welcome!
+Choose one of the following optional arguments
+'''
+epilog = f'''
+                Syntax helper
+------------------------------------------------------------
+model = one of {models},
+times = positive integer
+'''

@@ -16,7 +16,7 @@ from general import buildData
 from consts import PROJECT_DIR
 
 
-def main(input_dir, run_crop=True):
+def main(input_dir, model_type):
     filename = os.path.join(PROJECT_DIR, "logs",
                             f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
@@ -29,6 +29,7 @@ def main(input_dir, run_crop=True):
     if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
         model = load_model("BestModel.h5")
     else:
+        dual_print("No model found.. exiting")
         sys.exit()
 
     start_time = datetime.now()
@@ -72,10 +73,10 @@ def main(input_dir, run_crop=True):
 
     a = confusion_matrix(y_true, y_pred)
     dual_print(f"\nevaluate result [loss, accuracy]: {eva}\n")
-    dual_print(f"confusion matrix:\n\t{a}\n")
+    dual_print(f"confusion matrix:\n{a}\n")
 
     b = classification_report(y_true, y_pred, labels=[0, 1, 2])
-    dual_print(f"classification report: \n\t{b}\n")
+    dual_print(f"classification report: \n{b}\n")
     dual_print(f"Took: {str(datetime.now() - start_time)}")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
