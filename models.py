@@ -84,7 +84,7 @@ def default_model_architecture(input_shape):
         Dropout(dropout_rate),
         Dense(256, activation="relu"),
         Dropout(dropout_rate),
-        Dense(128, activition="relu"),
+        Dense(128, activation="relu"),
         Dense(3, activation="softmax")
     ], "default")
 
