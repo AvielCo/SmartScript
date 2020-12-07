@@ -60,7 +60,7 @@ PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 200, "yOffset": 200}
 
 TRAIN_PERCENT = 0.8
 TEST_PERCENT = 1 - TRAIN_PERCENT
-EPOCHS = 20
+EPOCHS = 25
 
 models = ["main", CURSIVE, SEMI_SQUARE, SQUARE]
 description = '''
@@ -71,5 +71,5 @@ epilog = f'''
                 Syntax helper
 ------------------------------------------------------------
 model = one of {models},
-times = positive integer
+times = positive integer\n\n
 '''
