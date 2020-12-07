@@ -71,5 +71,7 @@ epilog = f'''
                 Syntax helper
 ------------------------------------------------------------
 model = one of {models},
-times = positive integer\n\n
+times = positive integer
+
+
 '''
