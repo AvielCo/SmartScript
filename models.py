@@ -70,13 +70,13 @@ def AlexNet_architecture(input_shape):
 def default_model_architecture(input_shape):
     dropout_rate = 0.25
     m = Sequential([
-        Conv2D(32, (2, 2), padding="same", activation="relu", input_shape=input_shape),
+        Conv2D(32, 11, padding="same", activation="relu", strides=4, input_shape=input_shape),
         BatchNormalization(),
         MaxPooling2D((4, 4)),
-        Conv2D(32, (2, 2), padding="same", activation="relu"),
+        Conv2D(32, 11, padding="same", strides=4, activation="relu"),
         BatchNormalization(),
         MaxPooling2D((2, 2)),
-        Conv2D(32, (2, 2), padding="same", activation="relu"),
+        Conv2D(32, 11, padding="same", strides=4, activation="relu"),
         BatchNormalization(),
         MaxPooling2D((2, 2)),
         Flatten(),
