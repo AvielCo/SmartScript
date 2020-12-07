@@ -68,6 +68,7 @@ def AlexNet_architecture(input_shape):
 
 
 def default_model_architecture(input_shape):
+    dropout_rate = 0.25
     m = Sequential([
         Conv2D(32, (2, 2), padding="same", activation="relu", input_shape=input_shape),
         BatchNormalization(),
@@ -80,11 +81,11 @@ def default_model_architecture(input_shape):
         MaxPooling2D((2, 2)),
         Flatten(),
         Dense(128, activation="relu"),
-        Dropout(0.25),
+        Dropout(dropout_rate),
         Dense(256, activation="relu"),
-        Dropout(0.25),
+        Dropout(dropout_rate),
+        Dense(128, activition="relu"),
         Dense(3, activation="softmax")
-
     ], "default")
 
     m.compile(loss=categorical_crossentropy,
