@@ -7,6 +7,7 @@ import numpy as np
 
 from consts import *
 from dual_print import dual_print
+from general import progress
 
 
 def get_median_height(input_dir):
@@ -62,7 +63,11 @@ def crop_images_height(input_dir, avg_height=4727):
     for input_path in folders_names:
         for dirs in os.listdir(input_path):
             path = os.path.join(input_path, dirs)
-            for image in os.listdir(os.path.join(input_path, dirs)):
+            total_files_in_folder = len(os.listdir(path))
+            print(f"folder {dirs}: ")
+            j = 0
+            for image in os.listdir(path):
+                j += 1
                 full_img_path = os.path.join(path, image)
                 i = cv2.imread(full_img_path)
                 if i is None:
@@ -78,19 +83,14 @@ def crop_images_height(input_dir, avg_height=4727):
                 if h == avg_height:
                     total_images += 1
                     continue
-                ratio = h / w
-                dual_print(f"old height: {h}, old width: {w}, ratio: {ratio}")
-
-                w = avg_height // ratio
-                ratio = avg_height / w
-                dual_print(f"new hight: {avg_height}, new width: {int(w)}, ratio: {ratio}")
-
-                i = cv2.resize(i, (avg_height, avg_height))
+                i = cv2.resize(i, (int(w), avg_height))
 
                 os.remove(full_img_path)
 
                 cv2.imwrite(full_img_path, i)
                 total_images += 1
+                progress(j, total_files_in_folder)
+                print(f"{j}/{total_files_in_folder}")
     dual_print(f"Done changing height to {total_images} pictures")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
