@@ -90,9 +90,10 @@ def crop_images_height(input_dir, avg_height=4727):
                     ratio = h / w
                     dual_print(f"old height: {h}, old width: {w}, ratio: {ratio}")
 
-                    w = avg_height // ratio
-                    ratio = avg_height / w
-                    dual_print(f"new hight: {avg_height}, new width: {int(w)}, ratio: {ratio}")
+                    h, w = i.shape
+
+                    ratio = h / w
+                    dual_print(f"new hight: {h}, new width: {w}, ratio: {ratio}")
 
                     i = cv2.resize(i, (avg_height, avg_height))
 
