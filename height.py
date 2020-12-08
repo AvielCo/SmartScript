@@ -72,11 +72,21 @@ def crop_images_height(input_dir, avg_height=4727):
                         os.rename(img_path, new_img_path)
                         img_path = new_img_path
                         i = cv2.imread(img_path)
+                        if i is None:
+                            continue
                     dual_print(f"\nimage: {img_path}")
                     h, w, _ = i.shape
                     if h == avg_height:
                         total_images += 1
                         continue
+                    s = abs(h - w)
+
+                    # if width != height, add a padding to the lower side so the image will be square (w == h)
+                    if w != h:
+                        if w > h:
+                            i = cv2.copyMakeBorder(i, 0, 0, s // 2, s // 2, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                        else:
+                            i = cv2.copyMakeBorder(i, s // 2, s // 2, 0, 0, cv2.BORDER_CONSTANT, value=(255, 255, 255))
                     ratio = h / w
                     dual_print(f"old height: {h}, old width: {w}, ratio: {ratio}")
 
@@ -84,7 +94,7 @@ def crop_images_height(input_dir, avg_height=4727):
                     ratio = avg_height / w
                     dual_print(f"new hight: {avg_height}, new width: {int(w)}, ratio: {ratio}")
 
-                    i = cv2.resize(i, (int(w), avg_height))
+                    i = cv2.resize(i, (avg_height, avg_height))
 
                     os.remove(img_path)
 
@@ -93,3 +103,7 @@ def crop_images_height(input_dir, avg_height=4727):
     dual_print(f"Done changing height to {total_images} pictures")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
+
+
+crop_images_height("input")
+crop_images_height("input_test")
