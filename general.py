@@ -45,7 +45,7 @@ def loadPatchesFromPath(path: str):
         patches = os.listdir(os.path.join(path, c))
         print(f"Collecting patches from {os.path.join(path, c)}")
         for i, patch in enumerate(patches):
-            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 250, 250)
+            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 227, 227)
             progress(i + 1, len(patches))
 
             dataset.append(tuple((img, CLASSES_VALUE_MAIN_MODEL[shape_type])))
@@ -128,8 +128,3 @@ def maintain_aspect_ratio_resize(image, width=None, height=None, inter=cv2.INTER
 
     # Return the resized image
     return cv2.resize(image, dim, interpolation=inter)
-
-
-def curr_time():
-    curr_time = datetime.now()
-    return f"{str(curr_time.date())}-{str(curr_time.hour)}.{str(curr_time.minute)}"
