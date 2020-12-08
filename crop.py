@@ -1,7 +1,5 @@
 import inspect
-import logging as log
 from datetime import datetime
-from dual_print import dual_print
 
 import cv2
 import numpy as np
@@ -9,6 +7,7 @@ from PIL import Image
 from PIL import UnidentifiedImageError
 
 from consts import *
+from dual_print import dual_print
 
 total_images_cropped = 0
 total_patches_cropped = 0
@@ -242,8 +241,6 @@ def runThreads(input_path: str, folder_name: str, type_):
     full_input_path = os.path.join(input_path, folder_name)
     try:
         images_input = os.listdir(full_input_path)  # Get all of the patches from the current folder
-        for img in images_input:
-            "".join(img.split())
     except FileNotFoundError:
         dual_print(f"[{inspect.stack()[0][3]}] - Input file {input_path} not found.")
         return
@@ -290,6 +287,7 @@ def preProcessingMain(input_dir):
                     dual_print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
                     runThreads(subdir, cur_dir, input_path.split("/")[-1])
                     dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
+                    break
 
 
 def createFolders():
@@ -316,3 +314,6 @@ def main(input_dir):
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
+
+
+main("input")

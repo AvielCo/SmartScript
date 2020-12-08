@@ -1,6 +1,7 @@
 import gc
 import logging as log
 from datetime import datetime
+from random import randint
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -15,7 +16,7 @@ from general import buildData
 from models import *
 
 
-def main(input_folder, run_crop=True, times=1):
+def main(input_folder, run_crop=False, times=7):
     # GPU configuration
     config = ConfigProto()
     config.gpu_options.allow_growth = True
@@ -59,7 +60,9 @@ def main(input_folder, run_crop=True, times=1):
         dual_print("Done")
         dual_print("Splitting data into train and test")
         saved_time = datetime.now()
-        X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=TEST_PERCENT, random_state=42)
+        rand = randint(1, 157)
+        X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=TEST_PERCENT, random_state=rand,
+                                                            shuffle=True, stratify=y)
         inputShape = (df.shape[1], df.shape[2], df.shape[3])
         dual_print(f"Done, took: {str(datetime.now() - saved_time)}")
         dual_print("Calling Garbage Collector")
@@ -97,22 +100,25 @@ def main(input_folder, run_crop=True, times=1):
         # Train the model
         history = model.fit(X_train, y_train,
                             validation_data=(X_test, y_test),
-                            epochs=50,
-                            verbose=0,
+                            epochs=25,
+                            verbose=1,
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks)
 
         dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}"
                    f"\n\n\n ------------------------------------------------------------")
-
-        i = 0
-        while True:
-            output_path_new_name = f"{crop.OUTPUT_PATH}_{str(i)}"
-            if not os.path.exists(output_path_new_name):
-                os.rename(crop.OUTPUT_PATH, output_path_new_name)
-                break
-            i += 1
+        dual_print(f"***********************history*********************:\n\n{history.history}\n\n")
+        # i = 0
+        # while True:
+        #     output_path_new_name = f"{crop.OUTPUT_PATH}_{str(i)}"
+        #     if not os.path.exists(output_path_new_name):
+        #         os.rename(crop.OUTPUT_PATH, output_path_new_name)
+        #         break
+        #     i += 1
 
     dual_print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
+
+
+main("input")
