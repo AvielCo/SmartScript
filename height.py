@@ -90,7 +90,7 @@ def crop_images_height(input_dir, avg_height=4727):
                     ratio = h / w
                     dual_print(f"old height: {h}, old width: {w}, ratio: {ratio}")
 
-                    h, w = i.shape
+                    h, w, _ = i.shape
 
                     ratio = h / w
                     dual_print(f"new hight: {h}, new width: {w}, ratio: {ratio}")
