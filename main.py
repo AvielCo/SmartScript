@@ -1,9 +1,9 @@
 import argparse
 
+from consts import description, epilog, models
 from crop import main as crop_main
 from evaluate_model import main as test_main
 from network import main as train_main
-from consts import description, epilog, models
 
 parser = argparse.ArgumentParser(prog="smartscript",
                                  formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -34,13 +34,13 @@ def train_model(model_, times_):
 
 def test_model(model_):
     if model_ == "main":
-        test_main("input", model_)
+        test_main("input_test", model_)
     elif model_ == "cursive":
-        test_main("input/cursive", model_)
+        test_main("input_test/cursive", model_)
     elif model_ == "semi_square":
-        test_main("input/semi_square", model_)
+        test_main("input_test/semi_square", model_)
     else:
-        test_main("input/square", model_)
+        test_main("input_test/square", model_)
 
 
 try:
