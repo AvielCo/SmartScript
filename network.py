@@ -1,6 +1,7 @@
 import gc
 import logging as log
 from datetime import datetime
+from random import randint
 
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -68,7 +69,9 @@ def main(input_folder, times):
         dual_print("Done")
         dual_print("Splitting data into train and test")
         saved_time = datetime.now()
-        X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=TEST_PERCENT, random_state=42)
+        rand = randint(1, 157)
+        X_train, X_test, y_train, y_test = train_test_split(df, y, test_size=TEST_PERCENT, random_state=rand,
+                                                            shuffle=True, stratify=y)
         inputShape = (df.shape[1], df.shape[2], df.shape[3])
         dual_print(f"Done, took: {str(datetime.now() - saved_time)}")
         dual_print("Calling Garbage Collector")

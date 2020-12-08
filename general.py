@@ -1,6 +1,4 @@
 import inspect
-import os
-import random
 import sys
 from datetime import datetime
 
@@ -8,20 +6,6 @@ import cv2
 
 import crop
 from consts import *
-
-
-def shuffleDataset(dataset: list):
-    """
-    This function shuffles the dataset.
-
-    Parameters:
-    dataset (list): The dataset.
-
-    Returns:
-    list: The shuffled dataset.
-    """
-    random.shuffle(dataset)
-    return dataset
 
 
 def splitDataset(dataset: list):
@@ -96,7 +80,7 @@ def buildData(input_dir, dirr):
         dataset += loadPatchesFromPath(os.path.join(dirr, name))  # Append the patches list from each output folder
         print(f"[{inspect.stack()[0][3]}] - Finished loading from {name} Folder.")
     # Dataset is X, classes (labels) are Y
-    dataset, classes = splitDataset(shuffleDataset(dataset))
+    dataset, classes = splitDataset(dataset)
     print(f"[{inspect.stack()[0][3]}] - Data build ended, execution time: {str(datetime.now() - start_time)}")
     return dataset, classes
 
