@@ -79,14 +79,14 @@ def crop_images_height(input_dir, avg_height=4727):
                     if h == avg_height:
                         total_images += 1
                         continue
-                    s = abs(h - w)
+                    s = abs(w - h)
 
                     # if width != height, add a padding to the lower side so the image will be square (w == h)
                     if w != h:
                         if w > h:
-                            i = cv2.copyMakeBorder(i, 0, 0, s // 2, s // 2, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-                        else:
                             i = cv2.copyMakeBorder(i, s // 2, s // 2, 0, 0, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                        else:
+                            i = cv2.copyMakeBorder(i, 0, 0, s // 2, s // 2, cv2.BORDER_CONSTANT, value=(255, 255, 255))
                     ratio = h / w
                     dual_print(f"old height: {h}, old width: {w}, ratio: {ratio}")
 
