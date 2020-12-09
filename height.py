@@ -51,7 +51,7 @@ def crop_images_height(input_dir, avg_height=4727):
                     filename=filename,
                     level=log.INFO)
     folders_names = []
-    total_images = 0
+
     try:
         # Folders name from input folder (e.g. "AshkenaziCursive", "BizantyCursive"...)
         folders_names.insert(0, os.path.join(input_dir, CURSIVE))
@@ -60,14 +60,21 @@ def crop_images_height(input_dir, avg_height=4727):
     except FileNotFoundError:
         dual_print(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.", "error")
         return  # The script can"t run without input
+    total_images = len(os.listdir(folders_names[0])) + \
+                   len(os.listdir(folders_names[1])) + \
+                   len(os.listdir(folders_names[2]))
+    total_images_so_far = 0
     for input_path in folders_names:
         for dirs in os.listdir(input_path):
+            progress(total_images_so_far, total_images)
+            print("TOTAL IMAGES SO FAR")
             path = os.path.join(input_path, dirs)
             total_files_in_folder = len(os.listdir(path))
             print(f"folder {dirs}: ")
             j = 0
             for image in os.listdir(path):
                 j += 1
+                total_images_so_far += 1
                 full_img_path = os.path.join(path, image)
                 i = cv2.imread(full_img_path)
                 if i is None:
@@ -83,17 +90,21 @@ def crop_images_height(input_dir, avg_height=4727):
                 if h == avg_height:
                     total_images += 1
                     continue
+
+                ratio = h // w
+                w = avg_height // ratio
+
                 i = cv2.resize(i, (int(w), avg_height))
 
                 os.remove(full_img_path)
 
                 cv2.imwrite(full_img_path, i)
-                total_images += 1
                 progress(j, total_files_in_folder)
                 print(f"{j}/{total_files_in_folder}")
     dual_print(f"Done changing height to {total_images} pictures")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
+
 
 crop_images_height("input")
 crop_images_height("input_test")
