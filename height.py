@@ -88,10 +88,9 @@ def crop_images_height(input_dir, avg_height=4727):
                 dual_print(f"\nimage: {full_img_path}")
                 h, w, _ = i.shape
                 if h == avg_height:
-                    total_images += 1
                     continue
 
-                ratio = h // w
+                ratio = h / w
                 w = avg_height // ratio
 
                 i = cv2.resize(i, (int(w), avg_height))
