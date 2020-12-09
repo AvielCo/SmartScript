@@ -60,9 +60,7 @@ def crop_images_height(input_dir, avg_height=4727):
     except FileNotFoundError:
         dual_print(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.", "error")
         return  # The script can"t run without input
-    total_images = len(os.listdir(folders_names[0])) + \
-                   len(os.listdir(folders_names[1])) + \
-                   len(os.listdir(folders_names[2]))
+    total_images = sum([len(files) for r, d, files in os.walk(input_dir)])
     total_images_so_far = 0
     for input_path in folders_names:
         for dirs in os.listdir(input_path):
