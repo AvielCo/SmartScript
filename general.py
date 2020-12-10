@@ -45,7 +45,7 @@ def loadPatchesFromPath(path: str):
         patches = os.listdir(os.path.join(path, c))
         print(f"Collecting patches from {os.path.join(path, c)}")
         for i, patch in enumerate(patches):
-            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 300, 300)
+            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 224, 224)
             progress(i + 1, len(patches))
 
             dataset.append(tuple((img, CLASSES_VALUE_MAIN_MODEL[shape_type])))

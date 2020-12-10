@@ -4,6 +4,8 @@ from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.metrics import categorical_accuracy
 from tensorflow.keras.models import Sequential
 from tensorflow.python.keras.layers import AveragePooling2D
+from tensorflow.keras.applications import VGG19
+
 
 def LeNet_5_architecture(input_shape):
     m = Sequential([
@@ -67,6 +69,11 @@ def AlexNet_architecture(input_shape):
     return m
 
 
+def vgg19_model(input_shape):
+    m = VGG19(include_top=True, weights=None, input_tensor=None,
+              input_shape=input_shape, pooling=None, classes=3)
+    return m
+
 def default_model_architecture(input_shape):
     dropout_rate = 0.25
     m = Sequential([
@@ -95,5 +102,5 @@ def default_model_architecture(input_shape):
 
     return m
 
-# m = default_model_architecture((250, 250, 1))
-# m.summary(print_fn=print)
+m = vgg19_model((224, 224, 1))
+m.summary(print_fn=print)
