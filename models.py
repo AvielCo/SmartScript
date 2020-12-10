@@ -70,12 +70,73 @@ def AlexNet_architecture(input_shape):
 
 
 def vgg19_model(input_shape):
-    m = VGG19(include_top=True, weights=None, input_tensor=None,
-              input_shape=input_shape, pooling=None, classes=3)
+
+    m = Sequential([
+        Conv2D(64, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block1_conv1',
+               input_shape=input_shape),
+        Conv2D(64, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block1_conv2'),
+        MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool'),
+
+        # Block 2
+        Conv2D(128, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block2_conv1'),
+        Conv2D(128, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block2_conv2'),
+        MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool'),
+
+        # Block 3
+        Conv2D(256, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block3_conv1'),
+        Conv2D(256, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block3_conv2'),
+        MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'),
+
+        # Block 4
+        Conv2D(512, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block4_conv1'),
+        Conv2D(512, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block4_conv2'),
+        MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool'),
+
+        # Block 5
+        Conv2D(512, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block5_conv1'),
+        Conv2D(512, (3, 3),
+               activation='relu',
+               padding='same',
+               name='block5_conv2'),
+        MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool'),
+        Flatten(name='flatten'),
+        Dense(4096, activation='relu', name='fc1'),
+        Dense(4096, activation='relu', name='fc2'),
+        Dense(3, activation='softmax', name='predictions')
+
+    ])
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.SGD(learning_rate=0.0005),
-              metrics=["accuracy"])
+    optimizer = optimizers.SGD(learning_rate=0.0005),
+    metrics = ["accuracy"])
     return m
+
 
 def default_model_architecture(input_shape):
     dropout_rate = 0.25
@@ -104,6 +165,7 @@ def default_model_architecture(input_shape):
               metrics=["accuracy"])
 
     return m
+
 
 m = vgg19_model((224, 224, 1))
 m.summary(print_fn=print)
