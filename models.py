@@ -68,7 +68,8 @@ def AlexNet_architecture(input_shape):
     return m
 
 
-def vgg19_model(input_shape, classes):
+def vgg19_model(input_shape):
+    classes = 3
     m = Sequential([
         Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=input_shape),
         Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2'),
