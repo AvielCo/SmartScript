@@ -86,7 +86,7 @@ def main(input_folder, times):
             model = load_model("BestModel.h5")
         else:
             dual_print("No model found, creating..")
-            model = vgg19_model(inputShape)
+            model = default_model_architecture(inputShape)
 
         dual_print("Done")
         # Save the best model
@@ -114,11 +114,19 @@ def main(input_folder, times):
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks,
                             shuffle=True)
-        dual_print(
-            f"history: *********************************\n\n{history.history}\n\n*********************************")
-        dual_print(f"Done training.\nThe process took: {str(datetime.now() - start_time)}"
+
+        val_accuracy = history.history['val_accuracy']
+        val_loss = history.history['val_loss']
+
+        dual_print("Training results:\n")
+        i = 1
+        for (v_a, v_l) in zip(val_accuracy, val_loss):
+            dual_print(f"epoch {i}: val_loss: {v_l}, val_accuracy: {v_a}")
+            i += 1
+
+        dual_print(f"The process took: {str(datetime.now() - start_time)}"
                    f"\n\n\n ------------------------------------------------------------")
 
-    dual_print(f"Done training in loop. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
+    dual_print(f"Done training. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
