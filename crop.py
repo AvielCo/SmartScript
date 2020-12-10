@@ -60,14 +60,14 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     """
     if shape_type is not None:
         items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-        if shape_type == "cursive" and items_in_folder >= 4000:
+        if shape_type == "cursive" and items_in_folder >= 8000:
             return False
-        if shape_type != "cursive" and items_in_folder >= 2000:
+        if shape_type != "cursive" and items_in_folder >= 4000:
             return False
     global total_images_cropped
     global total_patches_cropped
     x1 = y1 = 0
-    x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 500X500)
+    x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 400X400)
     x_offset, y_offset = PATCH_DIMENSIONS["xOffset"], PATCH_DIMENSIONS[
         "yOffset"]  # The offset of the patch (defined as 1/2 the size of the patch)
     save_location = str
