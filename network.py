@@ -110,7 +110,7 @@ def main(input_folder, times):
         history = model.fit(X_train, y_train,
                             validation_data=(X_test, y_test),
                             epochs=EPOCHS,
-                            verbose=2,
+                            verbose=1,
                             batch_size=BATCH_SIZE,
                             callbacks=callbacks,
                             shuffle=True)
