@@ -90,10 +90,10 @@ def vgg19_model(input_shape):
         Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2'),
         MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool'),
 
-        # Block 5
-        Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1'),
-        Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2'),
-        MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool'),
+        # # Block 5
+        # Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1'),
+        # Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2'),
+        # MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool'),
 
         Flatten(name='flatten'),
 
