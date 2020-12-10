@@ -78,12 +78,12 @@ def vgg19_model(input_shape):
         # Block 2
         Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1'),
         Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2'),
-        MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool'),
+        MaxPooling2D((3, 3), strides=(2, 2), name='block2_pool'),
 
         # Block 3
         Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1'),
         Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2'),
-        MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'),
+        MaxPooling2D((3, 3), strides=(2, 2), name='block3_pool'),
 
         # Block 4
         Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1'),
