@@ -47,7 +47,7 @@ try:
     if args.train:
         model = str(args.train[0]).lower()
         if not models.__contains__(model):
-            raise NameError(f"model must contain one of: {models}")
+            raise NameError("model must contain one of: " + models)
         times = int(args.train[1])
         if times <= 0:
             raise ValueError
