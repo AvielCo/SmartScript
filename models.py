@@ -72,6 +72,9 @@ def AlexNet_architecture(input_shape):
 def vgg19_model(input_shape):
     m = VGG19(include_top=True, weights=None, input_tensor=None,
               input_shape=input_shape, pooling=None, classes=3)
+    m.compile(loss=categorical_crossentropy,
+              optimizer=optimizers.SGD(learning_rate=0.0005),
+              metrics=["accuracy"])
     return m
 
 def default_model_architecture(input_shape):
