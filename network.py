@@ -86,7 +86,7 @@ def main(input_folder, times):
             model = load_model("BestModel.h5")
         else:
             dual_print("No model found, creating..")
-            model = default_model_architecture(inputShape)
+            model = vgg19_model(inputShape)
 
         dual_print("Done")
         # Save the best model
