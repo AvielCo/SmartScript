@@ -4,7 +4,6 @@ from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.metrics import categorical_accuracy
 from tensorflow.keras.models import Sequential
 from tensorflow.python.keras.layers import AveragePooling2D
-from tensorflow.keras.applications import VGG19
 
 
 def LeNet_5_architecture(input_shape):
@@ -69,72 +68,43 @@ def AlexNet_architecture(input_shape):
     return m
 
 
-def vgg19_model(input_shape):
-
+def vgg19_model(input_shape, classes):
     m = Sequential([
-        Conv2D(64, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block1_conv1',
-               input_shape=input_shape),
-        Conv2D(64, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block1_conv2'),
-        MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool'),
+        Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=input_shape),
+        Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2'),
+        MaxPooling2D((3, 3), strides=(2, 2), name='block1_pool'),
 
         # Block 2
-        Conv2D(128, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block2_conv1'),
-        Conv2D(128, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block2_conv2'),
+        Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1'),
+        Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2'),
         MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool'),
 
         # Block 3
-        Conv2D(256, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block3_conv1'),
-        Conv2D(256, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block3_conv2'),
+        Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1'),
+        Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2'),
         MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool'),
 
         # Block 4
-        Conv2D(512, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block4_conv1'),
-        Conv2D(512, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block4_conv2'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2'),
         MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool'),
 
         # Block 5
-        Conv2D(512, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block5_conv1'),
-        Conv2D(512, (3, 3),
-               activation='relu',
-               padding='same',
-               name='block5_conv2'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2'),
         MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool'),
+
         Flatten(name='flatten'),
-        Dense(4096, activation='relu', name='fc1'),
+
+        # Fully connected layer
+        Dense(2048, activation='relu', name='fc1'),
         Dense(4096, activation='relu', name='fc2'),
-        Dense(3, activation='softmax', name='predictions')
+        Dense(classes, activation='softmax', name='predictions')
 
     ])
     m.compile(loss=categorical_crossentropy,
-    optimizer = optimizers.SGD(learning_rate=0.0005),
-    metrics = ["accuracy"])
+              optimizer=optimizers.SGD(learning_rate=0.0005),
+              metrics=["accuracy"])
     return m
 
 
