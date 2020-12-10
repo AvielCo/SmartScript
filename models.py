@@ -141,5 +141,5 @@ def default_model_architecture(input_shape):
     return m
 
 
-m = vgg19_model((224, 224, 1))
-m.summary(print_fn=print)
+# m = vgg19_model((224, 224, 1))
+# m.summary(print_fn=print)

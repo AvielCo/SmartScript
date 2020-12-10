@@ -35,6 +35,7 @@ def loadPatchesFromPath(path: str):
     """
     dataset = []
     patches_count = 0  # For logging
+    # takes the shape type (cursive, square or semi square) from the last work of the path
     shape_type = path.split("/")[-1]
     try:
         classes = os.listdir(path)
