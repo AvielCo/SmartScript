@@ -72,8 +72,9 @@ Choose one of the following optional arguments
 epilog = f'''
                 Syntax helper
 ------------------------------------------------------------
-model = one of {models},
-times = positive integer
+model = one of {models}.
+path = path to the model (.h5 file); example: path/to/model.h5
+times = positive integer.
 
 
 '''

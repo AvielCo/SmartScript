@@ -16,7 +16,7 @@ from general import buildData
 from consts import PROJECT_DIR
 
 
-def main(input_dir, model_type):
+def main(input_dir, path_to_model, model_type):
     filename = os.path.join(PROJECT_DIR, "logs",
                             f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
@@ -25,9 +25,8 @@ def main(input_dir, model_type):
                     level=log.INFO)
     # Create model
     dual_print("Loading model...")
-    model = Model()
-    if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
-        model = load_model("BestModel.h5")
+    if os.path.exists(path_to_model):
+        model = load_model(path_to_model)
     else:
         dual_print("No model found.. exiting")
         sys.exit()
