@@ -72,11 +72,11 @@ def main(input_folder, times):
 
         dual_print("Splitting data into train and test")
         # shuffle and split dataset and labels into train set and validation set
-        rand = randint(1, sys.maxsize)  # random number for the shuffle of the dataset
+        seed = randint(1, 1024)  # random seed number for the shuffle of the dataset
         train_dataset, test_dataset, train_labels, test_labels = train_test_split(dataset,
                                                                                   labels,
                                                                                   test_size=TEST_PERCENT,
-                                                                                  random_state=rand,
+                                                                                  random_state=seed,
                                                                                   shuffle=True,
                                                                                   stratify=labels)
         input_shape = (dataset.shape[1], dataset.shape[2], dataset.shape[3])
