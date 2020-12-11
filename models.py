@@ -93,13 +93,14 @@ def vgg19_architecture(input_shape):
         Flatten(name='flatten'),
 
         # Fully connected layer
-        Dense(2048, activation='relu', name='fc1'),
+        Dense(4096, activation='relu', name='fc1'),
+        Dropout(0.2),
         Dense(4096, activation='relu', name='fc2'),
         Dense(classes, activation='softmax', name='predictions')
 
     ], name="VGG19")
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.SGD(learning_rate=0.0001),
+              optimizer=optimizers.SGD(learning_rate=0.0009),
               metrics=["accuracy"])
     return m
 

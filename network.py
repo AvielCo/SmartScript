@@ -1,6 +1,5 @@
 import gc
 import logging as log
-import sys
 from datetime import datetime
 from random import randint
 
