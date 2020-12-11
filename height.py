@@ -102,6 +102,4 @@ def crop_images_height(input_dir, avg_height=4727):
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")
 
-
-crop_images_height("input")
 crop_images_height("input_test")

@@ -68,7 +68,7 @@ def AlexNet_architecture(input_shape):
     return m
 
 
-def vgg19_model(input_shape):
+def vgg19_architecture(input_shape):
     classes = 3
     m = Sequential([
         Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=input_shape),
@@ -78,22 +78,17 @@ def vgg19_model(input_shape):
         # Block 2
         Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1'),
         Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2'),
-        MaxPooling2D((2, 2), name='block2_pool'),
+        MaxPooling2D((3, 3), name='block2_pool'),
 
         # Block 3
         Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1'),
         Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2'),
-        MaxPooling2D((2, 2), name='block3_pool'),
+        MaxPooling2D((3, 3), name='block3_pool'),
 
         # Block 4
-        Conv2D(256, (3, 3), activation='relu', padding='same', name='block4_conv1'),
-        Conv2D(256, (3, 3), activation='relu', padding='same', name='block4_conv2'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2'),
         MaxPooling2D((2, 2), name='block4_pool'),
-
-        # # Block 5
-        Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv1'),
-        Conv2D(512, (3, 3), activation='relu', padding='same', name='block5_conv2'),
-        MaxPooling2D((2, 2), name='block5_pool'),
 
         Flatten(name='flatten'),
 

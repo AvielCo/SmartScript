@@ -1,6 +1,6 @@
 import argparse
 
-from consts import description, epilog, models
+from consts import *
 from crop import main as crop_main
 from evaluate_model import main as test_main
 from network import main as train_main
@@ -9,23 +9,23 @@ from network import main as train_main
 def train_model(model_, times_):
     if model_ == "main":
         train_main("input", times_)
-    elif model_ == "cursive":
-        train_main("input/cursive", times_)
-    elif model_ == "semi_square":
-        train_main("input/semi_square", times_)
+    elif model_ == CURSIVE:
+        train_main(f"input/{CURSIVE}", times_)
+    elif model_ == SEMI_SQUARE:
+        train_main(f"input/{SEMI_SQUARE}", times_)
     else:
-        train_main("input/square", times_)
+        train_main(f"input/{SQUARE}", times_)
 
 
 def test_model(model_):
     if model_ == "main":
         test_main("input_test", model_)
-    elif model_ == "cursive":
-        test_main("input_test/cursive", model_)
-    elif model_ == "semi_square":
-        test_main("input_test/semi_square", model_)
+    elif model_ == CURSIVE:
+        test_main(f"input_test/{CURSIVE}", model_)
+    elif model_ == SEMI_SQUARE:
+        test_main(f"input_test/{SEMI_SQUARE}", model_)
     else:
-        test_main("input_test/square", model_)
+        test_main(f"input_test/{SQUARE}", model_)
 
 
 parser = argparse.ArgumentParser(prog="smartscript",
@@ -51,7 +51,7 @@ try:
             raise NameError(f"model must contain one of: {models}")
         times = int(args.train[1])
         if times <= 0:
-            raise ValueError
+            times = 1
         train_model(model, times)
 
     elif args.test:
@@ -70,11 +70,9 @@ try:
         del models
         times = int(args.crop[0])
         if times <= 0:
-            raise ValueError
+            times = 1
         for i in range(times):
             crop_main("input")
 
-except ValueError as e:
-    times = 1
 except NameError as e:
     print(e)
