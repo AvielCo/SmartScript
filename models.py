@@ -99,7 +99,7 @@ def vgg19_architecture(input_shape):
 
     ], name="VGG19")
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.SGD(learning_rate=0.0005),
+              optimizer=optimizers.SGD(learning_rate=0.0001),
               metrics=["accuracy"])
     return m
 
