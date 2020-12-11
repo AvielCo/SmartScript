@@ -39,6 +39,27 @@ def main(input_folder, times):
     if times == 0:
         times = 1
 
+    # Create model
+    dual_print("Loading model...")
+    if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
+        model = load_model("BestModel.h5")
+    else:
+        dual_print("No model found, creating..")
+        model = vgg19_architecture((224, 224, 1))
+    dual_print("Done")
+    model.summary(print_fn=print)
+
+    dual_print("Creating callbacks")
+    # create folders and callbacks for the fit function.
+    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss")):
+        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss"))
+    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_categorical_accuracy")):
+        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_categorical_accuracy"))
+    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_accuracy")):
+        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_accuracy"))
+    callbacks = [checkpoint_best, checkpoint_val_accuracy, tensorboard]
+    dual_print("Done")
+
     for j in range(times):
         start_time = datetime.now()
 
@@ -78,7 +99,8 @@ def main(input_folder, times):
                                                                                   random_state=seed,
                                                                                   shuffle=True,
                                                                                   stratify=labels)
-        input_shape = (dataset.shape[1], dataset.shape[2], dataset.shape[3])
+        # input_shape = (dataset.shape[1], dataset.shape[2], dataset.shape[3])
+
         dual_print("Done")
         dual_print("Calling Garbage Collector")
         # free memory from unneeded variables
@@ -87,30 +109,7 @@ def main(input_folder, times):
         gc.collect()
         dual_print("Done")
 
-        # Create model
-        dual_print("Loading model...")
-        if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
-            model = load_model("BestModel.h5")
-        else:
-            dual_print("No model found, creating..")
-            model = vgg19_architecture(input_shape)
-
-        dual_print("Done")
-        # Save the best model
-        dual_print("Creating callbacks")
-        # create folders and callbacks for the fit function.
-        if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss")):
-            os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss"))
-        if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_categorical_accuracy")):
-            os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_categorical_accuracy"))
-        if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_accuracy")):
-            os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_accuracy"))
-        callbacks = [checkpoint_best, checkpoint_val_accuracy, tensorboard]
-        dual_print("Done")
-
-        model.summary(print_fn=print)
         dual_print("Training the model")
-
         # Train the model
         history = model.fit(train_dataset, train_labels,
                             validation_data=(test_dataset, test_labels),
