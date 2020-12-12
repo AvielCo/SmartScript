@@ -57,7 +57,7 @@ try:
 
     elif args.test:
         model_type = str(args.test[1]).lower()
-        model_path = str(args.test[0]).lower()
+        model_path = str(args.test[0])
         if not model_path.endswith(".h5"):
             raise TypeError("model path must be .h5 file")
         if not models.__contains__(model_type):
