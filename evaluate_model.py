@@ -25,7 +25,7 @@ def main(input_dir, path_to_model, model_type):
                     level=log.INFO)
     # Create model
     dual_print("Loading model...")
-    if os.path.exists(path_to_model):
+    if os.path.exists(os.path.join(PROJECT_DIR, path_to_model)):
         model = load_model(path_to_model)
     else:
         dual_print("No model found.. exiting")
