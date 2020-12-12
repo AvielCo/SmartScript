@@ -19,6 +19,7 @@ def train_model(model_type_, times_):
 
 def test_model(path_to_model_, model_type_):
     if model_type_ == "main":
+        print(path_to_model_)
         test_main("input_test", path_to_model_, model_type_)
     elif model_type_ == CURSIVE:
         test_main(f"input_test/{CURSIVE}", path_to_model_, model_type_)
