@@ -1,6 +1,4 @@
 import inspect
-import os
-import random
 import sys
 from datetime import datetime
 
@@ -25,7 +23,7 @@ def splitDataset(dataset: list):
 
 
 # Get data after the PreProcessing
-def loadPatchesFromPath(path: str, runCrop):
+def loadPatchesFromPath(path: str, model_type="main"):
     """
     This function loads patches from a given path, and gives labels to the patches from the same path.
 
@@ -37,26 +35,30 @@ def loadPatchesFromPath(path: str, runCrop):
     """
     dataset = []
     patches_count = 0  # For logging
-    shape_type = path.split("/")[-1]
+    font = path.split(path_delimiter)[-1]
+
     try:
         classes = os.listdir(path)
     except FileNotFoundError:
         print(f"[{inspect.stack()[0][3]}] - Output file {path} not found.")
         return
-    for c in classes:
-        patches = os.listdir(os.path.join(path, c))
-        print(f"Collecting patches from {os.path.join(path, c)}")
+
+    for origin_type in classes:
+        class_type = font if model_type == "main" else origin_type
+        patches = os.listdir(os.path.join(path, origin_type))
+        print(f"Collecting patches from {os.path.join(path, origin_type)}")
         for i, patch in enumerate(patches):
-            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, c, patch), 0), 224, 224)
+            img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, origin_type, patch), 0), 224, 224)
             progress(i + 1, len(patches))
 
-            dataset.append(tuple((img, CLASSES_VALUE_MAIN_MODEL[shape_type])))
+            dataset.append(tuple((img, CLASSES[model_type][class_type])))
             patches_count += 1
-    print(f"collected dataset: of {shape_type}")
+    print(f"collected dataset: of {class_type}")
+
     return dataset
 
 
-def buildData(input_dir, dirr):
+def buildData(model_type, output_dir):
     """
     This function builds the data from the output folders.
 
@@ -68,24 +70,34 @@ def buildData(input_dir, dirr):
     """
     start_time = datetime.now()
     print(f"[{inspect.stack()[0][3]}] - Start building data for the Neural Network.")
-    if not os.path.exists(os.path.join(PROJECT_DIR, dirr)):
-        dirr = crop.main(input_dir, dirr)  # PreProcessing run
+    if not os.path.exists(os.path.join(PROJECT_DIR, output_dir)):
+        output_dir = crop.main("input", output_dir)  # PreProcessing run
     try:
-        output_folders = os.listdir(dirr)
+        output_folders = os.listdir(output_dir)  # output_folder => ['cursive', 'square', 'semi_square']
     except FileNotFoundError:
         print(f"[{inspect.stack()[0][3]}] - Output file {str(crop.OUTPUT_PATH)} not found.")
         exit(1)
 
     dataset = []
-    for name in output_folders:
-        print(f"[{inspect.stack()[0][3]}] - Loading patches from {name} Folder.")
-        dataset += loadPatchesFromPath(os.path.join(dirr, name))  # Append the patches list from each output folder
-        print(f"[{inspect.stack()[0][3]}] - Finished loading from {name} Folder.")
+    if model_type in output_folders:
+        dataset += loadPatchesFromPath(os.path.join(output_dir, model_type), model_type)
+
+    # dataset = [ (img1, 0), (img2, 1) ... ]
+
+    else:
+        for folder_type in output_folders:
+            print(f"[{inspect.stack()[0][3]}] - Loading patches from {folder_type} Folder.")
+            dataset += loadPatchesFromPath(
+                os.path.join(output_dir, folder_type))  # Append the patches list from each output folder
+            print(f"[{inspect.stack()[0][3]}] - Finished loading from {folder_type} Folder.")
+
     # Dataset is X, classes (labels) are Y
-    dataset, classes = splitDataset(shuffleDataset(dataset))
-    print(f"[{inspect.stack()[0][3]}] - Data build ended, execution time: {str(datetime.now() - startTime)}")
+    dataset, classes = splitDataset(dataset)
+    print(f"[{inspect.stack()[0][3]}] - Data build ended, execution time: {str(datetime.now() - start_time)}")
     return dataset, classes
 
+
+buildData("main", "output_0")
 
 def progress(count, total, suffix=""):
     """

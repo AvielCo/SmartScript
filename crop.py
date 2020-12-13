@@ -1,7 +1,5 @@
 import inspect
-import logging as log
 from datetime import datetime
-from dual_print import dual_print
 
 import cv2
 import numpy as np
@@ -93,7 +91,14 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
                                              PREDICT_OUTPUT_PATH,
                                              folder_name,
                                              image_name + "_" + str(i) + ".jpg")
+
+            cv2.imshow("patch_bw", bw_cropped_patch)
+            cv2.waitKey(0)
+
             if isGoodPatch(bw_cropped_patch):
+                cv2.imshow("patch_gray_good", gray_cropped_patch)
+                cv2.waitKey(0)
+
                 total_patches_cropped += 1
                 cv2.imwrite(save_location, gray_cropped_patch)  # Save the patch to the output folder
             i += 1
@@ -106,7 +111,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     return True
 
 
-def RGBtoBW(img):
+def binarization(img):
     """
     turn rgb image to black and white using thresh hold.
     Args:
@@ -138,7 +143,7 @@ def cropImageEdges(image_path, is_predict):
     try:
         img = Image.open(image_path)
     except UnidentifiedImageError:
-        new_path = image_path.rsplit("/", 1)[0]
+        new_path = image_path.rsplit(path_delimiter, 1)[0]
         new_path += "/new_image.jpg"
         os.rename(image_path,
                   new_path)
@@ -189,7 +194,7 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
         full_img_path = os.path.join(os.getcwd(), path, folder_name, image_name)
     else:
         buffer_path = BUFFER_PATH
-        shape_type = path.split("/")[-1]
+        shape_type = path.split(path_delimiter)[-1]
         full_img_path = os.path.join(path, folder_name, image_name)
     t = True
     if not cropImageEdges(full_img_path, is_predict):
@@ -207,7 +212,11 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
                 image_name_no_extension = image_name_no_extension + "_right"
             dims = grayscale_img.shape
             h, w = dims[0], dims[1]
-            bw_img = RGBtoBW(grayscale_img)  # Open pic in BW
+            bw_img = binarization(grayscale_img)  # Open pic in BW
+
+            cv2.imshow("bw", bw_img)
+            cv2.waitKey(0)
+
             t = cropToPatches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
             i += 1
             if not t:
@@ -288,7 +297,7 @@ def preProcessingMain(input_dir):
                 for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
                     dual_print(
                         f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
-                    runThreads(subdir, cur_dir, input_path.split("/")[-1])
+                    runThreads(subdir, cur_dir, input_path.split(path_delimiter)[-1])
                     dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
 
 
@@ -305,7 +314,7 @@ def createFolders():
         os.makedirs(BUFFER_PATH)
 
 
-def main(input_dir):
+def main(input_dir, output_dir: str = ""):
     """
     Main function with execution time logging.
     """

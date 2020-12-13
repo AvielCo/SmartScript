@@ -1,4 +1,7 @@
 import os
+from sys import platform
+
+path_delimiter = "\\" if platform.__contains__("win") else "/"
 
 CURSIVE = "cursive"
 SEMI_SQUARE = "semi_square"
@@ -13,6 +16,7 @@ ITALIAN = "italian"
 BYZANTINE = "byzantine"
 ORIENTAL = "oriental"
 YEMENITE = "yemenite"
+
 PROJECT_DIR = os.getcwd()
 INPUT_PATH = os.path.join(PROJECT_DIR, INPUT)
 OUTPUT_PATH = os.path.join(PROJECT_DIR, OUTPUT)
@@ -33,6 +37,11 @@ CLASSES_VALUE_MAIN_MODEL = {CURSIVE: 0, SEMI_SQUARE: 1, SQUARE: 2}
 CLASSES_VALUE_CURSIVE_MODEL = {ASHKENAZI: 0, ITALIAN: 1, SEPHARDIC: 2}
 CLASSES_VALUE_SEMI_SQUARE_MODEL = {ASHKENAZI: 0, BYZANTINE: 1, ITALIAN: 2, ORIENTAL: 3, SEPHARDIC: 4, YEMENITE: 5}
 CLASSES_VALUE_SQUARE_MODEL = CLASSES_VALUE_SEMI_SQUARE_MODEL
+
+CLASSES = {"main": CLASSES_VALUE_MAIN_MODEL,
+           CURSIVE: CLASSES_VALUE_CURSIVE_MODEL,
+           SEMI_SQUARE: CLASSES_VALUE_SEMI_SQUARE_MODEL,
+           SQUARE: CLASSES_VALUE_SQUARE_MODEL}
 
 # Path #1 for best val_loss
 CHECKPOINT_PATH_LOSS = os.path.join(PROJECT_DIR,

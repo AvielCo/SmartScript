@@ -1,10 +1,10 @@
 import gc
 import logging as log
 from datetime import datetime
+from random import randint
 
 import numpy as np
 from sklearn.model_selection import train_test_split
-from tensorflow.compat.v1 import InteractiveSession, ConfigProto
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
@@ -15,7 +15,7 @@ from general import buildData
 from models import *
 
 
-def main(input_folder, times):
+def main(model_type, times):
     # # GPU configuration
     # config = ConfigProto()
     # config.gpu_options.allow_growth = True
@@ -23,7 +23,7 @@ def main(input_folder, times):
 
     prog_init_start_time = datetime.now()
 
-    filename = os.path.join(LOG_PATH, f"{prog_init_start_time.strftime('%d-%m-%y--%H-%M')}_train_on={input_folder}")
+    filename = os.path.join(LOG_PATH, f"{prog_init_start_time.strftime('%d-%m-%y--%H-%M')}_train_on={model_type}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=filename,
@@ -41,8 +41,10 @@ def main(input_folder, times):
 
     # Create model
     dual_print("Loading model...")
-    if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
-        model = load_model("BestModel.h5")
+
+    current_model = f"{model_type}.h5"
+    if os.path.exists(os.path.join(PROJECT_DIR, "models", current_model)):
+        model = load_model(current_model)
     else:
         dual_print("No model found, creating..")
         model = vgg19_architecture((224, 224, 1))
@@ -51,12 +53,16 @@ def main(input_folder, times):
 
     dual_print("Creating callbacks")
     # create folders and callbacks for the fit function.
-    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss")):
-        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss"))
-    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_categorical_accuracy")):
-        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_categorical_accuracy"))
-    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_accuracy")):
-        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_accuracy"))
+    if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss", model_type)):
+        os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss", model_type))
+
+    checkpoint_best = ModelCheckpoint(os.path.join(PROJECT_DIR, "models", current_model),
+                                      monitor="val_accuracy",
+                                      verbose=1,
+                                      save_best_only=True,
+                                      save_weights_only=False,
+                                      mode="max", save_freq="epoch")
+
     callbacks = [checkpoint_best, checkpoint_val_accuracy, tensorboard]
     dual_print("Done")
 
@@ -65,7 +71,7 @@ def main(input_folder, times):
 
         # build data from output folder if exists. if not,
         # will crop from input_folder
-        dataset, labels = buildData(input_folder, f"output_{j}")
+        dataset, labels = buildData(model_type, f"output_{j}")
 
         dual_print("Converting data to Numpy array")
         # converts dataset to np array (ndarray)

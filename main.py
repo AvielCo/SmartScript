@@ -6,17 +6,6 @@ from evaluate_model import main as test_main
 from network import main as train_main
 
 
-def train_model(model_type_, times_):
-    if model_type_ == "main":
-        train_main("input", times_)
-    elif model_type_ == CURSIVE:
-        train_main(f"input/{CURSIVE}", times_)
-    elif model_type_ == SEMI_SQUARE:
-        train_main(f"input/{SEMI_SQUARE}", times_)
-    else:
-        train_main(f"input/{SQUARE}", times_)
-
-
 def test_model(path_to_model_, model_type_):
     if model_type_ == "main":
         print(path_to_model_)
@@ -53,7 +42,7 @@ try:
         times = int(args.train[1])
         if times <= 0:
             times = 1
-        train_model(model_type, times)
+        train_main(model_type, times)
 
     elif args.test:
         model_type = str(args.test[1]).lower()
