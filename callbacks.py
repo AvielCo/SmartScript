@@ -19,13 +19,6 @@ checkpoint_val_acc = ModelCheckpoint(CHECKPOINT_PATH_CAT_ACC,
                                      save_weights_only=False,
                                      mode="max", save_freq="epoch")
 
-checkpoint_val_accuracy = ModelCheckpoint(CHECKPOINT_PATH_ACC,
-                                          monitor="val_accuracy",
-                                          verbose=1,
-                                          save_best_only=True,
-                                          save_weights_only=False,
-                                          mode="max", save_freq="epoch")
-
 tensorboard = TensorBoard(log_dir=FIT_LOG_PATH, histogram_freq=1, write_graph=True, write_images=True)
 
 early_stop = EarlyStopping(monitor="val_accuracy",

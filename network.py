@@ -60,12 +60,19 @@ def main(model_type, times):
     if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss", model_type)):
         os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss", model_type))
 
-    checkpoint_best = ModelCheckpoint(os.path.join(PROJECT_DIR, "models", model_type, current_model),
+    checkpoint_best = ModelCheckpoint(os.path.join(PROJECT_DIR, "models", current_model),
                                       monitor="val_accuracy",
                                       verbose=1,
                                       save_best_only=True,
                                       save_weights_only=False,
                                       mode="max", save_freq="epoch")
+
+    checkpoint_val_accuracy = ModelCheckpoint(os.path.join(PROJECT_DIR, "checkpoints", model_type, current_model),
+                                              monitor="val_accuracy",
+                                              verbose=1,
+                                              save_best_only=True,
+                                              save_weights_only=False,
+                                              mode="max", save_freq="epoch")
 
     callbacks = [checkpoint_best, checkpoint_val_accuracy, tensorboard]
     dual_print("Done")
