@@ -48,7 +48,7 @@ def main(model_type, times):
     except FileExistsError:
         pass
     if os.path.exists(os.path.join(PROJECT_DIR, "models", current_model)):
-        model = load_model(current_model)
+        model = load_model(os.path.join(PROJECT_DIR, "models", current_model))
     else:
         dual_print("No model found, creating..")
         model = vgg19_architecture((224, 224, 1))
