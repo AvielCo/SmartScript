@@ -1,6 +1,5 @@
 import os
 from sys import platform
-
 path_delimiter = "\\" if platform.__contains__("win") else "/"
 
 CURSIVE = "cursive"
@@ -60,8 +59,6 @@ CHECKPOINT_PATH_ACC = os.path.join(PROJECT_DIR,
                                    "checkpoints",
                                    "val_accuracy",
                                    "model.epoch={epoch:02d}-val_accuracy={val_accuracy:.2f}.h5")
-
-CHECKPOINT_PATH_BEST = os.path.join(PROJECT_DIR, "BestModel.h5")
 
 FIT_LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
 LOG_PATH = os.path.join(PROJECT_DIR, "logs")

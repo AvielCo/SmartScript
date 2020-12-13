@@ -67,7 +67,9 @@ def main(model_type, times):
                                       save_weights_only=False,
                                       mode="max", save_freq="epoch")
 
-    checkpoint_val_accuracy = ModelCheckpoint(os.path.join(PROJECT_DIR, "checkpoints", model_type, current_model),
+    checkpoint_val_accuracy = ModelCheckpoint(os.path.join(PROJECT_DIR, "checkpoints",
+                                                           "val_accuracy", model_type,
+                                                           "epoch={epoch:02d}-val_accuracy={val_accuracy:.2f}.h5"),
                                               monitor="val_accuracy",
                                               verbose=1,
                                               save_best_only=True,
