@@ -60,7 +60,7 @@ def main(model_type, times):
     if not os.path.exists(os.path.join(PROJECT_DIR, "checkpoints", "val_loss", model_type)):
         os.makedirs(os.path.join(PROJECT_DIR, "checkpoints", "val_loss", model_type))
 
-    checkpoint_best = ModelCheckpoint(os.path.join(PROJECT_DIR, "models", current_model),
+    checkpoint_best = ModelCheckpoint(os.path.join(PROJECT_DIR, "models", model_type, current_model),
                                       monitor="val_accuracy",
                                       verbose=1,
                                       save_best_only=True,
