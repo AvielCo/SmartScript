@@ -92,13 +92,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
                                              folder_name,
                                              image_name + "_" + str(i) + ".jpg")
 
-            cv2.imshow("patch_bw", bw_cropped_patch)
-            cv2.waitKey(0)
-
             if isGoodPatch(bw_cropped_patch):
-                cv2.imshow("patch_gray_good", gray_cropped_patch)
-                cv2.waitKey(0)
-
                 total_patches_cropped += 1
                 cv2.imwrite(save_location, gray_cropped_patch)  # Save the patch to the output folder
             i += 1
@@ -213,9 +207,6 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
             dims = grayscale_img.shape
             h, w = dims[0], dims[1]
             bw_img = binarization(grayscale_img)  # Open pic in BW
-
-            cv2.imshow("bw", bw_img)
-            cv2.waitKey(0)
 
             t = cropToPatches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
             i += 1
