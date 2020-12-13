@@ -97,8 +97,6 @@ def buildData(model_type, output_dir):
     return dataset, classes
 
 
-buildData("main", "output_0")
-
 def progress(count, total, suffix=""):
     """
     Showing progress bar on loops
