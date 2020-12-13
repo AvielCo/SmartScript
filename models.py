@@ -1,5 +1,5 @@
 from tensorflow.keras import optimizers
-from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization
 from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.metrics import categorical_accuracy
 from tensorflow.keras.models import Sequential
@@ -68,26 +68,71 @@ def AlexNet_architecture(input_shape):
     return m
 
 
-def default_model_architecture(input_shape):
+def vgg19_architecture(input_shape):
+    classes = 3
     m = Sequential([
-        Conv2D(64, (3, 3), activation="sigmoid", input_shape=input_shape),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="sigmoid"),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="sigmoid"),
-        MaxPooling2D(pool_size=(2, 2)),
-        Conv2D(64, (3, 3), activation="relu"),
-        MaxPooling2D(pool_size=(2, 2)),
+        Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv1', input_shape=input_shape),
+        Conv2D(64, (3, 3), activation='relu', padding='same', name='block1_conv2'),
+        MaxPooling2D((3, 3), name='block1_pool'),
+
+        # Block 2
+        Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv1'),
+        Conv2D(128, (3, 3), activation='relu', padding='same', name='block2_conv2'),
+        MaxPooling2D((3, 3), name='block2_pool'),
+
+        # Block 3
+        Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv1'),
+        Conv2D(256, (3, 3), activation='relu', padding='same', name='block3_conv2'),
+        MaxPooling2D((3, 3), name='block3_pool'),
+
+        # Block 4
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv1'),
+        Conv2D(512, (3, 3), activation='relu', padding='same', name='block4_conv2'),
+        MaxPooling2D((2, 2), name='block4_pool'),
+
+        Flatten(name='flatten'),
+
+        # Fully connected layer
+        Dense(4096, activation='relu', name='fc1'),
+        Dropout(0.2),
+        Dense(4096, activation='relu', name='fc2'),
+        Dense(classes, activation='softmax', name='predictions')
+
+    ], name="VGG19")
+    m.compile(loss=categorical_crossentropy,
+              optimizer=optimizers.SGD(learning_rate=0.0009),
+              metrics=["accuracy"])
+    return m
+
+
+def default_model_architecture(input_shape):
+    dropout_rate = 0.25
+    m = Sequential([
+        Conv2D(32, 9, padding="same", activation="relu", strides=3, input_shape=input_shape),
+        BatchNormalization(),
+        MaxPooling2D((4, 4)),
+        Conv2D(32, 4, padding="same", activation="relu"),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
+        Conv2D(32, 3, padding="same", activation="relu"),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
         Flatten(),
-        Dense(units=128, activation='relu'),
-        Dense(units=128, activation='relu'),
-        Dense(units=64, activation='relu'),
-        Dense(units=32, activation='relu'),
-        Dense(units=3, activation="softmax"),
+        Dense(512, activation="relu"),
+        Dropout(dropout_rate),
+        Dense(256, activation="relu"),
+        Dropout(dropout_rate),
+        Dense(64, activation="relu"),
+        Dropout(dropout_rate),
+        Dense(3, activation="softmax")
     ], "default")
 
     m.compile(loss=categorical_crossentropy,
-              optimizer=optimizers.SGD(learning_rate=0.0001),
+              optimizer=optimizers.SGD(learning_rate=0.0005),
               metrics=["accuracy"])
 
     return m
+
+
+# m = vgg19_model((224, 224, 1))
+# m.summary(print_fn=print)

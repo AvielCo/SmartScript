@@ -1,5 +1,7 @@
 import inspect
+import logging as log
 from datetime import datetime
+from dual_print import dual_print
 
 import cv2
 import numpy as np
@@ -60,14 +62,14 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
     """
     if shape_type is not None:
         items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
-        if shape_type == "cursive" and items_in_folder >= 4000:
+        if shape_type == "cursive" and items_in_folder >= 8000:
             return False
-        if shape_type != "cursive" and items_in_folder >= 2000:
+        if shape_type != "cursive" and items_in_folder >= 4000:
             return False
     global total_images_cropped
     global total_patches_cropped
     x1 = y1 = 0
-    x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 500X500)
+    x2, y2 = PATCH_DIMENSIONS["x"], PATCH_DIMENSIONS["y"]  # The dimension of the patch (current: 400X400)
     x_offset, y_offset = PATCH_DIMENSIONS["xOffset"], PATCH_DIMENSIONS[
         "yOffset"]  # The offset of the patch (defined as 1/2 the size of the patch)
     save_location = str
@@ -83,7 +85,7 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
                 save_location = os.path.join(OUTPUT_PATH,
                                              shape_type,  # cursive / square / semi square
                                              folder_name,  # for example AshkenaziCursive
-                                             f"{total_patches_cropped}_(i).jpg"  # image_i.jpg
+                                             f"{total_patches_cropped}_{i}.jpg"  # image_i.jpg
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
@@ -284,10 +286,10 @@ def preProcessingMain(input_dir):
                 pass
             else:
                 for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
-                    dual_print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
+                    dual_print(
+                        f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
                     runThreads(subdir, cur_dir, input_path.split("/")[-1])
                     dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
-                    break
 
 
 def createFolders():
@@ -311,9 +313,22 @@ def main(input_dir):
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script started")
     createFolders()
     preProcessingMain(input_dir)
+
+    if len(output_dir) > 0:
+        os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, output_dir))
+    else:
+        import time
+        time.sleep(1)
+        i = 0
+        while True:
+            if os.path.exists(os.path.join(PROJECT_DIR, f"output_{i}")):
+                i += 1
+                continue
+            os.rename(os.path.join(PROJECT_DIR, "output"), os.path.join(PROJECT_DIR, f"output_{i}"))
+            output_dir = f"output_{i}"
+            break
+
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script ended, execution time: {str(datetime.now() - start_time)}")
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
-
-
-main("input")
+    return output_dir

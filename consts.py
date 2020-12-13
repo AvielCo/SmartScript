@@ -54,9 +54,27 @@ CHECKPOINT_PATH_ACC = os.path.join(PROJECT_DIR,
 
 CHECKPOINT_PATH_BEST = os.path.join(PROJECT_DIR, "BestModel.h5")
 
-LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
+FIT_LOG_PATH = os.path.join(PROJECT_DIR, "logs", "fit")
+LOG_PATH = os.path.join(PROJECT_DIR, "logs")
 
 PATCH_DIMENSIONS = {"x": 400, "y": 400, "xOffset": 200, "yOffset": 200}
 
-TRAIN_PERCENT = 0.7
+TRAIN_PERCENT = 0.85
 TEST_PERCENT = 1 - TRAIN_PERCENT
+EPOCHS = 20
+BATCH_SIZE = 128
+
+models = ["main", CURSIVE, SEMI_SQUARE, SQUARE]
+description = '''
+                Welcome!
+Choose one of the following optional arguments
+'''
+epilog = f'''
+                Syntax helper
+------------------------------------------------------------
+model = one of {models}.
+path = path to the model (.h5 file); example: path/to/model.h5
+times = positive integer.
+
+
+'''

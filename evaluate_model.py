@@ -13,25 +13,27 @@ from tensorflow_core.python.keras.saving.save import load_model
 
 from dual_print import dual_print
 from general import buildData
+from consts import PROJECT_DIR
 
 
-def main(input_dir, run_crop=True):
-    filename = f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}"
+def main(input_dir, path_to_model, model_type):
+    filename = os.path.join(PROJECT_DIR, "logs",
+                            f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=filename,
                     level=log.INFO)
     # Create model
     dual_print("Loading model...")
-    model = Model()
-    if os.path.exists(os.path.join(os.getcwd(), "BestModel.h5")):
-        model = load_model("BestModel.h5")
+    if os.path.exists(path_to_model):
+        model = load_model(path_to_model)
     else:
+        dual_print("No model found.. exiting")
         sys.exit()
 
     start_time = datetime.now()
     # Cache flag rom command line
-    df1, y1 = buildData(input_dir, run_crop)  # True = Starting crop process
+    df1, y1 = buildData(input_dir, "output_test")  # True = Starting crop process
     dual_print("Converting data to Numpy array")
     saved_time = datetime.now()
     df = np.asarray(df1)
@@ -70,10 +72,10 @@ def main(input_dir, run_crop=True):
 
     a = confusion_matrix(y_true, y_pred)
     dual_print(f"\nevaluate result [loss, accuracy]: {eva}\n")
-    dual_print(f"confusion matrix:\n\t{a}\n")
+    dual_print(f"confusion matrix:\n{a}\n")
 
     b = classification_report(y_true, y_pred, labels=[0, 1, 2])
-    dual_print(f"classification report: \n\t{b}\n")
+    dual_print(f"classification report: \n{b}\n")
     dual_print(f"Took: {str(datetime.now() - start_time)}")
     log.shutdown()
     os.rename(filename, filename + "__DONE.txt")

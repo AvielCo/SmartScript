@@ -1,67 +1,84 @@
+import argparse
+
+from consts import *
+from crop import main as crop_main
 from evaluate_model import main as test_main
-from height import crop_images
 from network import main as train_main
-import logging as log
-from datetime import datetime
 
-print("Welcome\nWhat would you like to do?\nChoose an option from the menu:")
-first = "1"
-second = "1"
-while first != "1" or first != "2" or first != "3":
-    first = input("\n\t1. train\n\t2. test\n\t3. predict\n\t4. change height\noption: ")
-    if first == "1" or first == "2" or first == "3" or first == "4":
-        break
-    print("An error has been occurred please choose again.")
 
-if first == "1":
-    print("Choose model to train: ")
-    while second != "1" or second != "2" or second != "3" or second != "4":
-        second = input("\n\t1. main\n\t2. cursive\n\t3. semi square\n\t4. square\noption: ")
-        if second == "1":
-            train_main("input")
-            break
-        elif second == "2":
-            train_main("input/cursive")
-            break
-        elif second == "3":
-            train_main("input/semi_square")
-            break
-        elif second == "4":
-            train_main("input/square")
-            break
+def train_model(model_type_, times_):
+    if model_type_ == "main":
+        train_main("input", times_)
+    elif model_type_ == CURSIVE:
+        train_main(f"input/{CURSIVE}", times_)
+    elif model_type_ == SEMI_SQUARE:
+        train_main(f"input/{SEMI_SQUARE}", times_)
+    else:
+        train_main(f"input/{SQUARE}", times_)
 
-        print("An error has been occurred please choose again.")
 
-elif first == "2":
-    print("Choose model to test: ")
-    while second != "1" or second != "2" or second != "3" or second != "4":
-        second = input("\n\t1. main\n\t2. cursive\n\t3. semi square\n\t4. square\noption: ")
-        if second == "1":
-            test_main("input_test")
-            break
-        elif second == "2":
-            test_main("input_test/cursive")
-            break
-        elif second == "3":
-            test_main("input_test/semi_square")
-            break
-        elif second == "4":
-            test_main("input_test/square")
-            break
+def test_model(path_to_model_, model_type_):
+    if model_type_ == "main":
+        print(path_to_model_)
+        test_main("input_test", path_to_model_, model_type_)
+    elif model_type_ == CURSIVE:
+        test_main(f"input_test/{CURSIVE}", path_to_model_, model_type_)
+    elif model_type_ == SEMI_SQUARE:
+        test_main(f"input_test/{SEMI_SQUARE}", path_to_model_, model_type_)
+    else:
+        test_main(f"input_test/{SQUARE}", path_to_model_, model_type_)
 
-        print("An error has been occurred please choose again.")
 
-elif first == "3":
-    print("Not available")
+parser = argparse.ArgumentParser(prog="smartscript",
+                                 formatter_class=argparse.RawDescriptionHelpFormatter,
+                                 description=description,
+                                 epilog=epilog)
+group = parser.add_mutually_exclusive_group()
 
-elif first == "4":
-    print("Choose folder to change height (default is 4742 px): ")
-    while second != "1" or second != "2" or second != "3" or second != "4":
-        second = input("\n\t1. input\n\t2. input_test\noption: ")
-        if second == "1":
-            crop_images("input")
-            break
-        elif second == "2":
-            crop_images("input_test")
-            break
-        print("An error has been occurred please choose again.")
+group.add_argument("-t", "--train", type=str, metavar=("model", "times"), nargs=2,
+                   help="train a model (new or exist)")
+group.add_argument("-tt", "--test", type=str, metavar=("path", "model"), nargs=2,
+                   help="test a trained model")
+group.add_argument("-p", "--predict", type=str, metavar=("path", "model"), nargs=2,
+                   help="predict a image on a trained model")
+group.add_argument("-c", "--crop", type=str, metavar='times', nargs=1,
+                   help="crop images into patches")
+args = parser.parse_args()
+
+try:
+    if args.train:
+        model_type = str(args.train[0]).lower()
+        if not models.__contains__(model_type):
+            raise NameError(f"model must contain one of: {models}")
+        times = int(args.train[1])
+        if times <= 0:
+            times = 1
+        train_model(model_type, times)
+
+    elif args.test:
+        model_type = str(args.test[1]).lower()
+        model_path = str(args.test[0])
+        if not model_path.endswith(".h5"):
+            raise TypeError("model path must be .h5 file")
+        if not models.__contains__(model_type):
+            raise NameError(f"model must contain one of: {models}")
+        test_model(model_path, model_type)
+
+    elif args.predict:
+        model_type = str(args.predict[0]).lower()
+        if not models.__contains__(model_type):
+            raise NameError(f"model must contain one of: {models}")
+        pass  # TODO: add predict to each model
+
+    elif args.crop:
+        del models
+        times = int(args.crop[0])
+        if times <= 0:
+            times = 1
+        for i in range(times):
+            crop_main("input")
+
+except NameError as e:
+    print(e)
+except TypeError as e:
+    print(e)

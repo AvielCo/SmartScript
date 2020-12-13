@@ -33,7 +33,7 @@ checkpoint_best = ModelCheckpoint(CHECKPOINT_PATH_BEST,
                                   save_weights_only=False,
                                   mode="max", save_freq="epoch")
 
-tensorboard = TensorBoard(log_dir=LOG_PATH, histogram_freq=1, write_graph=True, write_images=True)
+tensorboard = TensorBoard(log_dir=FIT_LOG_PATH, histogram_freq=1, write_graph=True, write_images=True)
 
 early_stop = EarlyStopping(monitor="val_accuracy",
                            patience=10)
