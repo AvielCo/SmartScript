@@ -7,18 +7,17 @@ from datetime import datetime
 import cv2
 import numpy as np
 from sklearn.metrics import classification_report, confusion_matrix
-from tensorflow.keras import Model
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
+from consts import PROJECT_DIR
 from dual_print import dual_print
 from general import buildData
-from consts import PROJECT_DIR
 
 
-def main(input_dir, path_to_model, model_type):
+def main(path_to_model, model_type):
     filename = os.path.join(PROJECT_DIR, "logs",
-                            f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={input_dir}")
+                            f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={model_type}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
                     datefmt="%H:%M:%S",
                     filename=filename,
@@ -33,7 +32,7 @@ def main(input_dir, path_to_model, model_type):
 
     start_time = datetime.now()
     # Cache flag rom command line
-    df1, y1 = buildData(input_dir, "output_test")  # True = Starting crop process
+    df1, y1 = buildData(model_type, "output_test")  # True = Starting crop process
     dual_print("Converting data to Numpy array")
     saved_time = datetime.now()
     df = np.asarray(df1)

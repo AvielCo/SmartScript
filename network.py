@@ -51,7 +51,7 @@ def main(model_type, times):
         model = load_model(os.path.join(PROJECT_DIR, "models", current_model))
     else:
         dual_print("No model found, creating..")
-        model = vgg19_architecture((224, 224, 1))
+        model = vgg19_architecture((224, 224, 1), len(CLASSES[model_type]))
     dual_print("Done")
     model.summary(print_fn=print)
 

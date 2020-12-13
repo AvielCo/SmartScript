@@ -5,19 +5,6 @@ from crop import main as crop_main
 from evaluate_model import main as test_main
 from network import main as train_main
 
-
-def test_model(path_to_model_, model_type_):
-    if model_type_ == "main":
-        print(path_to_model_)
-        test_main("input_test", path_to_model_, model_type_)
-    elif model_type_ == CURSIVE:
-        test_main(f"input_test/{CURSIVE}", path_to_model_, model_type_)
-    elif model_type_ == SEMI_SQUARE:
-        test_main(f"input_test/{SEMI_SQUARE}", path_to_model_, model_type_)
-    else:
-        test_main(f"input_test/{SQUARE}", path_to_model_, model_type_)
-
-
 parser = argparse.ArgumentParser(prog="smartscript",
                                  formatter_class=argparse.RawDescriptionHelpFormatter,
                                  description=description,
@@ -51,7 +38,7 @@ try:
             raise TypeError("model path must be .h5 file")
         if not models.__contains__(model_type):
             raise NameError(f"model must contain one of: {models}")
-        test_model(model_path, model_type)
+        test_main(model_path, model_type)
 
     elif args.predict:
         model_type = str(args.predict[0]).lower()
