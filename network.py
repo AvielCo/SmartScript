@@ -43,7 +43,10 @@ def main(model_type, times):
     dual_print("Loading model...")
 
     current_model = f"{model_type}.h5"
-    os.makedirs(os.path.join(PROJECT_DIR, "models", model_type))
+    try:
+        os.makedirs(os.path.join(PROJECT_DIR, "models", model_type))
+    except FileExistsError:
+        pass
     if os.path.exists(os.path.join(PROJECT_DIR, "models", current_model)):
         model = load_model(current_model)
     else:
