@@ -44,7 +44,7 @@ def main(model_type, times):
 
     current_model = f"{model_type}.h5"
     try:
-        os.makedirs(os.path.join(PROJECT_DIR, "models", model_type))
+        os.makedirs(os.path.join(PROJECT_DIR, CHECKPOINTS, model_type))
     except FileExistsError:
         pass
     if os.path.exists(os.path.join(PROJECT_DIR, "models", current_model)):
