@@ -31,6 +31,8 @@ BUFFER_IMG_PATH = os.path.join(BUFFER_PATH, "buffer_img.jpg")
 PREDICT_BUFFER_IMG_PATH = os.path.join(PREDICT_BUFFER_PATH, "buffer_img.jpg")
 PREDICT_OUTPUT_PATH = os.path.join("patches")
 PREDICT_INPUT_PATH = os.path.join("raw_images")
+MODELS_DIR = os.path.join(PROJECT_DIR, "models")
+CHECKPOINTS_DIR = os.path.join(PROJECT_DIR, CHECKPOINTS)
 
 CLASSES_VALUE_MAIN_MODEL = {CURSIVE: 0, SEMI_SQUARE: 1, SQUARE: 2}
 CLASSES_VALUE_CURSIVE_MODEL = {ASHKENAZI: 0, ITALIAN: 1, SEPHARDIC: 2}

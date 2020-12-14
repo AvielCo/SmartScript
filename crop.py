@@ -294,15 +294,14 @@ def preProcessingMain(input_dir):
 
 def createFolders():
     # CREATE OUTPUT PATHS
-    if not os.path.exists(CURSIVE_OUTPUT_PATH):
-        os.makedirs(CURSIVE_OUTPUT_PATH)
-    if not os.path.exists(SQUARE_OUTPUT_PATH):
-        os.makedirs(SQUARE_OUTPUT_PATH)
-    if not os.path.exists(SEMI_SQUARE_OUTPUT_PATH):
-        os.makedirs(SEMI_SQUARE_OUTPUT_PATH)
 
-    if not os.path.exists(BUFFER_PATH):
+    try:
+        os.makedirs(CURSIVE_OUTPUT_PATH)
+        os.makedirs(SQUARE_OUTPUT_PATH)
+        os.makedirs(SEMI_SQUARE_OUTPUT_PATH)
         os.makedirs(BUFFER_PATH)
+    except FileExistsError or OSError:
+        pass
 
 
 def main(input_dir, output_dir: str = ""):

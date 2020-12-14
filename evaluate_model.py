@@ -1,7 +1,6 @@
 import gc
 import logging as log
 import os
-import sys
 from datetime import datetime
 
 import cv2
@@ -10,12 +9,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
-from consts import PROJECT_DIR
+from consts import PROJECT_DIR, MODELS_DIR
 from dual_print import dual_print
 from general import buildData
 
 
-def main(path_to_model, model_type):
+def main(model_type):
     filename = os.path.join(PROJECT_DIR, "logs",
                             f"{datetime.now().strftime('%d-%m-%y--%H-%M')}_evaluate-on={model_type}")
     log.basicConfig(format="%(asctime)s--%(levelname)s: %(message)s",
@@ -24,11 +23,13 @@ def main(path_to_model, model_type):
                     level=log.INFO)
     # Create model
     dual_print("Loading model...")
-    if os.path.exists(path_to_model):
-        model = load_model(path_to_model)
-    else:
+    try:
+        model = load_model(os.path.join(MODELS_DIR, f"{model_type}.h5"))
+    except IOError:
         dual_print("No model found.. exiting")
-        sys.exit()
+        log.shutdown()
+        os.rename(filename, filename + "__DONE_WITH_ERROR.txt")
+        return
 
     start_time = datetime.now()
     # Cache flag rom command line
