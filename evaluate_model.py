@@ -7,7 +7,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras.utils import to_categorical
 from tensorflow_core.python.keras.saving.save import load_model
 
-from consts import PROJECT_DIR, MODELS_DIR, BATCH_SIZE
+from consts import PROJECT_DIR, MODELS_DIR, BATCH_SIZE, CLASSES
 from dual_print import dual_print
 from general import buildData
 
@@ -56,6 +56,8 @@ def main(model_type):
     #         cv2.imwrite(
     #             os.path.join(os.getcwd(), "bad_patches", f"{str(j)}_true={true_labels[i]}_pred={prediction_labels[i]}.jpg"), dataset[i])
     #         j += 1
+
+    dual_print(CLASSES[model_type])
 
     conf_matrix = confusion_matrix(true_labels, prediction_labels)
     dual_print(f"\nevaluate result [loss, accuracy]: {model_evaluation_result}\n")
