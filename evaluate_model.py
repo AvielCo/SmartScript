@@ -58,7 +58,7 @@ def main(model_type):
     #             os.path.join(os.getcwd(), "bad_patches", f"{str(j)}_true={true_labels[i]}_pred={prediction_labels[i]}.jpg"), dataset[i])
     #         j += 1
 
-    dual_print(f"\ntable of content: {json.dumps(CLASSES[model_type])}")
+    dual_print(f"\nTested model: {model_type}\n\ttable of content:\n\t\t{json.dumps(CLASSES[model_type])}")
 
     conf_matrix = confusion_matrix(true_labels, prediction_labels)
     dual_print(f"\nevaluate result [loss, accuracy]: {model_evaluation_result}\n")
