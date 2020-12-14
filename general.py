@@ -80,11 +80,15 @@ def buildData(model_type, output_dir):
 
     dataset = []
     if model_type in output_folders:
+        # model_type == one of 'cursive' or 'square' or 'semi_square
+        # meaning: training the second layer models
         dataset += loadPatchesFromPath(os.path.join(output_dir, model_type), model_type)
 
     # dataset = [ (img1, 0), (img2, 1) ... ]
 
     else:
+        # model_type == "main"
+        # meaning: training the first layer model
         for folder_type in output_folders:
             print(f"[{inspect.stack()[0][3]}] - Loading patches from {folder_type} Folder.")
             dataset += loadPatchesFromPath(
