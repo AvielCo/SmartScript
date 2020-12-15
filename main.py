@@ -40,7 +40,7 @@ try:
 
     elif args.predict:
         model_type = str(args.predict[0]).lower()
-        if not model_type not in models:
+        if model_type not in models:
             raise NameError(f"model must contain one of: {models}")
         run_predict(model_type)
 
