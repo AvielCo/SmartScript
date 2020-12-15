@@ -19,7 +19,7 @@ def loadPatchesFromPath(path: str):
     except FileNotFoundError:
         return
     for patch in patchesNames:
-        img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, patch), 0), 227, 227)
+        img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, patch), 0), 224, 224)
         dataset.append(img)
     return dataset
 
@@ -43,7 +43,7 @@ def build_prediction_dataset(image_path: str):
     # TODO: why?: because we want to restrict access to two users from same directory
     # TODO: fuck u Aviel from the future
     process_image(prediction_image_path, "1", image)
-    dataset = loadPatchesFromPath(os.path.join(prediction_patches_path, "1"))
+    dataset = loadPatchesFromPath(os.path.join(prediction_patches_path))
     return dataset
 
 
