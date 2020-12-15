@@ -36,6 +36,7 @@ def build_prediction_dataset(image_path: str):
     except FileExistsError:
         pass
     image = os.listdir(prediction_image_path)[0]
+    print(image)
     # image_name = image_path.split(path_delimiter)[-1]
 
     # TODO: fix "1" when have a website
