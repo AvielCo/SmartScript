@@ -16,7 +16,7 @@ group.add_argument("-t", "--train", type=str, metavar=("model", "times"), nargs=
                    help="train a model (new or exist)")
 group.add_argument("-tt", "--test", type=str, metavar="model", nargs=1,
                    help="test a trained model")
-group.add_argument("-p", "--predict", type=str, metavar="model", nargs=1,
+group.add_argument("-p", "--predict", type=str, nargs=0,
                    help="predict an image on a trained model")
 group.add_argument("-c", "--crop", type=str, metavar='times', nargs=1,
                    help="crop images into patches")
@@ -39,10 +39,7 @@ try:
         test_main(model_type)
 
     elif args.predict:
-        model_type = str(args.predict[0]).lower()
-        if model_type not in models:
-            raise NameError(f"model must contain one of: {models}")
-        predict_on_shape(model_type)
+        predict_on_shape()
 
     elif args.crop:
         del models
