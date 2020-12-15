@@ -77,6 +77,7 @@ def predict_on_origin(origin_type):
 
     shutil.rmtree(os.path.join(PROJECT_DIR, "prediction_patches", "1"))
 
+
 def predict_on_shape():
     model = load_model(os.path.join(MODELS_DIR, "main.h5"))
     dataset = build_prediction_dataset(os.path.join(PROJECT_DIR, "predict_images", "1"))
@@ -87,11 +88,3 @@ def predict_on_shape():
 
     print(f"Done!\n{predicted_sub_class}: {probability}%")
     predict_on_origin(predicted_sub_class)
-
-    # shutil.rmtree(os.path.join("patches", folderID))
-    # shutil.rmtree(os.path.join("raw_images", folderID))
-
-
-# python main.py --predict <MODEL> <path_to_image>
-
-predict_on_shape()
