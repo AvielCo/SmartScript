@@ -21,7 +21,7 @@ def load_patches_from_path(path: str):
     except FileNotFoundError:
         return
     for patch in patchesNames:
-        img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, patch), 0), 227, 227)  # TODO: change to 224
+        img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, patch), 0), 224, 224)
         dataset.append(img)
     return dataset
 
