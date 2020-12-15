@@ -35,7 +35,7 @@ def build_prediction_dataset(image_path: str):
         os.makedirs(prediction_image_path)
     except FileExistsError:
         pass
-    image = os.listdir(prediction_image_path)[0]
+    image = os.listdir(os.path.join(prediction_image_path, "1"))[0]
     print(image)
     # image_name = image_path.split(path_delimiter)[-1]
 
