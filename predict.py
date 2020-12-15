@@ -1,3 +1,5 @@
+import shutil
+
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -70,8 +72,10 @@ def predict_on_origin(origin_type):
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
     predicted_origin, probability = extract_max_prediction(model, origin_type, dataset)
+
     print(f"Done!\n{predicted_origin}: {probability}%")
 
+    shutil.rmtree(os.path.join(PROJECT_DIR, "prediction_patches", "1"))
 
 def predict_on_shape():
     model = load_model(os.path.join(MODELS_DIR, "main.h5"))
