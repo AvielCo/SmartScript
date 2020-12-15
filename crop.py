@@ -184,16 +184,15 @@ def process_image(path: str, folder_name: str, image_name: str, shape_type=None)
     imageName (str): The name of the scanned image.
     folderName (str): The name of the folder that the scan is saved in.
     """
-    buffer_path = BUFFER_PATH
     full_img_path = os.path.join(path, folder_name, image_name)
     t = True
     if not crop_image_edges(full_img_path):
         os.remove(full_img_path)
         return t
-    for _, _, files in os.walk(buffer_path):
+    for _, _, files in os.walk(BUFFER_PATH):
         i = 0
         for file in files:
-            file_path = os.path.join(buffer_path, file)
+            file_path = os.path.join(BUFFER_PATH, file)
             grayscale_img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
             image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
             if i == 0:

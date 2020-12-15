@@ -26,7 +26,7 @@ def loadPatchesFromPath(path: str):
 
 def build_prediction_dataset(image_path: str):
     prediction_patches_path = os.path.join(PROJECT_DIR, "prediction_patches", "1")
-    prediction_image_path = os.path.join(PROJECT_DIR, "predict_images", "1")
+    prediction_image_path = os.path.join(PROJECT_DIR, "predict_images")
     try:
         os.makedirs(prediction_patches_path)
     except FileExistsError:
