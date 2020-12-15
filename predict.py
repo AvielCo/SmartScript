@@ -8,7 +8,7 @@ from general import maintain_aspect_ratio_resize
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 PATCHES_PATH = "patches"
-MODEL_NAME = os.path.join(os.getcwd(), "BestModel.h5")
+MODEL_NAME = os.path.join(os.getcwd(), "models/main.h5")
 
 
 # Get data after the PreProcessing
@@ -70,3 +70,5 @@ def run_predict(model_type):
     # shutil.rmtree(os.path.join("raw_images", folderID))
 
 # python main.py --predict <MODEL> <path_to_image>
+
+run_predict("main")

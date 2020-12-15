@@ -87,9 +87,9 @@ def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, imag
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
-                save_location = os.path.join(os.getcwd(),
-                                             PREDICT_OUTPUT_PATH,
-                                             folder_name,
+                save_location = os.path.join(PROJECT_DIR,
+                                             "prediction_patches",
+                                             "1",
                                              image_name + "_" + str(i) + ".jpg")
 
             if is_good_patch(bw_cropped_patch):
