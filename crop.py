@@ -124,10 +124,14 @@ def crop_image_edges(image_path):
         os.remove(img_path)
     img_path_left = os.path.join(BUFFER_PATH, "buffer_img_1.jpg")
     img_path_right = os.path.join(BUFFER_PATH, "buffer_img_2.jpg")
-    if os.path.exists(img_path_left) or os.path.exists(img_path_right):
+    try:
         os.remove(img_path_left)
+    except FileNotFoundError:
+        pass
+    try:
         os.remove(img_path_right)
-
+    except FileNotFoundError:
+        pass
     Image.MAX_IMAGE_PIXELS = None
     try:
         img = Image.open(image_path)
