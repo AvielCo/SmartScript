@@ -35,19 +35,20 @@ def build_prediction_dataset(image_path: str):
         os.makedirs(prediction_image_path)
     except FileExistsError:
         pass
-    image_name = image_path.split(path_delimiter)[-1]
+    image = os.listdir(prediction_image_path)[0]
+    # image_name = image_path.split(path_delimiter)[-1]
 
     # TODO: fix "1" when have a website
     # TODO: why?: because we want to restrict access to two users from same directory
     # TODO: fuck u Aviel from the future
-    process_image(prediction_image_path, "1", image_name)
+    process_image(prediction_image_path, "1", image)
     dataset = loadPatchesFromPath(os.path.join(prediction_patches_path, "1"))
     return dataset
 
 
-def run_predict(model_type, image_path):
+def run_predict(model_type):
     model = load_model(os.path.join(MODELS_DIR, f"{model_type}.h5"))
-    dataset = build_prediction_dataset(image_path)
+    dataset = build_prediction_dataset(os.path.join(PROJECT_DIR, "predict_images", "1"))
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
     summ = [0, 0, 0]

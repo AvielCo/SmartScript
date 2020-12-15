@@ -4,6 +4,7 @@ from consts import *
 from crop import main as crop_main
 from evaluate_model import main as test_main
 from network import main as train_main
+from predict import run_predict
 
 parser = argparse.ArgumentParser(prog="smartscript",
                                  formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -41,7 +42,7 @@ try:
         model_type = str(args.predict[0]).lower()
         if not model_type not in models:
             raise NameError(f"model must contain one of: {models}")
-        pass  # TODO: add predict to each model
+        run_predict(model_type)
 
     elif args.crop:
         del models
