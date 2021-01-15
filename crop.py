@@ -317,16 +317,6 @@ def main(input_dir, output_dir: str = ""):
     """
     Main function with execution time logging.
     """
-    main_folders = []
-    for main_folder in os.listdir(input_dir):
-        main_folders.append(os.path.join(input_dir, main_folder))
-    for main_folder in main_folders:
-        i = 0
-        for c in os.listdir(main_folder):
-            print(i)
-            print(main_folder, c)
-            i += 1
-
     start_time = datetime.now()
     dual_print(f"[{inspect.stack()[0][3]}] - Crop Script started")
     createFolders()
