@@ -33,6 +33,6 @@ the PR is merged it will automatically close the relevant issue.
   Please use this [PR approving guide ](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/approving-a-pull-request-with-required-reviews) if you need any help
   
   
-  # Some other userful links
+# Some other userful links
 - [How to review and edit a pull request](https://zellwk.com/blog/edit-pull-request/)
 - [Contributing to open source](https://github.com/freeCodeCamp/how-to-contribute-to-open-source) This repo got some useful knowledge.
