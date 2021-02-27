@@ -260,31 +260,39 @@ def preProcessingMain(input_dir):
     """
     start the pre processing for the training of the model
     Args:
-        input_dir: might be one of the following:
-                    1. "input"
-                    2. "input/cursive"
-                    3. "input/semi_square"
-                    4. "input/square"
+        input_dir:
+            folder that contains font folders
+            e.g: (how fs should look like):  root
+                                             │───input ─ container of main folders (main fonts)
+                                             │   │───cursive => main folder, contains sub font
+                                             │   │   │───ashkenazi => contains pictures of main font, sub font
+                                             │   │   │───  ...
+                                             │   │───square => main folder, contains sub font
+                                             │   │   │───byzantine => contains pictures of main font, sub font
+                                             │   │   │───...
+                                             │   │───semi_square => main folder, contains sub font
+                                             │   │   │───italian => contains pictures of main font, sub font
+                                             │   │   │───....
     """
-    folders_names = []
+    main_folders = []
     try:
-        # Folders name from input folder (e.g. "AshkenaziCursive", "BizantyCursive"...)
-        for dirr in os.listdir(input_dir):
-            folders_names.append(os.path.join(input_dir, dirr))
-
+        # Folders name from input folder ("input/cursive", "input/semi_square" or "input/square")
+        for main_folder in os.listdir(input_dir):
+            main_folders.append(os.path.join(input_dir, main_folder))
     except FileNotFoundError:
         dual_print(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.", "error")
         return  # The script can"t run without input
-    for input_path in folders_names:
-        for subdir, dirs, files in os.walk(input_path):
-            if files:  # folder doesn"t contains folder(s) => is internal folder (eg: Ashkenazi, Byzantine, Italian...)
-                pass
-            else:
-                for cur_dir in dirs:  # folder contains folder(s) => is external folder (eg: Cursive, Square or Semi Square)
-                    dual_print(
-                        f"[{inspect.stack()[0][3]}] - Start cropping the folder {os.path.join(subdir, cur_dir)}.")
-                    runThreads(subdir, cur_dir, input_path.split(path_delimiter)[-1])
-                    dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {os.path.join(subdir, cur_dir)}")
+
+    for main_folder in main_folders:  # iterate over the main folders
+        for sub_folder in os.listdir(main_folder):
+            # iterate over sub folders and crop each folder
+            # sub folders => "ashkenazi", "byzantine", "yemenite", .....
+            full_path = os.path.join(main_folder, sub_folder)
+            if not os.path.isdir(full_path):
+                continue
+            dual_print(f"[{inspect.stack()[0][3]}] - Start cropping the folder {full_path}.")
+            runThreads(main_folder, sub_folder, main_folder.split(path_delimiter)[-1])
+            dual_print(f"[{inspect.stack()[0][3]}] - Done cropping {full_path}")
 
 
 def createFolders():
@@ -327,3 +335,6 @@ def main(input_dir, output_dir: str = ""):
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
     return output_dir
+
+
+main("input")
