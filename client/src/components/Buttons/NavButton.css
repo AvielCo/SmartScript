@@ -6,5 +6,6 @@ button.MuiButtonBase-root:hover {
   background: #e67e22;
 }
 button.MuiButton-text {
+  text-transform: capitalize;
   color: #006266;
 }
