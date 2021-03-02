@@ -41,17 +41,18 @@ def main(model_type, times):
 
     # Create model
     dual_print("Loading model...")
-
     current_model = f"{model_type}.h5"
     try:
-        os.makedirs(os.path.join(PROJECT_DIR, CHECKPOINTS, "val_accuracy", model_type))
-    except FileExistsError:
-        pass
-    if os.path.exists(os.path.join(PROJECT_DIR, "models", current_model)):
-        model = load_model(os.path.join(PROJECT_DIR, "models", current_model))
-    else:
+        model = load_model(os.path.join(MODELS_DIR, current_model))
+    except IOError:
         dual_print("No model found, creating..")
         model = vgg19_architecture((224, 224, 1), len(CLASSES[model_type]))
+
+    try:
+        os.makedirs(os.path.join(CHECKPOINTS_DIR, "val_accuracy", model_type))
+    except FileExistsError:
+        pass
+
     dual_print("Done")
     model.summary(print_fn=print)
 

@@ -23,7 +23,7 @@ def splitDataset(dataset: list):
 
 
 # Get data after the PreProcessing
-def loadPatchesFromPath(path: str, model_type="main"):
+def loadPatchesFromPath(path: str, model_type=MAIN_MODEL):
     """
     This function loads patches from a given path, and gives labels to the patches from the same path.
 
@@ -44,7 +44,7 @@ def loadPatchesFromPath(path: str, model_type="main"):
         return
 
     for origin_type in classes:
-        class_type = font if model_type == "main" else origin_type
+        class_type = font if model_type == MAIN_MODEL else origin_type
         patches = os.listdir(os.path.join(path, origin_type))
         print(f"Collecting patches from {os.path.join(path, origin_type)}")
         for i, patch in enumerate(patches):
@@ -80,11 +80,15 @@ def buildData(model_type, output_dir):
 
     dataset = []
     if model_type in output_folders:
+        # model_type == one of 'cursive' or 'square' or 'semi_square
+        # meaning: training the second layer models
         dataset += loadPatchesFromPath(os.path.join(output_dir, model_type), model_type)
 
     # dataset = [ (img1, 0), (img2, 1) ... ]
 
     else:
+        # model_type == "main"
+        # meaning: training the first layer model
         for folder_type in output_folders:
             print(f"[{inspect.stack()[0][3]}] - Loading patches from {folder_type} Folder.")
             dataset += loadPatchesFromPath(

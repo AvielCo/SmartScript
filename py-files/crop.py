@@ -32,7 +32,7 @@ def countPixels(img):
     return black_pixels_avg
 
 
-def isGoodPatch(cropped_patch):
+def is_good_patch(cropped_patch):
     black_pixels_avg = countPixels(cropped_patch)
     delta_black = 0.25
     delta_white = 0.10
@@ -47,7 +47,7 @@ def isGoodPatch(cropped_patch):
     return True
 
 
-def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, folder_name, shape_type):
+def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, image_name, folder_name, shape_type):
     """
     This function takes a page, crops it into patches of 400x400 pixels and saves them in output folder.
 
@@ -87,12 +87,12 @@ def cropToPatches(bw_img, grayscale_img, image_width, image_height, image_name, 
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
-                save_location = os.path.join(os.getcwd(),
-                                             PREDICT_OUTPUT_PATH,
-                                             folder_name,
+                save_location = os.path.join(PROJECT_DIR,
+                                             "prediction_patches",
+                                             "1",
                                              image_name + "_" + str(i) + ".jpg")
 
-            if isGoodPatch(bw_cropped_patch):
+            if is_good_patch(bw_cropped_patch):
                 total_patches_cropped += 1
                 cv2.imwrite(save_location, gray_cropped_patch)  # Save the patch to the output folder
             i += 1
@@ -118,21 +118,20 @@ def binarization(img):
     return img
 
 
-def cropImageEdges(image_path, is_predict):
-    if not is_predict:
-        path = BUFFER_PATH
-    else:
-        path = PREDICT_BUFFER_PATH
-
-    img_path = os.path.join(path, "buffer_img.jpg")
+def crop_image_edges(image_path):
+    img_path = os.path.join(BUFFER_PATH, "buffer_img.jpg")
     if os.path.exists(img_path):
         os.remove(img_path)
-    img_path_left = os.path.join(path, "buffer_img_1.jpg")
-    img_path_right = os.path.join(path, "buffer_img_2.jpg")
-    if os.path.exists(img_path_left) or os.path.exists(img_path_right):
+    img_path_left = os.path.join(BUFFER_PATH, "buffer_img_1.jpg")
+    img_path_right = os.path.join(BUFFER_PATH, "buffer_img_2.jpg")
+    try:
         os.remove(img_path_left)
+    except FileNotFoundError:
+        pass
+    try:
         os.remove(img_path_right)
-
+    except FileNotFoundError:
+        pass
     Image.MAX_IMAGE_PIXELS = None
     try:
         img = Image.open(image_path)
@@ -174,30 +173,26 @@ def cropImageEdges(image_path, is_predict):
     return True
 
 
-def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=False):
+def process_image(path: str, folder_name: str, image_name: str, shape_type=None):
     """
-    This function crops a single page from the scan (by its dimensions).
-
+    This function process an image
+        1. remove the edges of the image
+        2. saves both sides of the image if the image has two pages
+        3. turn it to black and white using binarization
+        4. crop the image (to grayscale patches) using the function crop_to_patches
     Parameters:
     imageName (str): The name of the scanned image.
     folderName (str): The name of the folder that the scan is saved in.
     """
-    if is_predict:
-        buffer_path = PREDICT_BUFFER_PATH
-        shape_type = None
-        full_img_path = os.path.join(os.getcwd(), path, folder_name, image_name)
-    else:
-        buffer_path = BUFFER_PATH
-        shape_type = path.split(path_delimiter)[-1]
-        full_img_path = os.path.join(path, folder_name, image_name)
+    full_img_path = os.path.join(path, folder_name, image_name)
     t = True
-    if not cropImageEdges(full_img_path, is_predict):
+    if not crop_image_edges(full_img_path):
         os.remove(full_img_path)
         return t
-    for _, _, files in os.walk(buffer_path):
+    for _, _, files in os.walk(BUFFER_PATH):
         i = 0
         for file in files:
-            file_path = os.path.join(buffer_path, file)
+            file_path = os.path.join(BUFFER_PATH, file)
             grayscale_img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
             image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
             if i == 0:
@@ -208,17 +203,16 @@ def cropSinglePage(path: str, folder_name: str, image_name: str, is_predict=Fals
             h, w = dims[0], dims[1]
             bw_img = binarization(grayscale_img)  # Open pic in BW
 
-            t = cropToPatches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
+            t = crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
             i += 1
             if not t:
                 return t
             dual_print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
-    if not is_predict:
         os.remove(full_img_path)
     return t
 
 
-def cropFiles(images_input, folder_name: str, path: str):
+def crop_files(images_input, folder_name: str, path: str):
     """
     This function calls cropSinglePage for each image in the imagesInput list, with its dimensions and input folder name
 
@@ -228,7 +222,8 @@ def cropFiles(images_input, folder_name: str, path: str):
     folderName (str): Input folder of the patches.
     """
     for image_name in images_input:
-        t = cropSinglePage(path, folder_name, image_name)
+        shape_type = path.split(path_delimiter)[-1]
+        t = process_image(path, folder_name, image_name, shape_type=shape_type)
         if not t:
             return
 
@@ -258,7 +253,7 @@ def runThreads(input_path: str, folder_name: str, type_):
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
-    cropFiles(images_input, folder_name, input_path)
+    crop_files(images_input, folder_name, input_path)
 
 
 def preProcessingMain(input_dir):
