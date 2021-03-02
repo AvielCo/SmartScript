@@ -16,3 +16,4 @@ flask_project/__pycache__/
 flask_project/config.py
 !flask_project/templates/
 !flask_project/static/
+client/node_modules/
