@@ -1,0 +1,9 @@
+button.MuiButton-contained{
+    background-color:#d6ecef;
+    border:1px solid #d6e0e2;
+    border-radius: 50px;
+    color: #095e5c;
+    text-transform: capitalize;
+    margin:  20px;
+    text-align: center;
+}
