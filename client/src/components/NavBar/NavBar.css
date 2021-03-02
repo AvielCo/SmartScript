@@ -2,11 +2,17 @@ header.MuiAppBar-root {
   background: #fdd5a9;
 }
 
+div.navbar-holder {
+  display: flex;
+  flex-direction: row;
+}
+
 div.btnGroup {
   padding-top: 2px;
   display: flex;
   gap: 20px;
   padding-right: 20%;
+  margin-left: auto;
   float: right;
 }
 
@@ -15,4 +21,21 @@ img {
   width: auto;
   height: 40px;
   float: left;
+}
+
+@media (max-width: 629px) {
+  img {
+    justify-self: center;
+    width: 200px;
+    height: auto;
+  }
+
+  div.navbar-holder {
+    flex-direction: column;
+    align-self: center;
+  }
+
+  div.btnGroup {
+    padding-right: 0;
+  }
 }

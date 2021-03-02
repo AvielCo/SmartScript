@@ -7,7 +7,7 @@ import './NavBar.css';
 function NavBar() {
   return (
     <AppBar position="sticky">
-      <div>
+      <div className="navbar-holder">
         <img alt="SmartScript-logo" src={logo} />
         <div className="btnGroup">
           <NavButton btnText="Scan" />
