@@ -1,7 +1,5 @@
 import './App.css';
-import { Grid, Typography } from '@material-ui/core';
 import NavBar from './components/NavBar/NavBar';
-import landingImage from './assets/coolimage.jpg';
 
 function App() {
   return (
