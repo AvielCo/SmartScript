@@ -29,7 +29,7 @@ function App() {
             <h3>Scan Image</h3>
             <InputButton name="Upload Image" />
             <InputButton name="Scan Selected Files" />
-            <TextView result="Result" />
+            <TextView/>
           </div>
           <div className="img-holder">
             <img alt="something" src={pic}></img>
