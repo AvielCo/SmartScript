@@ -12,29 +12,18 @@ router.get('/all', async (req, res) => {
   }
 });
 
-router.post('/add', async (req, res) => {
-  const history = {
-    userId: req.body.userId,
-    predictedResult: req.body.predictedResult,
-  };
-
-  try {
-    const newHistory = await new History(history).save();
-    res.status(200).json(newHistory);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
-
 //TODO: fix route to be beutifullier
 router.post('/insert/:userId', async (req, res) => {
-  const { predictedResult } = await History.findOne({ userId: req.params.userId });
+  let { predictedResult } = await History.findOne({ userId: req.params.userId });
+  if (predictedResult === undefined) {
+    predictedResult = { images: [], results: { class: [], probability: [] } };
+  }
   predictedResult.images.push(req.body.newImage);
   predictedResult.results.class.push(req.body.newClass);
   predictedResult.results.probability.push(req.body.newProb);
   try {
-    const userHistory = await History.findOneAndUpdate({ userId: req.params.userId }, { predictedResult });
-    res.status(200).json(userHistory);
+    await History.findOneAndUpdate({ userId: req.params.userId }, { predictedResult });
+    res.status(200).json('Inserted new prediction.');
   } catch (err) {
     res.json({ message: err });
   }

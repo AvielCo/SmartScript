@@ -1,21 +1,18 @@
 const mongoose = require('mongoose');
 
-const reqArray = {
+const defArray = {
   type: Array,
-  required: true,
+  default: [],
 };
 
 const ResultSchema = mongoose.Schema({
-  class: reqArray,
-  probability: reqArray,
+  class: defArray,
+  probability: defArray,
 });
 
 const PredictSchema = mongoose.Schema({
-  images: reqArray,
-  results: {
-    type: ResultSchema,
-    required: true,
-  },
+  images: defArray,
+  results: ResultSchema,
 });
 
 const HistorySchema = mongoose.Schema({
@@ -23,10 +20,7 @@ const HistorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  predictedResult: {
-    type: PredictSchema,
-    required: true,
-  },
+  predictedResult: PredictSchema,
 });
 
 module.exports = mongoose.model('History', HistorySchema);
