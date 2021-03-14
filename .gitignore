@@ -17,3 +17,4 @@ flask_project/config.py
 !flask_project/templates/
 !flask_project/static/
 client/node_modules/
+backend/node_modules/
