@@ -53,7 +53,7 @@ router.post('/register', async (req, res, next) => {
     await new History({ userId: newUser._id }).save();
 
     //* Generate access token
-    return res.status(200).json(accessToken);
+    return res.status(200).json('Registered successfully');
   } catch (err) {
     if (err.isJoi) {
       err.status = 422;
