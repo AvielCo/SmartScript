@@ -1,17 +1,12 @@
 const mongoose = require('mongoose');
 
-const defArray = {
-  type: Array,
-  default: [],
-};
-
 const ResultSchema = mongoose.Schema({
-  class: defArray,
-  probability: defArray,
+  class: Array,
+  probability: Array,
 });
 
 const PredictSchema = mongoose.Schema({
-  images: defArray,
+  images: Array,
   results: ResultSchema,
 });
 
