@@ -8,14 +8,7 @@ logs/
 input/
 input/*
 ScannedScripts/
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
 */.env
->>>>>>> Stashed changes
-=======
-.env
->>>>>>> b9fa51592d9e09854e5ab5cc77c46cd115a2888a
 *.h5
 ngrok
 temp*
