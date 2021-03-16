@@ -8,6 +8,10 @@ logs/
 input/
 input/*
 ScannedScripts/
+<<<<<<< Updated upstream
+=======
+*/.env
+>>>>>>> Stashed changes
 *.h5
 ngrok
 temp*
