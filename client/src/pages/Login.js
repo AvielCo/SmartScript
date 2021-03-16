@@ -25,7 +25,6 @@ function Login() {
           <b>Username</b>
         </label>
         <input type="text" placeholder="Username" name="username" id="username" required />
-
         <label for="psw">
           <b>Password</b>
         </label>
