@@ -1,13 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/User');
-const History = require('../models/History');
-const createError = require('http-errors');
-const bcrypt = require('bcrypt');
-const authSchema = require('../validations/auth');
-const { signAccessToken } = require('../helpers/jwt');
+const User = require("../models/User");
+const History = require("../models/History");
+const createError = require("http-errors");
+const bcrypt = require("bcrypt");
+const authSchema = require("../validations/auth");
+const { signAccessToken } = require("../helpers/jwt");
+const CryptoJS = require("crypto-js");
+require("dotenv").config();
 
-router.get('/get-all', async (req, res) => {
+router.get("/get-all", async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -16,7 +18,7 @@ router.get('/get-all', async (req, res) => {
   }
 });
 
-router.post('/register', async (req, res, next) => {
+router.post("/register", async (req, res, next) => {
   try {
     const { email, username, password, name } = req.body;
     if (!email || !username || !password || !name) {
@@ -34,16 +36,19 @@ router.post('/register', async (req, res, next) => {
 
     //* Check if user exists
     const userExists = await User.findOne({
-      $or: [{ email: newUserDetails.email }, { username: newUserDetails.username }],
+      $or: [
+        { email: newUserDetails.email },
+        { username: newUserDetails.username },
+      ],
     });
     if (userExists) {
       //! User is exists
       //! Check which fields are the same and throw an error
       if (userExists.username === newUserDetails.username) {
-        throw createError.Conflict('Username is already exists');
+        throw createError.Conflict("Username is already exists");
       }
       if (userExists.email === newUserDetails.email) {
-        throw createError.Conflict('Email is already exists');
+        throw createError.Conflict("Email is already exists");
       }
       throw createError.Conflict();
     }
@@ -53,7 +58,7 @@ router.post('/register', async (req, res, next) => {
     await new History({ userId: newUser._id }).save();
 
     //* Generate access token
-    return res.status(200).json('Registered successfully');
+    return res.status(200).json("Registered successfully");
   } catch (err) {
     if (err.isJoi) {
       err.status = 422;
@@ -62,11 +67,25 @@ router.post('/register', async (req, res, next) => {
   }
 });
 
-router.post('/login', async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
+  const bytesPassword = CryptoJS.AES.decrypt(
+    req.query.password,
+    process.env.SECRET_KEY
+  );
+  const decryptedPassword = JSON.parse(
+    bytesPassword.toString(CryptoJS.enc.Utf8)
+  );
+  const bytesUsername = CryptoJS.AES.decrypt(
+    req.query.username,
+    process.env.SECRET_KEY
+  );
+  const decryptedUsername = JSON.parse(
+    bytesUsername.toString(CryptoJS.enc.Utf8)
+  );
   try {
-    const user = await User.findOne({ username: req.query.username });
+    const user = await User.findOne({ username: decryptedUsername });
     //TODO: validate password with DBc
-    console.log(user);
+
     const accessToken = await signAccessToken(user.id);
     res.status(200).json(accessToken);
   } catch (err) {
