@@ -8,6 +8,7 @@ logs/
 input/
 input/*
 ScannedScripts/
+.env
 *.h5
 ngrok
 temp*
