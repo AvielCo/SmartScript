@@ -37,12 +37,7 @@ const signRefreshToken = (userId) => {
         reject(createError.InternalServerError());
       }
       return resolve(userId);
-      // redisClient.SET(userId, token, 'EX', YEAR, (err, reply) => {
-      //   if (err) {
-      //     return reject(createError.InternalServerError());
-      //   }
-      //   resolve(token);
-      // });
+      
     });
   });
 };
@@ -72,12 +67,7 @@ const verifyRefreshToken = (refToken) => {
       }
       const userId = payload.aud;
       return resolve(userId);
-      // redisClient.GET(userId, (err, result) => {
-      //   if (err) {
-      //     return reject(createError.InternalServerError());
-      //   }
-      //   return refToken === result ? resolve(userId) : reject(createError.Unauthorized());
-      // });
+      
     });
   });
 };
