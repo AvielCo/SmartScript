@@ -3,15 +3,18 @@ import TextField from "@material-ui/core/TextField";
 import './InputField.css';
 
 
-function InputField({ name }) {
+function InputField({ value, type ,name, setProperty}) {
   return (
     <div>
       <TextField
         variant="outlined"
         required
-        label={name} 
-        className="input-field">
-        {name}
+        type={type}
+        label={value} 
+        className="input-field"
+        name={name}
+        onChange={(event)=> {setProperty(event.target.value)}}>
+        {value}
       </TextField>
     </div>
   );

@@ -3,7 +3,7 @@ import { AppBar } from '@material-ui/core';
 import NavButton from '../Buttons/NavButton';
 import logo from '../../assets/smartscript-logo.png';
 import {
-  BrowserRouter as Router,Link,Switch,Route
+  BrowserRouter as Router,Link
 } from "react-router-dom";
 import './NavBar.css';
 import Login from '../../pages/Login';
