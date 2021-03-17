@@ -5,7 +5,7 @@ import { Button } from "@material-ui/core";
 function InputButton({ name }) {
   return (
     <div>
-      <Button variant="contained">{name}</Button>
+      <Button variant="contained" type="submit">{name}</Button>
     </div>
   );
 }
