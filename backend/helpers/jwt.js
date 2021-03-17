@@ -1,9 +1,9 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
-const redisClient = require('./redis');
+// const redisClient = require('./redis');
 require('dotenv').config();
 
-const YEAR = 60 * 60 * 24 * 365;
+// const YEAR = 60 * 60 * 24 * 365;
 
 const signAccessToken = (userId) => {
   return new Promise((resolve, reject) => {
@@ -36,12 +36,13 @@ const signRefreshToken = (userId) => {
         console.log(err);
         reject(createError.InternalServerError());
       }
-      redisClient.SET(userId, token, 'EX', YEAR, (err, reply) => {
-        if (err) {
-          return reject(createError.InternalServerError());
-        }
-        resolve(token);
-      });
+      return resolve(userId);
+      // redisClient.SET(userId, token, 'EX', YEAR, (err, reply) => {
+      //   if (err) {
+      //     return reject(createError.InternalServerError());
+      //   }
+      //   resolve(token);
+      // });
     });
   });
 };
@@ -70,12 +71,13 @@ const verifyRefreshToken = (refToken) => {
         return reject(createError.Unauthorized());
       }
       const userId = payload.aud;
-      redisClient.GET(userId, (err, result) => {
-        if (err) {
-          return reject(createError.InternalServerError());
-        }
-        return refToken === result ? resolve(userId) : reject(createError.Unauthorized());
-      });
+      return resolve(userId);
+      // redisClient.GET(userId, (err, result) => {
+      //   if (err) {
+      //     return reject(createError.InternalServerError());
+      //   }
+      //   return refToken === result ? resolve(userId) : reject(createError.Unauthorized());
+      // });
     });
   });
 };
