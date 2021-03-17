@@ -3,7 +3,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const createError = require('http-errors');
 const { verifyAccessToken } = require('./helpers/jwt');
-require('./helpers/redis');
 require('dotenv').config();
 require('./helpers/mongodb');
 
