@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
+import './Login.css';
+import InputButton from "../components/Buttons/InputButton";
+import InputField from "../components/InputField/InputField";
 
 function Login() {
   const handleSubmit = (event) => {
@@ -20,18 +23,15 @@ function Login() {
 
   return (
     <React.Fragment>
-      <form onSubmit={handleSubmit}>
-        <label for="username">
-          <b>Username</b>
-        </label>
-        <input type="text" placeholder="Username" name="username" id="username" required />
-        <label for="psw">
-          <b>Password</b>
-        </label>
-        <input type="password" placeholder="Enter Password" name="psw" id="psw" required />
-        <button type="submit" className="registerbtn">
-          Register
-        </button>
+      <form onSubmit={handleSubmit} className="login">
+        <div className="login-container">
+          <h3>LOGIN</h3>
+          <div className="login-holder">
+            <InputField name="username"/>
+            <InputField name="password"/>
+            <InputButton name="LOGIN"></InputButton>
+          </div>
+        </div>
       </form>
     </React.Fragment>
   );
