@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const createError = require('http-errors');
+const { verifyAccessToken } = require('./helpers/jwt');
 require('dotenv').config();
 require('./helpers/mongodb');
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/', express.static('../client/build'));
 
 //* Routes
+
 //* Upload image routes
 const uploadRoute = require('./routes/upload');
 app.use('/api/upload', uploadRoute);
@@ -27,6 +29,10 @@ app.use('/api/auth', userRoute);
 //* History routes
 const historyRoute = require('./routes/history');
 app.use('/api/history', historyRoute);
+
+app.get('/api', verifyAccessToken, (req, res, next) => {
+  res.json('ok');
+});
 
 //! 404 Error handling
 app.use(async (req, res, next) => {
