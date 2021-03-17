@@ -6,6 +6,12 @@ const reqString = {
   required: true,
 };
 
+const emptyString = {
+  type: String,
+  default: '',
+  required: false,
+};
+
 const reqHideString = {
   ...reqString,
   select: false,
@@ -26,8 +32,20 @@ const UserSchema = mongoose.Schema({
   username: reqLowUniqueString,
   password: reqHideString,
   name: reqString,
+  historyId: emptyString,
 });
 
+//Check if password is equal to hashed password.
+UserSchema.methods.isValidPassword = async function (password) {
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+//When save() is fired
 UserSchema.pre('save', async function (next) {
   try {
     const salt = await bcrypt.genSalt(10);

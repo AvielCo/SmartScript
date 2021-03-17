@@ -1,19 +1,22 @@
 const mongoose = require('mongoose');
 
 const ResultSchema = mongoose.Schema({
-  class: Array,
-  probability: Array,
+  class: [String],
+  probability: [String],
+  _id: false,
 });
 
 const PredictSchema = mongoose.Schema({
-  images: Array,
+  images: [String],
   results: ResultSchema,
+  _id: false,
 });
 
 const HistorySchema = mongoose.Schema({
   userId: {
     type: String,
     required: true,
+    unique: true,
   },
   predictedResult: PredictSchema,
 });
