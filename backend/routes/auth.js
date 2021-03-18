@@ -1,19 +1,19 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const User = require("../models/User");
-const History = require("../models/History");
-const createError = require("http-errors");
-const authSchema = require("../validations/auth");
-const { decryptStrings } = require("../helpers/crypto");
+const User = require('../models/User');
+const History = require('../models/History');
+const createError = require('http-errors');
+const authSchema = require('../validations/auth');
+const { decryptStrings } = require('../helpers/crypto');
 
 const {
   signAccessToken,
   signRefreshToken,
   verifyRefreshToken,
-} = require("../helpers/jwt");
-require("dotenv").config();
+} = require('../helpers/jwt');
+require('dotenv').config();
 
-router.get("/get-all", async (req, res) => {
+router.get('/get-all', async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users);
@@ -22,7 +22,7 @@ router.get("/get-all", async (req, res) => {
   }
 });
 
-router.post("/register", async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
   try {
     const { email, username, password, name } = decryptStrings(
       { email: req.body.email },
@@ -34,7 +34,6 @@ router.post("/register", async (req, res, next) => {
     if (!email || !username || !password || !name) {
       throw createError.BadRequest();
     }
-
     await authSchema.validateAsync({ email, username, password, name });
 
     const newUserDetails = {
@@ -55,10 +54,10 @@ router.post("/register", async (req, res, next) => {
       //! User is exists
       //! Check which fields are the same and throw an error
       if (userExists.username === newUserDetails.username) {
-        throw createError.Conflict("Username is already in use.");
+        throw createError.Conflict('Username is already in use.');
       }
       if (userExists.email === newUserDetails.email) {
-        throw createError.Conflict("Email is already in use.");
+        throw createError.Conflict('Email is already in use.');
       }
       throw createError.Conflict();
     }
@@ -76,7 +75,7 @@ router.post("/register", async (req, res, next) => {
     await signAccessToken(newUser.id);
     await signRefreshToken(newUser.id);
 
-    res.status(200).send("Registered user successfully.");
+    res.status(200).send('Registered user successfully.');
   } catch (err) {
     if (err.isJoi) {
       err.status = 422;
@@ -85,32 +84,32 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   try {
     const { username, password } = decryptStrings(
       { username: req.query.username },
       { password: req.query.password }
     );
-    const user = await User.findOne({ username }).select("+password");
+    const user = await User.findOne({ username }).select('+password');
 
     const isMatch = await user.isValidPassword(password);
     if (!isMatch) {
-      throw createError.Unauthorized("Username or password are incorrect.");
+      throw createError.Unauthorized('Username or password are incorrect.');
     }
 
     await signAccessToken(user.id);
     await signRefreshToken(user.id);
 
-    res.status(200).send("Login success.");
+    res.status(200).send('Login success.');
   } catch (err) {
     if (err.isJoi) {
-      return next(createError.BadRequest("Invalid username or password."));
+      return next(createError.BadRequest('Invalid username or password.'));
     }
     next(err);
   }
 });
 
-router.post("/refresh-token", async (req, res, next) => {
+router.post('/refresh-token', async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
