@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-import InputField from "../components/InputField/InputField";
-import InputButton from "../components/Buttons/InputButton";
-import NavBar from "../components/NavBar/NavBar";
-import { encryptStrings } from "../helpers";
+import InputField from '../components/InputField/InputField';
+import InputButton from '../components/Buttons/InputButton';
+import NavBar from '../components/NavBar/NavBar';
+import { encryptStrings } from '../helpers';
 
-import "./Register.css";
+import './Register.css';
 
 function Register() {
-  const [inputUsername, setUsername] = useState("");
-  const [inputPassword, setPassword] = useState("");
-  const [inputEmail, setEmail] = useState("");
-  const [inputName, setName] = useState("");
+  const [inputUsername, setUsername] = useState('');
+  const [inputPassword, setPassword] = useState('');
+  const [inputEmail, setEmail] = useState('');
+  const [inputName, setName] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -41,7 +41,7 @@ function Register() {
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post("http://localhost:8008/api/auth/register", {
+      .post('http://localhost:8008/api/auth/register', {
         email,
         username,
         password,

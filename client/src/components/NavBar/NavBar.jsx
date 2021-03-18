@@ -24,7 +24,6 @@ function NavBar() {
     )
   }
 
- 
 
   return (
       <AppBar position="sticky">
@@ -34,7 +33,7 @@ function NavBar() {
             <NavButton btnText="Scan" />
             <NavButton btnText="About" />
             <NavButton btnText="Who we are" />
-            <Link to="/login">Login</Link>
+            <Link to="/login"><NavButton btnText="Login"/></Link>
             <Link to="/register"><NavButton btnText="Register"/></Link>
           </div>
         </div>
