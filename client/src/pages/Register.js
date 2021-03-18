@@ -4,6 +4,7 @@ import axios from "axios";
 import InputField from "../components/InputField/InputField";
 import InputButton from "../components/Buttons/InputButton";
 import NavBar from "../components/NavBar/NavBar";
+import { encryptStrings } from "../helpers";
 
 import "./Register.css";
 
@@ -15,11 +16,26 @@ function Register() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!inputUsername || !inputPassword) {
+      return;
+    }
+    const {
+      encryptedUsername,
+      encryptedPassword,
+      encryptedEmail,
+      encryptedName,
+    } = encryptStrings(
+      { encryptedUsername: inputUsername },
+      { encryptedPassword: inputPassword },
+      { encryptedEmail: inputEmail },
+      { encryptedName: inputName }
+    );
+
     registerUser(
-      event.target[0].value,
-      event.target[1].value,
-      event.target[2].value,
-      event.target[3].value
+      encryptedEmail,
+      encryptedUsername,
+      encryptedPassword,
+      encryptedName
     );
   };
 
