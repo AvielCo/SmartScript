@@ -77,7 +77,7 @@ function Register() {
             />
             <InputField
               value='Password'
-              type='text'
+              type='password'
               name='Password'
               setProperty={setPassword}
             />
