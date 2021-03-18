@@ -1,15 +1,18 @@
-import "./Home.css";
+import React from "react";
+
 import NavBar from "../components/NavBar/NavBar";
 import TextView from "../components/TextView/TextView";
 import InputButton from "../components/Buttons/InputButton";
-import React from "react";
+import "./Home.css";
 import pic from "../assets/landing-bg.jpg";
 
 function Home() {
+
+  
   return (
     <div>
       <NavBar />
-      <section className="landing">
+      <section className='landing'>
         <div></div>
         <p>
           Elit eiusmod elit ut id esse velit veniam ut consectetur esse occaecat
@@ -21,21 +24,21 @@ function Home() {
           Cupidatat ipsum sit ut consequat minim aliquip consequat.
         </p>
       </section>
-      <section className="scan">
-        <div className="scan-container">
-          <div className="btn-holder">
+      <section className='scan'>
+        <div className='scan-container'>
+          <div className='btn-holder'>
             <h3>Scan Image</h3>
-            <InputButton name="Upload Image" />
-            <InputButton name="Scan Selected Files" />
+            <InputButton name='Upload Image' />
+            <InputButton name='Scan Selected Files' />
             <TextView />
           </div>
-          <div className="img-holder">
-            <img alt="something" src={pic}></img>
+          <div className='img-holder'>
+            <img alt='something' src={pic}></img>
           </div>
         </div>
       </section>
-      <section className="about"></section>
-      <section className="wwa"></section>
+      <section className='about'></section>
+      <section className='wwa'></section>
     </div>
   );
 }
