@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-backend": "cd backend && npm run start",
-    "start-frontend": "cd client && npm start",
-    "start": "start-backend && start-frontend",
-    "dev": "",
+    "backend": "cd backend && npm start",
+    "frontend": "cd client && npm start",
+    "start": "backend && frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

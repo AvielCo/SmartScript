@@ -37,7 +37,6 @@ const signRefreshToken = (userId) => {
         reject(createError.InternalServerError());
       }
       return resolve(userId);
-      
     });
   });
 };
@@ -67,7 +66,6 @@ const verifyRefreshToken = (refToken) => {
       }
       const userId = payload.aud;
       return resolve(userId);
-      
     });
   });
 };
