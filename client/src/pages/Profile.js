@@ -36,7 +36,7 @@ function Profile() {
                 tabIndex={textField.index}
                 onSave={handleChanges}
                 cancelOnEscape
-                cancelOnUnfocus
+                // cancelOnUnfocus
                 startEditingOnFocus
                 submitOnEnter
               />

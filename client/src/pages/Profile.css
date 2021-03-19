@@ -4,7 +4,7 @@
   --clr-background-light: rgba(206, 168, 104, 0.4);
   --clr-text: rgba(35, 50, 55, 1);
 
-  --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
+  --box-shadow: 15px 10px 10px rgba(0, 0, 0, 0.4);
   --textfields-bg: rgba(255, 255, 255, 0.15);
   --gap: 3em;
 }
@@ -50,17 +50,16 @@
 .hidden-btn {
   display: none;
 }
-
-input[editext='input'] {
-  background: var(--textfields-bg);
-  text-align: center;
-}
-
 div[editext='hint'] {
   text-align: center;
   font-weight: bold;
   font-size: 0.75rem;
   color: var(--clr-text);
+}
+
+input[editext='input'] {
+  background: var(--textfields-bg);
+  text-align: center;
 }
 
 @media (max-width: 810px) {
