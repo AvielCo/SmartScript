@@ -1,3 +1,7 @@
+:root {
+  --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
+}
+
 .round-image {
   border: 1px solid black;
   width: 200px;
@@ -10,5 +14,5 @@
 
 .round-image:hover {
   transform: scale(1.1);
-  box-shadow: 10px 10px 8px grey;
+  box-shadow: var(--box-shadow);
 }

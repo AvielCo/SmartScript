@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import RoundImage from '../components/Image/RoundImage';
 import aviel from '../assets/aviel.jfif';
 import EdiText from 'react-editext';
+import NavBar from '../components/NavBar/NavBar';
 import './Profile.css';
 
 function Profile() {
@@ -17,7 +18,7 @@ function Profile() {
       { label: 'Name', name: 'name', value: name, hint: 'Press enter to save changes.', index: 2 },
     ];
     return (
-      <div className="textfields-holder">
+      <div className="profile-textfields">
         {textFields.map((textField) => {
           return (
             <div className="textfield">
@@ -47,10 +48,13 @@ function Profile() {
   };
 
   return (
-    <div className="main-container">
-      <TextFieldsHolder username="AvielCo" email="avielcohen15@gmail.com" name="Aviel Cohen" />
-      {/* picture property should be an object, not url */}
-      <RoundImage picture={aviel} />
+    <div className="profile-page">
+      <NavBar />
+      <div className="profile-form">
+        <TextFieldsHolder username="AvielCo" email="avielcohen15@gmail.com" name="Aviel Cohen" />
+        {/* picture property should be an object, not url */}
+        <RoundImage picture={aviel} />
+      </div>
     </div>
   );
 }

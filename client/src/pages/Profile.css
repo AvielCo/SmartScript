@@ -1,10 +1,32 @@
-.main-container {
+:root {
+  --clr-background: #cea868;
+  --clr-background-dark: rgba(206, 168, 104, 1);
+  --clr-background-light: rgba(206, 168, 104, 0.4);
+  --clr-text: rgba(35, 50, 55, 1);
+
+  --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
+  --textfields-bg: rgba(255, 255, 255, 0.15);
+  --gap: 3em;
+}
+
+.profile-page {
+  background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
+  height: 100vh;
+}
+
+.profile-form {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 30px 70px;
+  margin: 50px 500px;
+  box-shadow: var(--box-shadow);
+  border-radius: 20px;
+  background-color: var(--textfields-bg);
+  backdrop-filter: blur(5px);
 }
 
-.textfields-holder {
+.profile-textfields {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -29,17 +51,24 @@
   display: none;
 }
 
-input[editext='input'],
-div[editext='hint'] {
+input[editext='input'] {
+  background: var(--textfields-bg);
   text-align: center;
 }
 
+div[editext='hint'] {
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: var(--clr-text);
+}
+
 @media (max-width: 810px) {
-  .main-container {
+  .profile-form {
     flex-direction: column-reverse;
     padding-bottom: 10px;
   }
-  .textfields-holder {
+  .profile-textfields {
     flex-direction: row;
     flex-wrap: nowrap;
     padding-top: 25px;
@@ -49,11 +78,7 @@ div[editext='hint'] {
 }
 
 @media (max-width: 623px) {
-  .textfields-holder {
+  .profile-textfields {
     flex-direction: column;
-    flex-wrap: nowrap;
-    padding-top: 25px;
-    width: auto;
-    gap: 10px;
   }
 }
