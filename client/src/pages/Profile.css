@@ -49,10 +49,6 @@ div[editext='hint'] {
 }
 
 @media (max-width: 623px) {
-  .main-container {
-    flex-direction: column-reverse;
-    padding-bottom: 10px;
-  }
   .textfields-holder {
     flex-direction: column;
     flex-wrap: nowrap;
