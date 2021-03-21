@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
 import InputButton from '../components/Buttons/InputButton';
 import InputField from '../components/InputField/InputField';
 import NavBar from '../components/NavBar/NavBar';
+
 import { encryptStrings } from '../helpers';
 
 import './Login.css';
@@ -17,10 +19,7 @@ function Login() {
     if (!inputUsername || !inputPassword) {
       return;
     }
-    const { encryptedUsername, encryptedPassword } = encryptStrings(
-      { encryptedUsername: inputUsername },
-      { encryptedPassword: inputPassword }
-    );
+    const { encryptedUsername, encryptedPassword } = encryptStrings({ encryptedUsername: inputUsername }, { encryptedPassword: inputPassword });
     loginUser(encryptedUsername, encryptedPassword);
   };
 
@@ -30,7 +29,10 @@ function Login() {
         params: { username, password },
       })
       .then((response) => {
-        console.log(response);
+        if (response.data.res) {
+          sessionStorage.accessToken = response.data.accessToken;
+        }
+        return;
       })
       .catch((error) => {
         console.log(error);

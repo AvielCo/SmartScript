@@ -1,12 +1,15 @@
 import './App.css';
 import React from 'react';
-import {Home,Login,Register} from './pages';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Home, Login, Register, Profile } from './pages';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/profile">
+          <Profile />
+        </Route>
         <Route path="/register">
           <Register />
         </Route>

@@ -5,12 +5,7 @@ const History = require('../models/History');
 const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../helpers/crypto');
-
-const {
-  signAccessToken,
-  signRefreshToken,
-  verifyRefreshToken,
-} = require('../helpers/jwt');
+const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../helpers/jwt');
 require('dotenv').config();
 
 router.get('/get-all', async (req, res) => {
@@ -97,16 +92,21 @@ router.post('/login', async (req, res, next) => {
       throw createError.Unauthorized('Username or password are incorrect.');
     }
 
-    await signAccessToken(user.id);
+    const accessToken = await signAccessToken(user.id);
     await signRefreshToken(user.id);
 
-    res.status(200).send('Login success.');
+    res.status(200).json({ res: true, accessToken });
   } catch (err) {
     if (err.isJoi) {
       return next(createError.BadRequest('Invalid username or password.'));
     }
     next(err);
   }
+});
+
+router.get('/user', verifyAccessToken, (req, res, next) => {
+  const userId = req.payload['aud'];
+  return res.status(200).json({ auth: true, userId });
 });
 
 router.post('/refresh-token', async (req, res, next) => {
