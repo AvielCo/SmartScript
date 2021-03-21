@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import {Home,Login,Register} from './pages';
+import {Home,Login,Register,Error} from './pages';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
@@ -12,6 +12,9 @@ function App() {
         </Route>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/404">
+          <Error/>
         </Route>
         <Route path="/">
           <Home />
