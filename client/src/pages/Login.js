@@ -1,12 +1,12 @@
-import  React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './Login.css';
-import InputButton from "../components/Buttons/InputButton";
-import InputField from "../components/InputField/InputField";
+import InputButton from '../components/Buttons/InputButton';
+import InputField from '../components/InputField/InputField';
 import { encryptStrings } from '../helpers';
 
 function Login() {
-  const [inputUsername,setUsername] = useState('');
+  const [inputUsername, setUsername] = useState('');
   const [inputPassword, setPassword] = useState('');
 
   const handleSubmit = (event) => {
@@ -14,13 +14,9 @@ function Login() {
     if (!inputUsername || !inputPassword) {
       return;
     }
-    const { encryptedUsername, encryptedPassword } = encryptStrings(
-      { encryptedUsername: inputUsername },
-      { encryptedPassword: inputPassword }
-    );
+    const { encryptedUsername, encryptedPassword } = encryptStrings({ encryptedUsername: inputUsername }, { encryptedPassword: inputPassword });
     loginUser(encryptedUsername, encryptedPassword);
   };
-
 
   const loginUser = (username, password) => {
     axios
@@ -28,7 +24,10 @@ function Login() {
         params: { username, password },
       })
       .then((response) => {
-        console.log(response);
+        if (response.data.res) {
+          sessionStorage.accessToken = response.data.accessToken;
+        }
+        return;
       })
       .catch((error) => {
         console.log(error);
@@ -41,18 +40,8 @@ function Login() {
         <div className="login-container">
           <h3>LOGIN</h3>
           <div className="login-holder">
-            <InputField
-              value="username"
-              type="text"
-              name="username"
-              setProperty={setUsername}
-            />
-            <InputField
-              value="password"
-              type="s"
-              name="password"
-              setProperty={setPassword}
-            />
+            <InputField value="username" type="text" name="username" setProperty={setUsername} />
+            <InputField value="password" type="s" name="password" setProperty={setPassword} />
             <InputButton name="LOGIN"></InputButton>
           </div>
         </div>

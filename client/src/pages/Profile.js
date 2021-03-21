@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RoundImage from '../components/Image/RoundImage';
 import aviel from '../assets/aviel.jfif';
 import EdiText from 'react-editext';
 import NavBar from '../components/NavBar/NavBar';
+import axios from 'axios';
 import './Profile.css';
 
 function Profile() {
-  const handleChanges = (value, inputProp) => {
+  const handleChanges = (value, fieldName) => {
     //! handle change of one of the fields by sending a request to the backend.
-    console.log(value, inputProp);
+    console.log(value, fieldName);
   };
 
   const TextFieldsHolder = ({ username, email, name }) => {
+    //* example on how the data foramt should look like
     const textFields = [
       { label: 'Email', name: 'email', value: email, hint: 'Press enter to save changes.', type: 'email', index: 3 },
       { label: 'Username', name: 'username', value: username, hint: 'Press enter to save changes.', index: 1 },
@@ -36,7 +38,7 @@ function Profile() {
                 tabIndex={textField.index}
                 onSave={handleChanges}
                 cancelOnEscape
-                // cancelOnUnfocus
+                cancelOnUnfocus
                 startEditingOnFocus
                 submitOnEnter
               />
