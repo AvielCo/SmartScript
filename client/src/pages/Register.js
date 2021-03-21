@@ -1,15 +1,52 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+import InputField from '../components/InputField/InputField';
+import InputButton from '../components/Buttons/InputButton';
+import NavBar from '../components/NavBar/NavBar';
+import { encryptStrings } from '../helpers';
+
+import './Register.css';
+
 function Register() {
+  const [inputUsername, setUsername] = useState('');
+  const [inputPassword, setPassword] = useState('');
+  const [inputEmail, setEmail] = useState('');
+  const [inputName, setName] = useState('');
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    registerUser(event.target[0].value, event.target[1].value, event.target[2].value, event.target[3].value);
+    if (!inputUsername || !inputPassword) {
+      return;
+    }
+    const {
+      encryptedUsername,
+      encryptedPassword,
+      encryptedEmail,
+      encryptedName,
+    } = encryptStrings(
+      { encryptedUsername: inputUsername },
+      { encryptedPassword: inputPassword },
+      { encryptedEmail: inputEmail },
+      { encryptedName: inputName }
+    );
+
+    registerUser(
+      encryptedEmail,
+      encryptedUsername,
+      encryptedPassword,
+      encryptedName
+    );
   };
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post('http://localhost:8008/api/auth/register', { email, username, password, name })
+      .post('http://localhost:8008/api/auth/register', {
+        email,
+        username,
+        password,
+        name,
+      })
       .then(function (response) {
         console.log(response.data);
       })
@@ -21,14 +58,38 @@ function Register() {
 
   return (
     <React.Fragment>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Enter Email" name="email" id="email" required />
-        <input type="text" placeholder="Username" name="username" id="username" required />
-        <input type="password" placeholder="Enter Password" name="psw" id="psw" required />
-        <input type="text" placeholder="Name" name="name" id="name" required />
-        <button type="submit" className="registerbtn">
-          Register
-        </button>
+      <NavBar />
+      <form className='register-page' onSubmit={handleSubmit}>
+        <div className='register-form'>
+          <h3>Register</h3>
+          <div className='register-inputfields'>
+            <InputField
+              value='Email'
+              type='text'
+              name='Email'
+              setProperty={setEmail}
+            />
+            <InputField
+              value='Username'
+              type='text'
+              name='Username'
+              setProperty={setUsername}
+            />
+            <InputField
+              value='Password'
+              type='password'
+              name='Password'
+              setProperty={setPassword}
+            />
+            <InputField
+              value='Name'
+              type='text'
+              name='Name'
+              setProperty={setName}
+            />
+            <InputButton name='Register'></InputButton>
+          </div>
+        </div>
       </form>
     </React.Fragment>
   );
