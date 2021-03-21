@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import RoundImage from '../components/Image/RoundImage';
-import aviel from '../assets/aviel.jfif';
 import EdiText from 'react-editext';
 import NavBar from '../components/NavBar/NavBar';
 import axios from 'axios';
@@ -55,7 +54,7 @@ function Profile() {
       <div className="profile-form">
         <TextFieldsHolder username="AvielCo" email="avielcohen15@gmail.com" name="Aviel Cohen" />
         {/* picture property should be an object, not url */}
-        <RoundImage picture={aviel} />
+        {/* <RoundImage picture={aviel} /> */}
       </div>
     </div>
   );
