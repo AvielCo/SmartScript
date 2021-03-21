@@ -19,16 +19,13 @@ app.use('/', express.static('../client/build'));
 //* Routes
 
 //* Upload image routes
-const uploadRoute = require('./routes/upload');
-app.use('/api/upload', uploadRoute);
+app.use('/api/images', require('./routes/images'));
 
 //* Authentication routes
-const userRoute = require('./routes/auth');
-app.use('/api/auth', userRoute);
+app.use('/api/auth', require('./routes/auth'));
 
 //* History routes
-const historyRoute = require('./routes/history');
-app.use('/api/history', historyRoute);
+app.use('/api/history', require('./routes/history'));
 
 app.get('/api', verifyAccessToken, (req, res, next) => {
   res.json('ok');

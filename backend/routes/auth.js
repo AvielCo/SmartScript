@@ -71,13 +71,13 @@ router.post('/login', async (req, res, next) => {
   try {
     const { username, password } = decryptStrings({ username: req.query.username }, { password: req.query.password });
     const user = await User.findOne({ username }).select('+password');
-    
+
     const isMatch = await user.isValidPassword(password);
     if (!isMatch) {
       throw createError.Unauthorized('Username or password are incorrect.');
     }
 
-    await signAccessToken(user.id);
+    const accessToken = await signAccessToken(user.id);
     await signRefreshToken(user.id);
 
     res.status(200).send('Login success.');
