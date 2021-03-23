@@ -2,8 +2,10 @@ import shutil
 
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
+import sys
+import json
 
+from tensorflow.keras.models import load_model
 from consts import *
 from crop import process_image
 from general import maintain_aspect_ratio_resize
@@ -23,6 +25,7 @@ def load_patches_from_path(path: str):
     try:
         patches_names = os.listdir(path)
     except FileNotFoundError:
+        print(json.dumps({"success": False}))
         return
     for patch in patches_names:
         img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, patch), 0), 224, 224)
@@ -30,7 +33,7 @@ def load_patches_from_path(path: str):
     return dataset
 
 
-def build_prediction_dataset(image_path: str):
+def build_prediction_dataset():
     """
         This function takes an image path and creates a dataset using the patches from the image
     Args:
@@ -39,25 +42,17 @@ def build_prediction_dataset(image_path: str):
     Returns: dataset contains patches of the same image
 
     """
-    prediction_patches_path = os.path.join(PROJECT_DIR, "prediction_patches", "1")
-    prediction_image_path = os.path.join(PROJECT_DIR, "predict_images")
-    try:
-        os.makedirs(prediction_patches_path)
-    except FileExistsError:
-        pass
-    try:
-        os.makedirs(prediction_image_path)
-    except FileExistsError:
-        pass
-    image = os.listdir(os.path.join(prediction_image_path, "1"))[0]
-    print(image)
-    # image_name = image_path.split(path_delimiter)[-1]
+    user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images")
+    user_predict_patches_path = os.path.join(PREDICT_DIR, "predict_patches", user_id)
 
-    # TODO: fix "1" when have a website
-    # TODO: why?: because we want to restrict access to two users from same directory
-    # TODO: fuck u Aviel from the future
-    process_image(prediction_image_path, "1", image)
-    dataset = load_patches_from_path(os.path.join(prediction_patches_path))
+    image = os.listdir(os.path.join(user_predict_image_path, user_id))[0]
+    if not image {
+        print(json.dumps({"success": False}))
+        return
+    }
+
+    process_image(path=user_predict_image_path, folder_name=user_id, image_name=image)
+    dataset = load_patches_from_path(user_predict_patches_path)
     return dataset
 
 
@@ -113,12 +108,12 @@ def predict_on_origin(predicted_shape, dataset):
         dataset (type ndarray): patches of the image to predict on
 
     """
-    model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
-    predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
+    # model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
+    # predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
 
-    print(f"Done!\n{predicted_origin} from {predicted_shape}: {probability}%")
+    print(json.dumps({"success": True, "origin": "ashkenazi", "shape": predicted_shape, "probability": "99%"}))
 
-    shutil.rmtree(os.path.join(PROJECT_DIR, "prediction_patches", "1"))
+    shutil.rmtree(user_predict_patches_path)
 
 
 def predict_on_shape():
@@ -127,12 +122,39 @@ def predict_on_shape():
         takes an image and predicting what the shape (font) of that image.
         Then predicting the origin of the same image. (using predict_on_origin)
     """
-    model = load_model(os.path.join(MODELS_DIR, "main.h5"))
-    dataset = build_prediction_dataset(os.path.join(PROJECT_DIR, "predict_images", "1"))
+    try:
+        os.makedirs(MODELS_DIR)
+    except FileExistsError:
+        pass
+    # try:
+    #     model = load_model(os.path.join(MODELS_DIR, "main.h5"))
+    # except:
+    #     print(json.dumps({"success": False}))
+    #     return
+    print(json.dumps({"success": True, "origin": "ashkenazi", "shape": "square", "probability": "99%"}))
+    return
+    dataset = build_prediction_dataset()
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
-    print("Predicting {} patches...".format(len(dataset)))
-    predicted_shape, probability = extract_max_prediction(model, "main", dataset)
+    # print("Predicting {} patches...".format(len(dataset)))
+    # predicted_shape, probability = extract_max_prediction(model, "main", dataset)
 
-    print(f"Done!\n{predicted_shape}: {probability}%")
-    predict_on_origin(predicted_shape, dataset)
+    # print(f"Done!\n{predicted_shape}: {probability}%")
+    predict_on_origin("cursive", dataset)
+
+user_id = sys.argv[1]
+user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images", user_id)
+user_predict_patches_path = os.path.join(PREDICT_DIR, "predict_patches", user_id)
+try:
+    os.makedirs(user_predict_image_path)
+    del(user_predict_image_path)
+except FileExistsError:
+    pass
+try:
+    shutil.rmtree(user_predict_patches_path)
+except FileNotFoundError:
+    pass
+finally:
+    os.makedirs(user_predict_patches_path)
+
+predict_on_shape()

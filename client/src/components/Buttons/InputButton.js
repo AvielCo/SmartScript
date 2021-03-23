@@ -1,11 +1,13 @@
-import React from "react";
-import "./InputButton.css";
-import { Button } from "@material-ui/core";
+import React from 'react';
+import './InputButton.css';
+import { Button } from '@material-ui/core';
 
-function InputButton({ name }) {
+function InputButton({ name, type, component }) {
   return (
     <div>
-      <Button variant="contained" type="submit">{name}</Button>
+      <Button variant="contained" type={type} component={component}>
+        {name}
+      </Button>
     </div>
   );
 }

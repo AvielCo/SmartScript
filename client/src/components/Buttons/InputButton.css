@@ -1,11 +1,11 @@
-button.MuiButton-contained{
-    width: 200px;
-    height: 50px;
-    background-color:#d3ad60;
-    border-radius: 50px;
-    color: #233237;
-    text-transform: capitalize;
-    text-align: center;
-    font-weight: bold;
+span.MuiButton-contained,
+button.MuiButton-contained {
+  width: 200px;
+  height: 50px;
+  background-color: #d3ad60;
+  border-radius: 50px;
+  color: #233237;
+  text-transform: capitalize;
+  text-align: center;
+  font-weight: bold;
 }
-

@@ -79,7 +79,7 @@ router.post('/login', async (req, res, next) => {
 
     const accessToken = await signAccessToken(user.id);
     await signRefreshToken(user.id);
-
+    console.log(accessToken);
     res.status(200).send('Login success.');
   } catch (err) {
     if (err.isJoi) {

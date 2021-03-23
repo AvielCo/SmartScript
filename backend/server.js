@@ -24,9 +24,6 @@ app.use('/api/images', require('./routes/images'));
 //* Authentication routes
 app.use('/api/auth', require('./routes/auth'));
 
-//* History routes
-app.use('/api/history', require('./routes/history'));
-
 app.get('/api', verifyAccessToken, (req, res, next) => {
   res.json('ok');
 });

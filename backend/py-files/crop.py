@@ -87,9 +87,9 @@ def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, imag
                                              )  # save location: output\\shape_type\\folder_name\\image_name_i.jpg
 
             else:
-                save_location = os.path.join(PROJECT_DIR,
-                                             "prediction_patches",
-                                             "1",
+                save_location = os.path.join(PREDICT_DIR,
+                                             "predict_patches",
+                                             folder_name,
                                              image_name + "_" + str(i) + ".jpg")
 
             if is_good_patch(bw_cropped_patch):
@@ -118,12 +118,16 @@ def binarization(img):
     return img
 
 
-def crop_image_edges(image_path):
-    img_path = os.path.join(BUFFER_PATH, "buffer_img.jpg")
+def crop_image_edges(image_path, folder_name):
+    try:
+        os.makedirs(os.path.join(BUFFER_PATH, folder_name))
+    except FileExistsError:
+        pass
+    img_path = os.path.join(BUFFER_PATH, folder_name, "buffer_img.jpg")
     if os.path.exists(img_path):
         os.remove(img_path)
-    img_path_left = os.path.join(BUFFER_PATH, "buffer_img_1.jpg")
-    img_path_right = os.path.join(BUFFER_PATH, "buffer_img_2.jpg")
+    img_path_left = os.path.join(BUFFER_PATH, folder_name, "buffer_img_1.jpg")
+    img_path_right = os.path.join(BUFFER_PATH, folder_name, "buffer_img_2.jpg")
     try:
         os.remove(img_path_left)
     except FileNotFoundError:
@@ -173,7 +177,7 @@ def crop_image_edges(image_path):
     return True
 
 
-def process_image(path: str, folder_name: str, image_name: str, shape_type=None):
+def process_image(path, folder_name, image_name, shape_type=None):
     """
     This function process an image
         1. remove the edges of the image
@@ -186,13 +190,15 @@ def process_image(path: str, folder_name: str, image_name: str, shape_type=None)
     """
     full_img_path = os.path.join(path, folder_name, image_name)
     t = True
-    if not crop_image_edges(full_img_path):
+    if not crop_image_edges(full_img_path, folder_name):
         os.remove(full_img_path)
+        print(json.dumps({"success": False}))
         return t
-    for _, _, files in os.walk(BUFFER_PATH):
+    FULL_BUFFER_PATH = os.path.join(BUFFER_PATH, folder_name)
+    for _, _, files in os.walk(FULL_BUFFER_PATH):
         i = 0
         for file in files:
-            file_path = os.path.join(BUFFER_PATH, file)
+            file_path = os.path.join(FULL_BUFFER_PATH, file)
             grayscale_img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
             image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
             if i == 0:
@@ -208,7 +214,8 @@ def process_image(path: str, folder_name: str, image_name: str, shape_type=None)
             if not t:
                 return t
             dual_print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
-        os.remove(full_img_path)
+        if(shape_type):
+            os.remove(full_img_path)
     return t
 
 
@@ -335,6 +342,3 @@ def main(input_dir, output_dir: str = ""):
     dual_print(
         f"[{inspect.stack()[0][3]}] - {str(total_images_cropped)} Images have been cropped into {str(total_patches_cropped)} Patches.")
     return output_dir
-
-
-main("input")
