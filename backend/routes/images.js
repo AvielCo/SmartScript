@@ -43,31 +43,43 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const condaCommand = `conda activate ${envName}`;
     const child = exec(`${condaCommand} && ${pythonScriptCommand}`);
 
-    child.stdout.on('data', async function (data) {
+    child.stdout.on('data', async (data) => {
       const message = JSON.parse(data);
       if (message.success) {
-        let totalImages = 0;
-        const imagePath = path.join(process.cwd(), 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
-        const userHistory = await History.findById({ _id: user.historyId });
-        if (userHistory.predictedResult) {
-          totalImages = userHistory.predictedResult.classes.length;
-        }
-        const savePath = path.join(process.cwd(), 'users-histories', `${user._id}`);
-        fs.mkdir(savePath, { recursive: true }, (err) => {
-          if (err) throw createError.BadRequest();
-        });
-        sharp(imagePath)
-          .resize(400)
-          .toFile(path.join(savePath, `${totalImages}.jpg`));
+        try {
+          let totalImages = 0;
+          const imagePath = path.join(process.cwd(), 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
+          const userHistory = await History.findById({ _id: user.historyId });
+          if (userHistory.predictedResult) {
+            totalImages = userHistory.predictedResult.classes.length;
+          }
+          const savePath = path.join(process.cwd(), 'users-histories', `${user._id}`);
+          fs.mkdir(savePath, { recursive: true }, (err) => {
+            if (err) return next(createError.InternalServerError());
+          });
+          sharp(imagePath)
+            .resize(400)
+            .toFile(path.join(savePath, `${totalImages}.jpg`))
+            .catch((err) => {
+              return next(createError.InternalServerError());
+            });
 
-        await insertNewHistory(userHistory, message);
-        return res.status(200).send(message);
+          await insertNewHistory(userHistory, message);
+
+          return res.status(200).send(message);
+        } catch (err) {
+          return next(createError.InternalServerError());
+        }
       }
-      throw createError.BadRequest();
+      return next(createError.BadRequest(message.reason));
+    });
+
+    child.stderr.on('data', (data) => {
+      console.log(data);
     });
 
     child.on('error', function (err) {
-      throw next(err);
+      throw next(createError.InternalServerError());
     });
   } catch (err) {
     console.log(err);

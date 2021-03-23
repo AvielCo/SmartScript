@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from PIL import UnidentifiedImageError
-
+import json
 from consts import *
 from dual_print import dual_print
 
@@ -61,9 +61,9 @@ def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, imag
     if shape_type is not None:
         items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
         if shape_type == "cursive" and items_in_folder >= 8000:
-            return False
+            raise Exception("Unknown error, please try again.")
         if shape_type != "cursive" and items_in_folder >= 4000:
-            return False
+            raise Exception("Unknown error, please try again.")
     global total_images_cropped
     global total_patches_cropped
     x1 = y1 = 0
@@ -102,7 +102,6 @@ def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, imag
 
     total_images_cropped += 1
     dual_print(f"Successfully cropped to patches {image_name} in {save_location}, with shape: {shape_type}")
-    return True
 
 
 def binarization(img):
@@ -152,7 +151,7 @@ def crop_image_edges(image_path, folder_name):
     try:
         img = img.crop(coords)
     except OSError:
-        return False
+        raise Exception("Unknown error, please try again.")
 
     w, h = img.size
     ratio = h / w
@@ -165,16 +164,14 @@ def crop_image_edges(image_path, folder_name):
             cv2.imwrite(img_path_left, cv2.cvtColor(left_side, cv2.COLOR_RGB2BGR))
             cv2.imwrite(img_path_right, cv2.cvtColor(right_side, cv2.COLOR_RGB2BGR))
         except cv2.error as e:
-            dual_print(e, "error")
-            return False
+            raise Exception("Unknown error, please try again.")
     else:  # page has only 1 side
         np_img = np.array(img)
         try:
             cv2.imwrite(img_path, cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR))
         except cv2.error as e:
             dual_print(e, "error")
-            return False
-    return True
+            raise Exception("Unknown error, please try again.")
 
 
 def process_image(path, folder_name, image_name, shape_type=None):
@@ -189,11 +186,11 @@ def process_image(path, folder_name, image_name, shape_type=None):
     folderName (str): The name of the folder that the scan is saved in.
     """
     full_img_path = os.path.join(path, folder_name, image_name)
-    t = True
-    if not crop_image_edges(full_img_path, folder_name):
+    try:
+        crop_image_edges(full_img_path, folder_name)
+    except Exception as e:
         os.remove(full_img_path)
-        print(json.dumps({"success": False}))
-        return t
+        raise e
     FULL_BUFFER_PATH = os.path.join(BUFFER_PATH, folder_name)
     for _, _, files in os.walk(FULL_BUFFER_PATH):
         i = 0
@@ -209,14 +206,15 @@ def process_image(path, folder_name, image_name, shape_type=None):
             h, w = dims[0], dims[1]
             bw_img = binarization(grayscale_img)  # Open pic in BW
 
-            t = crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
+            try:
+                crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
+            except Exception as e:
+                raise e
             i += 1
-            if not t:
-                return t
+            
             dual_print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
         if(shape_type):
             os.remove(full_img_path)
-    return t
 
 
 def crop_files(images_input, folder_name: str, path: str):
@@ -230,10 +228,10 @@ def crop_files(images_input, folder_name: str, path: str):
     """
     for image_name in images_input:
         shape_type = path.split(path_delimiter)[-1]
-        t = process_image(path, folder_name, image_name, shape_type=shape_type)
-        if not t:
-            return
-
+        try:
+            process_image(path, folder_name, image_name, shape_type=shape_type)
+        except Exception as e:
+            raise(e)
 
 def runThreads(input_path: str, folder_name: str, type_):
     """
@@ -288,7 +286,7 @@ def preProcessingMain(input_dir):
             main_folders.append(os.path.join(input_dir, main_folder))
     except FileNotFoundError:
         dual_print(f"[{inspect.stack()[0][3]}] - Input file {INPUT_PATH} not found.", "error")
-        return  # The script can"t run without input
+        raise FileNotFoundError("Input file not found.")
 
     for main_folder in main_folders:  # iterate over the main folders
         for sub_folder in os.listdir(main_folder):

@@ -25,8 +25,7 @@ def load_patches_from_path(path: str):
     try:
         patches_names = os.listdir(path)
     except FileNotFoundError:
-        print(json.dumps({"success": False}))
-        return
+        raise FileNotFoundError("Unknown error, please try again.")
     for patch in patches_names:
         img = maintain_aspect_ratio_resize(cv2.imread(os.path.join(path, patch), 0), 224, 224)
         dataset.append(img)
@@ -44,12 +43,10 @@ def build_prediction_dataset():
     """
     user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images")
     user_predict_patches_path = os.path.join(PREDICT_DIR, "predict_patches", user_id)
-
-    image = os.listdir(os.path.join(user_predict_image_path, user_id))[0]
-    if not image {
-        print(json.dumps({"success": False}))
-        return
-    }
+    try:
+        image = os.listdir(os.path.join(user_predict_image_path, user_id))[0]
+    except IndexError:
+        raise IndexError("Image to predict not found.")
 
     process_image(path=user_predict_image_path, folder_name=user_id, image_name=image)
     dataset = load_patches_from_path(user_predict_patches_path)
@@ -130,10 +127,27 @@ def predict_on_shape():
     #     model = load_model(os.path.join(MODELS_DIR, "main.h5"))
     # except:
     #     print(json.dumps({"success": False}))
-    #     return
+    #     exit(-1)
+    try:
+        dataset = build_prediction_dataset()
+    except Exception as e:
+        
+        try:
+            shutil.rmtree(user_predict_patches_path)
+        except FileNotFoundError:
+            pass
+        raise Exception(e)
+
+    ###########! delete this on production ###########
+    try:
+        shutil.rmtree(user_predict_patches_path)
+    except FileNotFoundError:
+        pass
     print(json.dumps({"success": True, "origin": "ashkenazi", "shape": "square", "probability": "99%"}))
     return
-    dataset = build_prediction_dataset()
+    ###########! delete this on production ###########
+
+
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
     # print("Predicting {} patches...".format(len(dataset)))
@@ -157,4 +171,8 @@ except FileNotFoundError:
 finally:
     os.makedirs(user_predict_patches_path)
 
-predict_on_shape()
+try:
+    predict_on_shape()
+except Exception as e:
+    print(json.dumps({"success": False, "reason": str(e)}))
+    
