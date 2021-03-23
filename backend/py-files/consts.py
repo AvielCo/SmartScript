@@ -16,7 +16,10 @@ BYZANTINE = "byzantine"
 ORIENTAL = "oriental"
 YEMENITE = "yemenite"
 MAIN_MODEL = "main"
-PROJECT_DIR = os.getcwd()
+
+PROJECT_DIR = os.path.join(os.getcwd(), "python-folders")
+PREDICT_DIR = os.path.join(PROJECT_DIR, "predict-files")
+
 INPUT_PATH = os.path.join(PROJECT_DIR, INPUT)
 OUTPUT_PATH = os.path.join(PROJECT_DIR, OUTPUT)
 CURSIVE_INPUT_PATH = os.path.join(INPUT_PATH, CURSIVE)
@@ -45,20 +48,17 @@ CLASSES = {MAIN_MODEL: CLASSES_VALUE_MAIN_MODEL,
            SQUARE: CLASSES_VALUE_SQUARE_MODEL}
 
 # Path #1 for best val_loss
-CHECKPOINT_PATH_LOSS = os.path.join(PROJECT_DIR,
-                                    CHECKPOINTS,
+CHECKPOINT_PATH_LOSS = os.path.join(CHECKPOINTS_DIR,
                                     "val_loss",
                                     "model.epoch={epoch:02d}-val_loss={val_loss:.2f}.h5")
 
 # Path #2 for best val_categorical_accuracy
-CHECKPOINT_PATH_CAT_ACC = os.path.join(PROJECT_DIR,
-                                       "checkpoints",
+CHECKPOINT_PATH_CAT_ACC = os.path.join(CHECKPOINTS_DIR,
                                        "val_categorical_accuracy",
                                        "model.epoch={epoch:02d}-val_cat_acc={val_categorical_accuracy:.2f}.h5")
 
 # Path #3 for best val_categorical_accuracy
-CHECKPOINT_PATH_ACC = os.path.join(PROJECT_DIR,
-                                   "checkpoints",
+CHECKPOINT_PATH_ACC = os.path.join(CHECKPOINTS_DIR,
                                    "val_accuracy",
                                    "model.epoch={epoch:02d}-val_accuracy={val_accuracy:.2f}.h5")
 

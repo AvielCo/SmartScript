@@ -2,11 +2,12 @@ button.MuiButtonBase-root {
   background: #d3ad60;
   transition-duration: 0.3s;
 }
-button.MuiButtonBase-root:hover {
+button.MuiButtonBase-root:hover,
+span.MuiButtonBase-root:hover {
   background: #cc972c;
 }
 button.MuiButton-text {
   text-transform: capitalize;
-  color:#233237;
-  font-weight:bold;
+  color: #233237;
+  font-weight: bold;
 }

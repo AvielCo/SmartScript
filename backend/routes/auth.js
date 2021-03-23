@@ -94,8 +94,9 @@ router.post('/login', async (req, res, next) => {
 
     const accessToken = await signAccessToken(user.id);
     await signRefreshToken(user.id);
+    console.log(accessToken);
+    res.status(200).send('Login success.');
 
-    res.status(200).json({ res: true, accessToken });
   } catch (err) {
     if (err.isJoi) {
       return next(createError.BadRequest('Invalid username or password.'));

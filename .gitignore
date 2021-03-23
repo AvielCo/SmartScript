@@ -13,6 +13,8 @@ ScannedScripts/
 ngrok
 temp*
 old/
+backend/python-folders
+backend/users-histories
 flask_project/__pycache__/
 flask_project/config.py
 !flask_project/templates/

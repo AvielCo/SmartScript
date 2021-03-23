@@ -1,14 +1,8 @@
 const mongoose = require('mongoose');
 
-const ResultSchema = mongoose.Schema({
-  class: [String],
-  probability: [String],
-  _id: false,
-});
-
 const PredictSchema = mongoose.Schema({
-  images: [String],
-  results: ResultSchema,
+  classes: [String],
+  probabilities: [String],
   _id: false,
 });
 
