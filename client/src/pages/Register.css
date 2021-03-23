@@ -3,12 +3,14 @@
   --clr-background-dark: rgba(206, 168, 104, 1);
   --clr-background-light: rgba(206, 168, 104, 0.4);
 
+  /*register-inputfields vars*/
+  /*           offset x, offset y, blur radius, spread, color*/
   --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
   --inputfields-bg: rgba(255, 255, 255, 0.15);
   --gap: 3em;
 }
 
-.login {
+.register-page {
   background: linear-gradient(
     to bottom,
     var(--clr-background-dark),
@@ -17,20 +19,13 @@
   height: 100vh;
 }
 
-h3 {
-  text-align: center;
-  padding: 50px;
-}
-
-.login-container {
+.register-form {
   justify-content: center;
   align-items: center;
   display: grid;
 }
 
-.login-holder {
-  width: fit-content;
-  height: fit-content;
+.register-inputfields {
   padding: 30px 70px;
   box-shadow: var(--box-shadow);
   border-radius: 20px;
@@ -40,17 +35,5 @@ h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5em;
-}
-
-@media (max-width: 480px) {
-  .login-holder {
-    padding: 20px 50px;
-  }
-}
-
-@media (max-width: 360px) {
-  .login-holder {
-    padding: 20px 30px;
-  }
+  gap: var(--gap);
 }

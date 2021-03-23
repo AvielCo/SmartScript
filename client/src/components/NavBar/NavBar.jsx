@@ -1,4 +1,6 @@
 import React from 'react';
+import { BrowserRouter} from "react-router-dom";
+
 import { AppBar } from '@material-ui/core';
 import NavButton from '../Buttons/NavButton';
 import logo from '../../assets/smartscript-logo.png';
@@ -9,8 +11,11 @@ import './NavBar.css';
 import Login from '../../pages/Login';
 
 
+
 function NavBar() {
 
+ 
+  
   const login=()=>{
     return(
       <Router path="/login">
@@ -18,6 +23,7 @@ function NavBar() {
       </Router>
     )
   }
+
 
   return (
       <AppBar position="sticky">
@@ -27,7 +33,8 @@ function NavBar() {
             <NavButton btnText="Scan" />
             <NavButton btnText="About" />
             <NavButton btnText="Who we are" />
-            <Link to="/login">Login</Link>
+            <Link to="/login"><NavButton btnText="Login"/></Link>
+            <Link to="/register"><NavButton btnText="Register"/></Link>
           </div>
         </div>
       </AppBar>

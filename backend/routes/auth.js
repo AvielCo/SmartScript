@@ -5,7 +5,7 @@ const History = require('../models/History');
 const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../helpers/crypto');
-const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../helpers/jwt');
+const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../helpers/jwt');
 require('dotenv').config();
 
 router.get('/get-all', async (req, res) => {
@@ -19,12 +19,17 @@ router.get('/get-all', async (req, res) => {
 
 router.post('/register', async (req, res, next) => {
   try {
-    const { email, username, password, name } = req.body;
+    const { email, username, password, name } = decryptStrings(
+      { email: req.body.email },
+      { username: req.body.username },
+      { password: req.body.password },
+      { name: req.body.name }
+    );
+
     if (!email || !username || !password || !name) {
       throw createError.BadRequest();
     }
-
-    await authSchema.validateAsync(req.body);
+    await authSchema.validateAsync({ email, username, password, name });
 
     const newUserDetails = {
       email,
@@ -35,7 +40,10 @@ router.post('/register', async (req, res, next) => {
 
     //* Check if user exists
     const userExists = await User.findOne({
-      $or: [{ email: newUserDetails.email }, { username: newUserDetails.username }],
+      $or: [
+        { email: newUserDetails.email },
+        { username: newUserDetails.username },
+      ],
     });
     if (userExists) {
       //! User is exists
@@ -51,9 +59,13 @@ router.post('/register', async (req, res, next) => {
 
     //* User is not exists with the same email or username
     const newUser = await new User(newUserDetails).save();
+    console.log(newUser);
     const history = await new History({ userId: newUser._id }).save();
 
-    await User.findOneAndUpdate({ _id: newUser._id }, { historyId: history._id });
+    await User.findOneAndUpdate(
+      { _id: newUser._id },
+      { historyId: history._id }
+    );
 
     await signAccessToken(newUser.id);
     await signRefreshToken(newUser.id);
@@ -69,7 +81,10 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const { username, password } = decryptStrings({ username: req.query.username }, { password: req.query.password });
+    const { username, password } = decryptStrings(
+      { username: req.query.username },
+      { password: req.query.password }
+    );
     const user = await User.findOne({ username }).select('+password');
 
     const isMatch = await user.isValidPassword(password);
@@ -81,12 +96,18 @@ router.post('/login', async (req, res, next) => {
     await signRefreshToken(user.id);
     console.log(accessToken);
     res.status(200).send('Login success.');
+
   } catch (err) {
     if (err.isJoi) {
       return next(createError.BadRequest('Invalid username or password.'));
     }
     next(err);
   }
+});
+
+router.get('/user', verifyAccessToken, (req, res, next) => {
+  const userId = req.payload['aud'];
+  return res.status(200).json({ auth: true, userId });
 });
 
 router.post('/refresh-token', async (req, res, next) => {

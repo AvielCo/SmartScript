@@ -3,7 +3,10 @@ import axios from 'axios';
 import './Login.css';
 import InputButton from '../components/Buttons/InputButton';
 import InputField from '../components/InputField/InputField';
+
 import { encryptStrings } from '../helpers';
+
+import './Login.css';
 
 function Login() {
   const [inputUsername, setUsername] = useState('');
@@ -25,7 +28,10 @@ function Login() {
         params: { username, password },
       })
       .then((response) => {
-        console.log(response);
+        if (response.data.res) {
+          sessionStorage.accessToken = response.data.accessToken;
+        }
+        return;
       })
       .catch((error) => {
         console.log(error);
@@ -41,6 +47,7 @@ function Login() {
             <InputField value="username" type="text" name="username" setProperty={setUsername} />
             <InputField value="password" type="s" name="password" setProperty={setPassword} />
             <InputButton name="LOGIN" type="submit"></InputButton>
+
           </div>
         </div>
       </form>

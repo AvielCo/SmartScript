@@ -1,3 +1,4 @@
+
 import './Home.css';
 import NavBar from '../components/NavBar/NavBar';
 import TextView from '../components/TextView/TextView';
@@ -31,7 +32,7 @@ function Home() {
   return (
     <div>
       <NavBar />
-      <section className="landing">
+      <section className='landing'>
         <div></div>
         <p>
           Elit eiusmod elit ut id esse velit veniam ut consectetur esse occaecat quis sunt. Duis cupidatat qui sint ipsum amet exercitation enim et ipsum proident nostrud proident dolor. Incididunt
@@ -39,6 +40,7 @@ function Home() {
           adipisicing ex aute Lorem. Cupidatat ipsum sit ut consequat minim aliquip consequat.
         </p>
       </section>
+
       <section className="scan">
         <div className="scan-container">
           <form className="btn-holder" onSubmit={handleScanSubmit}>
@@ -52,11 +54,12 @@ function Home() {
           </form>
           <div className="img-holder">
             <img alt={pic} src={imageUrl}></img>
+
           </div>
         </div>
       </section>
-      <section className="about"></section>
-      <section className="wwa"></section>
+      <section className='about'></section>
+      <section className='wwa'></section>
     </div>
   );
 }
