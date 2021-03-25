@@ -44,20 +44,31 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const child = exec(`${condaCommand} && ${pythonScriptCommand}`);
 
     child.stdout.on('data', async (data) => {
+      // message is the response from python script
       const message = JSON.parse(data);
       if (message.success) {
+        /**
+         * massage: {
+         *  success: True,
+         *  origin: One of the following: "ashkenazi", "bizantine" .....
+         *  shape: One of the following: "cursive", "square", "semi-square"
+         *  probability: the probability of the prediction
+         * }
+         */
         try {
-          let totalImages = 0;
+          let totalImages = 0; // total images that the user has seen predicted
           const imagePath = path.join(process.cwd(), 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
           const userHistory = await History.findById({ _id: user.historyId });
           if (userHistory.predictedResult) {
+            // get the amount of the images that the user has predicted so far.
             totalImages = userHistory.predictedResult.classes.length;
           }
+          // path to save the resized image to view later in the user profile
           const savePath = path.join(process.cwd(), 'users-histories', `${user._id}`);
           fs.mkdir(savePath, { recursive: true }, (err) => {
             if (err) return next(createError.InternalServerError());
           });
-          sharp(imagePath)
+          sharp(imagePath) // resize the image to width: 400px (height is auto scale)
             .resize(400)
             .toFile(path.join(savePath, `${totalImages}.jpg`))
             .catch((err) => {
@@ -71,6 +82,12 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
           return next(createError.InternalServerError());
         }
       }
+      /**
+       * massage: {
+       *  success: False,
+       * `reason: Reason that the script failed
+       * }
+       */
       return next(createError.BadRequest(message.reason));
     });
 
