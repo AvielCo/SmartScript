@@ -1,4 +1,3 @@
-
 import './Home.css';
 import NavBar from '../components/NavBar/NavBar';
 import TextView from '../components/TextView/TextView';
@@ -29,10 +28,13 @@ function Home() {
     console.log(event);
   };
 
+  /** TODO: use useEffect to get the accesskey inside the session.
+          if its exists, 1. hide login and register buttons. 2. show profile and logout buttons. */
+
   return (
     <div>
       <NavBar />
-      <section className='landing'>
+      <section className="landing">
         <div></div>
         <p>
           Elit eiusmod elit ut id esse velit veniam ut consectetur esse occaecat quis sunt. Duis cupidatat qui sint ipsum amet exercitation enim et ipsum proident nostrud proident dolor. Incididunt
@@ -54,12 +56,11 @@ function Home() {
           </form>
           <div className="img-holder">
             <img alt={pic} src={imageUrl}></img>
-
           </div>
         </div>
       </section>
-      <section className='about'></section>
-      <section className='wwa'></section>
+      <section className="about"></section>
+      <section className="wwa"></section>
     </div>
   );
 }
