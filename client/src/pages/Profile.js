@@ -48,6 +48,8 @@ function Profile() {
     );
   };
 
+  //TODO: use useEffect to get current user details with the accesstoken inside session storage(if exists).
+
   return (
     <div className="profile-page">
       <NavBar />

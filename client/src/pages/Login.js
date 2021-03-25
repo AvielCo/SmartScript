@@ -28,9 +28,12 @@ function Login() {
         params: { username, password },
       })
       .then((response) => {
-        if (response.data.res) {
-          sessionStorage.accessToken = response.data.accessToken;
+        if (response.status === 200) {
+          window.sessionStorage.setItem('accessToken', response.data.accessToken);
+          //TODO: redirect to home page
+          return;
         }
+        //TODO: show error that en error has been occurred
         return;
       })
       .catch((error) => {
@@ -47,7 +50,6 @@ function Login() {
             <InputField value="username" type="text" name="username" setProperty={setUsername} />
             <InputField value="password" type="s" name="password" setProperty={setPassword} />
             <InputButton name="LOGIN" type="submit"></InputButton>
-
           </div>
         </div>
       </form>
