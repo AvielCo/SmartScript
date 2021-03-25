@@ -28,7 +28,7 @@ function NavBar() {
   return (
       <AppBar position="sticky">
         <div className="navbar-holder">
-          <img alt="SmartScript-logo" src={logo} />
+        <Link to="/home"><img alt="SmartScript-logo" src={logo} /></Link>
           <div className="btnGroup">
             <NavButton btnText="Scan" />
             <NavButton btnText="About" />
