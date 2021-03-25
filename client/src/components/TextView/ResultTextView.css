@@ -1,0 +1,20 @@
+.results {
+  width: 350px;
+  height: 50px;
+  border-radius: 50px;
+  background-color: #d3ad60;
+  outline: 0;
+  text-align: center;
+}
+
+.results:hover {
+  box-shadow: 0 0 20px #233237;
+  transition: 0.2;
+}
+
+.results-text-view {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+}

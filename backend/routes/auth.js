@@ -69,7 +69,7 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const { username, password } = decryptStrings({ username: req.query.username }, { password: req.query.password });
+    const { username, password } = decryptStrings({ username: req.body.username }, { password: req.body.password });
     const user = await User.findOne({ username }).select('+password');
 
     const isMatch = await user.isValidPassword(password);
@@ -90,7 +90,7 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/user', verifyAccessToken, (req, res, next) => {
   const userId = req.payload['aud'];
-  return res.status(200).json({ auth: true, userId });
+  return res.status(200).json('OK');
 });
 
 router.post('/refresh-token', async (req, res, next) => {

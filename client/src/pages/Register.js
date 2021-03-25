@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import InputField from '../components/InputField/InputField';
 import InputButton from '../components/Buttons/InputButton';
 import NavBar from '../components/NavBar/NavBar';
-import { encryptStrings } from '../helpers';
+import { encryptStrings, getAccessToken } from '../helpers';
 
 import './Register.css';
 
@@ -50,6 +49,13 @@ function Register() {
         //if(error.username || error.email) username or email already exists.
       });
   };
+
+  useEffect(() => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      // redirect to home
+    }
+  });
 
   return (
     <React.Fragment>

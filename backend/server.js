@@ -19,7 +19,7 @@ app.use('/', express.static('../client/build'));
 //* Routes
 
 //* Upload image routes
-app.use('/api/images', verifyAccessToken, require('./routes/images'));
+app.use('/api/images', require('./routes/images'));
 
 //* Authentication routes
 app.use('/api/auth', require('./routes/auth'));

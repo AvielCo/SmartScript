@@ -25,7 +25,7 @@ router.post('/upload', verifyAccessToken, async (req, res, next) => {
     await uploadFile(req, res)
       .then(() => res.status(200).send('Image uploaded successfully.'))
       .catch((err) => {
-        throw createError.BadRequest();
+        throw createError.BadRequest('Not uploaded');
       });
   } catch (err) {
     next(err);
