@@ -21,3 +21,11 @@ export const decryptStrings = (...encryptedStrings) => {
   });
   return decryptedStrings;
 };
+
+export const getAccessToken = () => {
+  let accessToken = window.sessionStorage.getItem('accessToken');
+  if (!accessToken) {
+    accessToken = window.localStorage.getItem('accessToken');
+  }
+  return accessToken;
+};
