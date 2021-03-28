@@ -1,3 +1,8 @@
+.home {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+}
+
 section.landing {
   text-align: center;
   height: 100vh;
@@ -6,8 +11,7 @@ section.landing {
 
 section.landing div {
   background-image: url('../assets/landing-bg.jpg');
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
+  opacity: 0.5;
   height: 100%;
   background-size: cover;
   background-position: center;
@@ -16,7 +20,6 @@ section.landing div {
 }
 
 section.landing p {
-  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
   color: white;
@@ -28,7 +31,17 @@ section.landing p {
   z-index: 2;
   width: 90%;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 3em;
+}
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  section.landing p {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+  }
 }
 /* ---------------------SCAN------------------------ */
 section.scan {
