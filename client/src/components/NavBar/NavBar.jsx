@@ -14,8 +14,6 @@ import Login from '../../pages/Login';
 
 function NavBar() {
 
- 
-  
   const login=()=>{
     return(
       <Router path="/login">
@@ -33,8 +31,8 @@ function NavBar() {
             <NavButton btnText="Scan" />
             <NavButton btnText="About" />
             <NavButton btnText="Who we are" />
-            <Link to="/login"><NavButton btnText="Login"/></Link>
-            <Link to="/register"><NavButton btnText="Register"/></Link>
+            <Link to="/login" style={{ textDecoration: 'none' }}><NavButton btnText="Login" /></Link>
+            <Link to="/register" style={{ textDecoration: 'none' }}><NavButton btnText="Register"/></Link>
           </div>
         </div>
       </AppBar>

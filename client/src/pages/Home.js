@@ -9,7 +9,7 @@ import { Button, Upload, message } from 'antd';
 
 function LandingSection() {
   return (
-    <section className="landing">
+    <section className='landing'>
       <div></div>
       <p>
         Elit eiusmod elit ut id esse velit veniam ut consectetur esse occaecat quis sunt. Duis cupidatat qui sint ipsum amet exercitation enim et ipsum proident nostrud proident dolor. Incididunt
@@ -102,23 +102,24 @@ function ScanSection() {
   }, [isLoggedIn]);
 
   return (
-    <section className="scan">
-      <div className="scan-container">
+    <section className='scan'>
+      <div className='scan-container'>
         {isLoggedIn ? (
-          <form className="scan-btn-holder" onSubmit={handleImageChange}>
+          <form className='scan-btn-holder' onSubmit={handleImageChange}>
             <h3>Scan Image</h3>
             <Upload
-              action="http://localhost:8008/api/images/upload"
+              action='http://localhost:8008/api/images/upload'
               headers={{ Authorization: 'Bearer ' + getAccessToken() }}
               onChange={handleImageChange}
-              accept="image/*"
+              accept='image/*'
               maxCount={1}
-              showUploadList={false}>
-              <Button className="scan-btn" component="span" type="submit" loading={isLoading}>
+              showUploadList={false}
+            >
+              <Button className='scan-btn' component='span' type='submit' loading={isLoading}>
                 Upload an image
               </Button>
             </Upload>
-            <Button className="scan-btn" onClick={handlePredict} loading={isLoading}>
+            <Button className='scan-btn' onClick={handlePredict} loading={isLoading}>
               Predict selected image
             </Button>
             <ResultTextView result={result} />
@@ -127,7 +128,7 @@ function ScanSection() {
           <div>Login so you can scan</div>
         )}
         {imageUri && (
-          <div className="scan-img-holder">
+          <div className='scan-img-holder'>
             <img alt={pic} src={imageUri}></img>
           </div>
         )}
@@ -137,16 +138,16 @@ function ScanSection() {
 }
 
 function AboutSection() {
-  return <section className="about"></section>;
+  return <section className='about'></section>;
 }
 
 function WWASection() {
-  return <section className="wwa"></section>;
+  return <section className='wwa'></section>;
 }
 
 function Home() {
   return (
-    <div>
+    <div className='home'>
       <NavBar />
       <LandingSection />
       <ScanSection />

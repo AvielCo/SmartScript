@@ -1,10 +1,9 @@
-.input-field{
-    width: 300px;
+.input-field {
+  width: 300px;
 }
 
-@media (max-width:480px){
-    .input-field{
-        width:220px;
-    }
+@media (max-width: 480px) {
+  .input-field {
+    width: 220px;
+  }
 }
-
