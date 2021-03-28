@@ -10,12 +10,15 @@
   --gap: 3em;
 }
 
+* {
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
 .register-page {
-  background: linear-gradient(
-    to bottom,
-    var(--clr-background-dark),
-    var(--clr-background-light)
-  );
+  background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
   height: 100vh;
 }
 
