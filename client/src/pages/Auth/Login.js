@@ -11,6 +11,7 @@ import './Login.css';
 function Login() {
   const [inputUsername, setUsername] = useState('');
   const [inputPassword, setPassword] = useState('');
+  const [checked, setChecked] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -28,6 +29,9 @@ function Login() {
       .then((response) => {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
+          if (checked) {
+            window.localStorage.setItem('accessToken', response.data.accessToken);
+          }
           //TODO: redirect to home page
           return;
         }
@@ -56,6 +60,9 @@ function Login() {
           <div className="login-holder">
             <InputField value="username" type="text" name="username" setProperty={setUsername} />
             <InputField value="password" type="password" name="password" setProperty={setPassword} />
+            <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>
+              Remember me
+            </Checkbox>
             <InputButton name="Login" type="submit"></InputButton>
           </div>
         </div>
