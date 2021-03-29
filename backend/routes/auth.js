@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../helpers/crypto');
 const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../helpers/jwt');
+const redisClient = require('../helpers/redis');
 require('dotenv').config();
 
 router.get('/get-all', async (req, res) => {
@@ -84,6 +85,21 @@ router.post('/login', async (req, res, next) => {
     if (err.isJoi) {
       return next(createError.BadRequest('Invalid username or password.'));
     }
+    next(err);
+  }
+});
+
+router.delete('/logout', verifyAccessToken, (req, res, next) => {
+  try {
+    const userId = req.payload['aud'];
+    redisClient.DEL(userId, (err, val) => {
+      if (err) {
+        console.log(err, val);
+        throw createError.InternalServerError();
+      }
+      res.sendStatus(204);
+    });
+  } catch (err) {
     next(err);
   }
 });

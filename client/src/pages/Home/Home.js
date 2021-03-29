@@ -1,10 +1,11 @@
 import './Home.css';
 import NavBar from '../../components/NavBar/NavBar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import pic from '../../assets/landing-bg.jpg';
 import axios from 'axios';
-import { getAccessToken } from '../helpers';
+import { getAccessToken } from '../../helpers';
 import { Button, Upload, message } from 'antd';
+import ResultTextView from '../../components/TextView/ResultTextView';
 
 function LandingSection() {
   return (
@@ -19,9 +20,8 @@ function LandingSection() {
   );
 }
 
-function ScanSection() {
+function ScanSection({ isLoggedIn }) {
   const [imageUri, setImageUri] = useState();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState({
     success: false,
@@ -76,30 +76,6 @@ function ScanSection() {
       });
   };
 
-  useEffect(() => {
-    if (isLoggedIn) return;
-
-    //get token from sessionStorage, if undefined => get token from localStorage.
-    let accessToken = getAccessToken();
-
-    const cfg = {
-      headers: {
-        Authorization: 'Bearer ' + accessToken,
-      },
-    };
-
-    axios
-      .get('http://localhost:8008/api/auth/user', cfg)
-      .then((res) => {
-        if (res.status === 200) {
-          setIsLoggedIn(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [isLoggedIn]);
-
   return (
     <section className="scan">
       <div className="scan-container">
@@ -144,11 +120,32 @@ function WWASection() {
 }
 
 function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn) return;
+    const cfg = {
+      headers: {
+        Authorization: 'Bearer ' + getAccessToken(),
+      },
+    };
+    axios
+      .get('http://localhost:8008/api/auth/user', cfg)
+      .then((res) => {
+        if (res.status === 200) {
+          setIsLoggedIn(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [isLoggedIn]);
+
   return (
     <div className="home">
-      <NavBar />
+      <NavBar isLoggedIn={isLoggedIn} />
       <LandingSection />
-      <ScanSection />
+      <ScanSection isLoggedIn={isLoggedIn} />
       <AboutSection />
       <WWASection />
     </div>
