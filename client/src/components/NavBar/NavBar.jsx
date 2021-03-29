@@ -14,8 +14,6 @@ import Login from '../../pages/Auth/Login';
 
 function NavBar() {
 
- 
-  
   const login=()=>{
     return(
       <Router path="/login">
@@ -28,13 +26,13 @@ function NavBar() {
   return (
       <AppBar position="sticky">
         <div className="navbar-holder">
-          <img alt="SmartScript-logo" src={logo} />
+        <Link to="/home"><img alt="SmartScript-logo" src={logo} /></Link>
           <div className="btnGroup">
             <NavButton btnText="Scan" />
             <NavButton btnText="About" />
             <NavButton btnText="Who we are" />
-            <Link to="/login"><NavButton btnText="Login"/></Link>
-            <Link to="/register"><NavButton btnText="Register"/></Link>
+            <Link to="/login" style={{ textDecoration: 'none' }}><NavButton btnText="Login" /></Link>
+            <Link to="/register" style={{ textDecoration: 'none' }}><NavButton btnText="Register"/></Link>
           </div>
         </div>
       </AppBar>

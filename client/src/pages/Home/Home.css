@@ -1,3 +1,8 @@
+.home {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+}
+
 section.landing {
   text-align: center;
   height: 100vh;
@@ -16,7 +21,6 @@ section.landing div {
 }
 
 section.landing p {
-  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
   color: white;
@@ -28,59 +32,89 @@ section.landing p {
   z-index: 2;
   width: 90%;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 3em;
 }
+
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  section.landing p {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+  }
+}
+
 /* ---------------------SCAN------------------------ */
 section.scan {
-  background:#D3AF37;
+  background: #d3af37;
   padding: 50px;
 }
 
-section.scan h3{
-  text-align:center;
+section.scan h3 {
+  text-align: center;
 }
 
-.scan-container{
+.scan-container {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
 
-.btn-holder{
+.scan-btn-holder {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   align-items: center;
-  gap:1.5em;
+  gap: 1.5em;
 }
 
-.img-holder {
-  width:600px;
-  height:auto;
-  background-color: rgba(219,219,219,255);
+.scan-img-holder {
+  width: 600px;
+  height: auto;
+  background-color: rgba(219, 219, 219, 255);
   border: 2px solid #a7a7a7;
-  padding:0;
+  padding: 0;
   border-radius: 20px;
 }
 
-.img-holder img{
-  padding:0;
+.scan-img-holder img {
+  padding: 0;
   position: relative;
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
 }
 
-@media (max-width:1150px){
-  .scan-container{
-   flex-direction:column;
-  }
-  .img-holder{
-    width:90%;
-    margin-top:20px;
-  }
-
+.scan-btn {
+  width: 250px;
+  height: 50px;
+  background-color: #d3ad60;
+  border-radius: 50px;
+  color: #233237;
+  text-transform: capitalize;
+  text-align: center;
+  font-weight: bold;
+  outline: 0;
 }
 
+.scan-btn:active,
+.scan-btn:focus {
+  outline: 0;
+}
+
+.scan-btn:hover {
+  background: #cc972c;
+}
+
+@media (max-width: 1150px) {
+  .scan-container {
+    flex-direction: column;
+  }
+  .img-holder {
+    width: 90%;
+    margin-top: 20px;
+  }
+}
 
 /* ---------------------ABOUT------------------------ */
 
@@ -88,7 +122,6 @@ section.about {
   background: green;
   height: 100vh;
 }
-
 
 /* ---------------------WWA------------------------ */
 section.wwa {

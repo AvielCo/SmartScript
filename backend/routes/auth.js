@@ -19,13 +19,7 @@ router.get('/get-all', async (req, res) => {
 
 router.post('/register', async (req, res, next) => {
   try {
-    const { email, username, password, name } = decryptStrings(
-      { email: req.body.email },
-      { username: req.body.username },
-      { password: req.body.password },
-      { name: req.body.name }
-    );
-
+    const { email, username, password, name } = decryptStrings({ email: req.body.email }, { username: req.body.username }, { password: req.body.password }, { name: req.body.name });
     if (!email || !username || !password || !name) {
       throw createError.BadRequest();
     }
@@ -40,10 +34,7 @@ router.post('/register', async (req, res, next) => {
 
     //* Check if user exists
     const userExists = await User.findOne({
-      $or: [
-        { email: newUserDetails.email },
-        { username: newUserDetails.username },
-      ],
+      $or: [{ email: newUserDetails.email }, { username: newUserDetails.username }],
     });
     if (userExists) {
       //! User is exists
@@ -62,10 +53,7 @@ router.post('/register', async (req, res, next) => {
     console.log(newUser);
     const history = await new History({ userId: newUser._id }).save();
 
-    await User.findOneAndUpdate(
-      { _id: newUser._id },
-      { historyId: history._id }
-    );
+    await User.findOneAndUpdate({ _id: newUser._id }, { historyId: history._id });
 
     await signAccessToken(newUser.id);
     await signRefreshToken(newUser.id);
@@ -81,10 +69,7 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const { username, password } = decryptStrings(
-      { username: req.query.username },
-      { password: req.query.password }
-    );
+    const { username, password } = decryptStrings({ username: req.body.username }, { password: req.body.password });
     const user = await User.findOne({ username }).select('+password');
 
     const isMatch = await user.isValidPassword(password);
@@ -94,9 +79,7 @@ router.post('/login', async (req, res, next) => {
 
     const accessToken = await signAccessToken(user.id);
     await signRefreshToken(user.id);
-    console.log(accessToken);
-    res.status(200).send('Login success.');
-
+    res.status(200).json({ accessToken });
   } catch (err) {
     if (err.isJoi) {
       return next(createError.BadRequest('Invalid username or password.'));
@@ -107,7 +90,7 @@ router.post('/login', async (req, res, next) => {
 
 router.get('/user', verifyAccessToken, (req, res, next) => {
   const userId = req.payload['aud'];
-  return res.status(200).json({ auth: true, userId });
+  return res.status(200).json('OK');
 });
 
 router.post('/refresh-token', async (req, res, next) => {
@@ -121,7 +104,7 @@ router.post('/refresh-token', async (req, res, next) => {
     await signAccessToken(userId);
     await signRefreshToken(userId);
 
-    res.status(200);
+    res.status(200).send('New access and refresh tokens has been generated.');
   } catch (err) {
     next(err);
   }

@@ -5,7 +5,14 @@ button.MuiButtonBase-root {
 button.MuiButtonBase-root:hover,
 span.MuiButtonBase-root:hover {
   background: #cc972c;
+  text-decoration: none;
 }
+
+button.MuiButtonBase-root:active,
+span.MuiButtonBase-root:active {
+  text-decoration: none;
+}
+
 button.MuiButton-text {
   text-transform: capitalize;
   color: #233237;

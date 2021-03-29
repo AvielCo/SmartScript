@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Login.css';
 import InputButton from '../../components/Buttons/InputButton';
@@ -24,13 +24,14 @@ function Login() {
 
   const loginUser = (username, password) => {
     axios
-      .post('http://localhost:8008/api/auth/login', null, {
-        params: { username, password },
-      })
+      .post('http://localhost:8008/api/auth/login', { username, password })
       .then((response) => {
-        if (response.data.res) {
-          sessionStorage.accessToken = response.data.accessToken;
+        if (response.status === 200) {
+          window.sessionStorage.setItem('accessToken', response.data.accessToken);
+          //TODO: redirect to home page
+          return;
         }
+        //TODO: show error that en error has been occurred
         return;
       })
       .catch((error) => {
@@ -38,16 +39,24 @@ function Login() {
       });
   };
 
+  useEffect(() => {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      // redirect to home
+    }
+  });
+
   return (
     <React.Fragment>
+      <NavBar />
       <form onSubmit={handleSubmit} className="login">
         <div className="login-container">
-          <h3>LOGIN</h3>
+          <h3>Login</h3>
+
           <div className="login-holder">
             <InputField value="username" type="text" name="username" setProperty={setUsername} />
-            <InputField value="password" type="s" name="password" setProperty={setPassword} />
-            <InputButton name="LOGIN" type="submit"></InputButton>
-
+            <InputField value="password" type="password" name="password" setProperty={setPassword} />
+            <InputButton name="Login" type="submit"></InputButton>
           </div>
         </div>
       </form>

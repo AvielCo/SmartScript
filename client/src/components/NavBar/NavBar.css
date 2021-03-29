@@ -1,3 +1,8 @@
+* {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+}
 header.MuiAppBar-root {
   background: #d3ad60;
 }
