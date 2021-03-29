@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Login.css';
-import InputButton from '../components/Buttons/InputButton';
-import InputField from '../components/InputField/InputField';
-import NavBar from '../components/NavBar/NavBar';
-import { encryptStrings, getAccessToken } from '../helpers';
+import InputButton from '../../components/Buttons/InputButton';
+import InputField from '../../components/InputField/InputField';
+
+import { encryptStrings } from '../../helpers';
 
 import './Login.css';
 
@@ -49,14 +49,14 @@ function Login() {
   return (
     <React.Fragment>
       <NavBar />
-      <form onSubmit={handleSubmit} className='login'>
-        <div className='login-container'>
+      <form onSubmit={handleSubmit} className="login">
+        <div className="login-container">
           <h3>Login</h3>
 
-          <div className='login-holder'>
-            <InputField value='username' type='text' name='username' setProperty={setUsername} />
-            <InputField value='password' type='password' name='password' setProperty={setPassword} />
-            <InputButton name='Login' type='submit'></InputButton>
+          <div className="login-holder">
+            <InputField value="username" type="text" name="username" setProperty={setUsername} />
+            <InputField value="password" type="password" name="password" setProperty={setPassword} />
+            <InputButton name="Login" type="submit"></InputButton>
           </div>
         </div>
       </form>
