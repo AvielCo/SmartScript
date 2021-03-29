@@ -1,8 +1,8 @@
-import Home from './Home';
-import Login from './Login';
-import Register from './Register';
-import Error from './Error';
-import Profile from './Profile';
-import Logout from './Logout';
+import Home from './Home/Home';
+import Login from './Auth/Login';
+import Register from './Auth/Register';
+import Error from './NotFound/NotFound';
+import Profile from './Profile/Profile';
+import Logout from './Auth/Logout';
 
 export { Home, Login, Register, Profile, Error, Logout };

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import { getAccessToken } from '../helpers';
+import { getAccessToken } from '../../helpers';
 import { useHistory } from 'react-router-dom';
 
 function Logout() {

@@ -6,7 +6,7 @@ import NavButton from '../Buttons/NavButton';
 import logo from '../../assets/smartscript-logo.png';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import './NavBar.css';
-import Login from '../../pages/Login';
+import Login from '../../pages/Auth/Login';
 
 function NavBar({ isLoggedIn }) {
   const login = () => {

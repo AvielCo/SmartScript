@@ -7,24 +7,13 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/profile">
-          <Profile />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/logout">
-          <Logout />
-        </Route>
-        <Route path="/404">
-          <Error />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
+        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/logout" component={Logout} />
+        <Route exact path="/home" component={Home} />
+        <Route exact path="/" component={Home} />
+        <Route component={Error} />
       </Switch>
     </Router>
   );
