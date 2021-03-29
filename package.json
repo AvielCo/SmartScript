@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "client": "cd client && npm start",
-    "backend": "cd backend && npm run backend",
+    "backend": "cd backend && npm start",
     "install-client": "cd client && npm install",
     "install-backend": "cd backend && npm install",
     "install-all": "npm run install-client && npm run install-backend",
