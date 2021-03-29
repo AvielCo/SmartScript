@@ -15,9 +15,5 @@ temp*
 old/
 backend/python-folders
 backend/users-histories
-flask_project/__pycache__/
-flask_project/config.py
-!flask_project/templates/
-!flask_project/static/
-client/node_modules/
-backend/node_modules/
+*/node_modules/
+node_modules

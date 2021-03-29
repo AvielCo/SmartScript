@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-backend": "cd backend && npm run start",
-    "start-frontend": "cd client && npm start",
-    "start": "start-backend && start-frontend",
-    "dev": "",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "client": "cd client && npm start",
+    "backend": "cd backend && npm run backend",
+    "install-client": "cd client && npm install",
+    "install-backend": "cd backend && npm install",
+    "install-all": "npm run install-client && npm run install-backend",
+    "dev": "concurrently \"npm run client\" \"npm run backend\""
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/AvielCo/SmartScript/issues"
   },
-  "homepage": "https://github.com/AvielCo/SmartScript#readme"
+  "homepage": "https://github.com/AvielCo/SmartScript#readme",
+  "dependencies": {
+    "concurrently": "^6.0.0"
+  }
 }
