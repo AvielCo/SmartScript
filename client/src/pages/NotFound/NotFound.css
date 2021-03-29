@@ -1,7 +1,7 @@
 :root {
   /*page vars*/
-  --clr-background-dark: rgba(30,62,125, 1);
-  --clr-background-light: rgba(30,62,125, 0.4);
+  --clr-background-dark-not-found: rgba(30,62,125, 1);
+  --clr-background-light-not-found: rgba(30,62,125, 0.4);
 
   --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
   --inputfields-bg: rgba(255, 255, 255, 0.15);
@@ -11,8 +11,8 @@
 .error-holder {
       background: linear-gradient(
     to bottom,
-    var(--clr-background-dark),
-    var(--clr-background-light)
+    var(--clr-background-dark-not-found),
+    var(--clr-background-light-not-found)
   );
   align-items: center;
   display: flex;
