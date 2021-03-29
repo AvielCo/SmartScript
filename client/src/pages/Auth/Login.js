@@ -3,9 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
 import { Checkbox } from 'antd';
-import InputButton from '../../components/Buttons/InputButton';
-import InputField from '../../components/InputField/InputField';
-import NavBar from '../../components/NavBar/NavBar';
+import { InputButton, InputField, NavBar } from '../../components';
 import { encryptStrings, getAccessToken } from '../../helpers';
 
 import './Login.css';

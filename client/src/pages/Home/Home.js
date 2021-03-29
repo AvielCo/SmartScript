@@ -1,11 +1,10 @@
 import './Home.css';
-import NavBar from '../../components/NavBar/NavBar';
+import { NavBar, ResultTextView } from '../../components';
 import React, { useState, useEffect } from 'react';
 import pic from '../../assets/landing-bg.jpg';
 import axios from 'axios';
 import { getAccessToken } from '../../helpers';
-import { Button, Upload, message } from 'antd';
-import ResultTextView from '../../components/TextView/ResultTextView';
+import { Button, Upload } from 'antd';
 
 function LandingSection() {
   return (
