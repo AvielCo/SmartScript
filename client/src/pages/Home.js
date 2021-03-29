@@ -9,7 +9,7 @@ import { Button, Upload, message } from 'antd';
 
 function LandingSection() {
   return (
-    <section className='landing'>
+    <section className="landing">
       <div></div>
       <p>
         Elit eiusmod elit ut id esse velit veniam ut consectetur esse occaecat quis sunt. Duis cupidatat qui sint ipsum amet exercitation enim et ipsum proident nostrud proident dolor. Incididunt
@@ -20,9 +20,8 @@ function LandingSection() {
   );
 }
 
-function ScanSection() {
+function ScanSection({ isLoggedIn }) {
   const [imageUri, setImageUri] = useState();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState({
     success: false,
@@ -77,18 +76,59 @@ function ScanSection() {
       });
   };
 
+  return (
+    <section className="scan">
+      <div className="scan-container">
+        {isLoggedIn ? (
+          <form className="scan-btn-holder" onSubmit={handleImageChange}>
+            <h3>Scan Image</h3>
+            <Upload
+              action="http://localhost:8008/api/images/upload"
+              headers={{ Authorization: 'Bearer ' + getAccessToken() }}
+              onChange={handleImageChange}
+              accept="image/*"
+              maxCount={1}
+              showUploadList={false}>
+              <Button className="scan-btn" component="span" type="submit" loading={isLoading}>
+                Upload an image
+              </Button>
+            </Upload>
+            <Button className="scan-btn" onClick={handlePredict} loading={isLoading}>
+              Predict selected image
+            </Button>
+            <ResultTextView result={result} />
+          </form>
+        ) : (
+          <div>Login so you can scan</div>
+        )}
+        {imageUri && (
+          <div className="scan-img-holder">
+            <img alt={pic} src={imageUri}></img>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function AboutSection() {
+  return <section className="about"></section>;
+}
+
+function WWASection() {
+  return <section className="wwa"></section>;
+}
+
+function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     if (isLoggedIn) return;
-
-    //get token from sessionStorage, if undefined => get token from localStorage.
-    let accessToken = getAccessToken();
-
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: 'Bearer ' + getAccessToken(),
       },
     };
-
     axios
       .get('http://localhost:8008/api/auth/user', cfg)
       .then((res) => {
@@ -102,55 +142,10 @@ function ScanSection() {
   }, [isLoggedIn]);
 
   return (
-    <section className='scan'>
-      <div className='scan-container'>
-        {isLoggedIn ? (
-          <form className='scan-btn-holder' onSubmit={handleImageChange}>
-            <h3>Scan Image</h3>
-            <Upload
-              action='http://localhost:8008/api/images/upload'
-              headers={{ Authorization: 'Bearer ' + getAccessToken() }}
-              onChange={handleImageChange}
-              accept='image/*'
-              maxCount={1}
-              showUploadList={false}
-            >
-              <Button className='scan-btn' component='span' type='submit' loading={isLoading}>
-                Upload an image
-              </Button>
-            </Upload>
-            <Button className='scan-btn' onClick={handlePredict} loading={isLoading}>
-              Predict selected image
-            </Button>
-            <ResultTextView result={result} />
-          </form>
-        ) : (
-          <div>Login so you can scan</div>
-        )}
-        {imageUri && (
-          <div className='scan-img-holder'>
-            <img alt={pic} src={imageUri}></img>
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
-function AboutSection() {
-  return <section className='about'></section>;
-}
-
-function WWASection() {
-  return <section className='wwa'></section>;
-}
-
-function Home() {
-  return (
-    <div className='home'>
-      <NavBar />
+    <div className="home">
+      <NavBar isLoggedIn={isLoggedIn} />
       <LandingSection />
-      <ScanSection />
+      <ScanSection isLoggedIn={isLoggedIn} />
       <AboutSection />
       <WWASection />
     </div>

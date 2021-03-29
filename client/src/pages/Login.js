@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
 import InputButton from '../components/Buttons/InputButton';
@@ -11,7 +12,7 @@ import './Login.css';
 function Login() {
   const [inputUsername, setUsername] = useState('');
   const [inputPassword, setPassword] = useState('');
-
+  const history = useHistory();
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('login');
@@ -28,7 +29,7 @@ function Login() {
       .then((response) => {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
-          //TODO: redirect to home page
+          history.push('/');
           return;
         }
         //TODO: show error that en error has been occurred
@@ -49,14 +50,14 @@ function Login() {
   return (
     <React.Fragment>
       <NavBar />
-      <form onSubmit={handleSubmit} className='login'>
-        <div className='login-container'>
+      <form onSubmit={handleSubmit} className="login">
+        <div className="login-container">
           <h3>Login</h3>
 
-          <div className='login-holder'>
-            <InputField value='username' type='text' name='username' setProperty={setUsername} />
-            <InputField value='password' type='password' name='password' setProperty={setPassword} />
-            <InputButton name='Login' type='submit'></InputButton>
+          <div className="login-holder">
+            <InputField value="username" type="text" name="username" setProperty={setUsername} />
+            <InputField value="password" type="password" name="password" setProperty={setPassword} />
+            <InputButton name="Login" type="submit"></InputButton>
           </div>
         </div>
       </form>
