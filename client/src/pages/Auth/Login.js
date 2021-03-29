@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Login.css';
-import InputButton from '../components/Buttons/InputButton';
-import InputField from '../components/InputField/InputField';
-import NavBar from '../components/NavBar/NavBar';
-import { Checkbox } from 'antd';
-import { encryptStrings, getAccessToken } from '../helpers';
+import InputButton from '../../components/Buttons/InputButton';
+import InputField from '../../components/InputField/InputField';
+
+import { encryptStrings } from '../../helpers';
 
 import './Login.css';
 
