@@ -13,6 +13,7 @@ function Login() {
   const [inputUsername, setUsername] = useState('');
   const [inputPassword, setPassword] = useState('');
   const history = useHistory();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('login');
@@ -29,7 +30,7 @@ function Login() {
       .then((response) => {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
-          history.push('/');
+
           return;
         }
         //TODO: show error that en error has been occurred
@@ -43,7 +44,7 @@ function Login() {
   useEffect(() => {
     const accessToken = getAccessToken();
     if (accessToken) {
-      // redirect to home
+      history.replace('/');
     }
   });
 
