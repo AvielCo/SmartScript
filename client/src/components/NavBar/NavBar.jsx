@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,Link
 } from "react-router-dom";
 import './NavBar.css';
-import Login from '../../pages/Login';
+import Login from '../../pages/Auth/Login';
 
 
 

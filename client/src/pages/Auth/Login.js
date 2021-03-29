@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Login.css';
-import InputButton from '../components/Buttons/InputButton';
-import InputField from '../components/InputField/InputField';
+import InputButton from '../../components/Buttons/InputButton';
+import InputField from '../../components/InputField/InputField';
 
-import { encryptStrings } from '../helpers';
+import { encryptStrings } from '../../helpers';
 
 import './Login.css';
 

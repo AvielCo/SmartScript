@@ -1,10 +1,10 @@
 
 import './Home.css';
-import NavBar from '../components/NavBar/NavBar';
-import TextView from '../components/TextView/TextView';
-import InputButton from '../components/Buttons/InputButton';
+import NavBar from '../../components/NavBar/NavBar';
+import TextView from '../../components/TextView/TextView';
+import InputButton from '../../components/Buttons/InputButton';
 import React, { useState } from 'react';
-import pic from '../assets/landing-bg.jpg';
+import pic from '../../assets/landing-bg.jpg';
 import axios from 'axios';
 
 function Home() {

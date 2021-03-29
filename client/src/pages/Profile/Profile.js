@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import RoundImage from '../components/Image/RoundImage';
+import RoundImage from '../../components/Image/RoundImage';
 import EdiText from 'react-editext';
-import NavBar from '../components/NavBar/NavBar';
+import NavBar from '../../components/NavBar/NavBar';
 import axios from 'axios';
 import './Profile.css';
 
