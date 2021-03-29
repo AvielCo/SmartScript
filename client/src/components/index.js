@@ -4,4 +4,4 @@ import InputField from './InputField/InputField';
 import RoundImage from './Image/RoundImage';
 import { InputButton, NavButton } from './Buttons';
 
-export { ResultTextView, NavBar, InputField, RoundImage, InputButtonInputButton\, NavButton };
+export { ResultTextView, NavBar, InputField, RoundImage, InputButton, InputButton, NavButton };
