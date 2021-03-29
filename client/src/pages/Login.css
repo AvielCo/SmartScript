@@ -8,12 +8,15 @@
   --gap: 3em;
 }
 
+* {
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
 .login {
-  background: linear-gradient(
-    to bottom,
-    var(--clr-background-dark),
-    var(--clr-background-light)
-  );
+  background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
   height: 100vh;
 }
 

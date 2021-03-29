@@ -49,14 +49,14 @@ function Login() {
   return (
     <React.Fragment>
       <NavBar />
-      <form onSubmit={handleSubmit} className="login">
-        <div className="login-container">
-          <h3>LOGIN</h3>
+      <form onSubmit={handleSubmit} className='login'>
+        <div className='login-container'>
+          <h3>Login</h3>
 
-          <div className="login-holder">
-            <InputField value="username" type="text" name="username" setProperty={setUsername} />
-            <InputField value="password" type="s" name="password" setProperty={setPassword} />
-            <InputButton name="LOGIN" type="submit"></InputButton>
+          <div className='login-holder'>
+            <InputField value='username' type='text' name='username' setProperty={setUsername} />
+            <InputField value='password' type='password' name='password' setProperty={setPassword} />
+            <InputButton name='Login' type='submit'></InputButton>
           </div>
         </div>
       </form>
