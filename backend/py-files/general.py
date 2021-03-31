@@ -82,7 +82,7 @@ def buildData(model_type, output_dir):
     if model_type in output_folders:
         # model_type == one of 'cursive' or 'square' or 'semi_square
         # meaning: training the second layer models
-        dataset += loadPatchesFromPath(os.path.join(output_dir, model_type), model_type)
+        dataset += loadPatchesFromPath(os.path.join(PROJECT_DIR, output_dir, model_type), model_type)
 
     # dataset = [ (img1, 0), (img2, 1) ... ]
 
