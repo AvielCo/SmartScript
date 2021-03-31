@@ -15,5 +15,7 @@ temp*
 old/
 backend/python-folders
 backend/users-histories
+backend/py-files/input
+backend/py-files/output
 */node_modules/
 node_modules
