@@ -73,7 +73,7 @@ def buildData(model_type, output_dir):
     if not os.path.exists(os.path.join(PROJECT_DIR, output_dir)):
         output_dir = crop.main("input", output_dir)  # PreProcessing run
     try:
-        output_folders = os.listdir(output_dir)  # output_folder => ['cursive', 'square', 'semi_square']
+        output_folders = os.listdir(os.path.join(PROJECT_DIR, output_dir))  # output_folder => ['cursive', 'square', 'semi_square']
     except FileNotFoundError:
         print(f"[{inspect.stack()[0][3]}] - Output file {str(crop.OUTPUT_PATH)} not found.")
         exit(1)
