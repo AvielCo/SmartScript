@@ -61,9 +61,9 @@ def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, imag
     if shape_type is not None:
         items_in_folder = len(os.listdir(os.path.join(OUTPUT_PATH, shape_type, folder_name)))
         if shape_type == "cursive" and items_in_folder >= 8000:
-            raise Exception("Unknown error, please try again.")
+            return False
         if shape_type != "cursive" and items_in_folder >= 4000:
-            raise Exception("Unknown error, please try again.")
+            return False
     global total_images_cropped
     global total_patches_cropped
     x1 = y1 = 0
@@ -207,7 +207,9 @@ def process_image(path, folder_name, image_name, shape_type=None):
             bw_img = binarization(grayscale_img)  # Open pic in BW
 
             try:
-                crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
+                to_continue = crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
+                if to_continue is False:
+                    return False
             except Exception as e:
                 raise e
             i += 1
@@ -229,7 +231,9 @@ def crop_files(images_input, folder_name: str, path: str):
     for image_name in images_input:
         shape_type = path.split(path_delimiter)[-1]
         try:
-            process_image(path, folder_name, image_name, shape_type=shape_type)
+            to_continue = process_image(path, folder_name, image_name, shape_type=shape_type)
+            if to_continue is False:
+                return False
         except Exception as e:
             raise(e)
 

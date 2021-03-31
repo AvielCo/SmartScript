@@ -1,5 +1,5 @@
 import gc
-import logging as log
+# import logging as log
 from datetime import datetime
 from random import randint
 
@@ -16,10 +16,6 @@ from models import *
 
 
 def main(model_type, times):
-    # # GPU configuration
-    # config = ConfigProto()
-    # config.gpu_options.allow_growth = True
-    # session = InteractiveSession(config=config)
 
     prog_init_start_time = datetime.now()
 
@@ -153,5 +149,5 @@ def main(model_type, times):
                    f"\n\n\n ------------------------------------------------------------")
 
     dual_print(f"Done training. Time took to train: {str(datetime.now() - prog_init_start_time)} ")
-    log.shutdown()
+    # log.shutdown()
     os.rename(filename, filename + "__DONE.txt")

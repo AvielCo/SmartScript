@@ -16,6 +16,7 @@ old/
 backend/python-folders
 backend/users-histories
 backend/py-files/input
-backend/py-files/output
+backend/py-files/python-folders
+
 */node_modules/
 node_modules
