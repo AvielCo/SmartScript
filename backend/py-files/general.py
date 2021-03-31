@@ -92,7 +92,7 @@ def buildData(model_type, output_dir):
         for folder_type in output_folders:
             print(f"[{inspect.stack()[0][3]}] - Loading patches from {folder_type} Folder.")
             dataset += loadPatchesFromPath(
-                os.path.join(output_dir, folder_type))  # Append the patches list from each output folder
+                os.path.join(PROJECT_DIR, output_dir, folder_type))  # Append the patches list from each output folder
             print(f"[{inspect.stack()[0][3]}] - Finished loading from {folder_type} Folder.")
 
     # Dataset is X, classes (labels) are Y
