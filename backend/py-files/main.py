@@ -4,7 +4,6 @@ from consts import *
 from crop import main as crop_main
 from evaluate_model import main as test_main
 from network import main as train_main
-from predict import predict_on_shape
 
 parser = argparse.ArgumentParser(prog="smartscript",
                                  formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -16,8 +15,7 @@ group.add_argument("-t", "--train", type=str, metavar=("model", "times"), nargs=
                    help="train a model (new or exist)")
 group.add_argument("-tt", "--test", type=str, metavar="model", nargs=1,
                    help="test a trained model")
-group.add_argument("-p", "--predict", type=str,
-                   help="predict an image on a trained model")
+
 group.add_argument("-c", "--crop", type=str, metavar='times', nargs=1,
                    help="crop images into patches")
 args = parser.parse_args()
@@ -38,8 +36,7 @@ try:
             raise NameError(f"model must contain one of: {models}")
         test_main(model_type)
 
-    elif args.predict:
-        predict_on_shape()
+    
 
     elif args.crop:
         del models
