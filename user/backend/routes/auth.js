@@ -4,9 +4,9 @@ const User = require('../models/User');
 const History = require('../models/History');
 const createError = require('http-errors');
 const authSchema = require('../validations/auth');
-const { decryptStrings } = require('../helpers/crypto');
-const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../helpers/jwt');
-const redisClient = require('../helpers/redis');
+const { decryptStrings } = require('../../../helpers/crypto');
+const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../../../helpers/jwt');
+const redisClient = require('../../../helpers/redis');
 require('dotenv').config();
 
 router.get('/get-all', async (req, res) => {

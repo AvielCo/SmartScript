@@ -5,7 +5,7 @@ const createError = require('http-errors');
 require('dotenv').config();
 require('../../helpers/mongodb');
 
-const PORT = process.env.PORT || 8008;
+const PORT = process.env.PORT || 8080;
 
 //* Middlewares
 const app = express();
@@ -17,11 +17,8 @@ app.use('/', express.static('../client/build'));
 
 //* Routes
 
-//* Upload image routes
-app.use('/api/images', require('./routes/images'));
-
 //* Authentication routes
-app.use('/api/auth', require('./routes/auth'));
+// app.use('/api/auth', require('./routes/auth'));
 
 //! 404 Error handling
 app.use(async (req, res, next) => {

@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "client": "cd client && npm start",
-    "backend": "cd backend && npm start",
-    "install-client": "cd client && npm install",
-    "install-backend": "cd backend && npm install",
-    "install-all": "npm run install-client && npm run install-backend",
-    "dev": "concurrently \"npm run client\" \"npm run backend\""
+    "u-client": "cd user/client && npm start",
+    "u-backend": "cd user/backend && npm start",
+    "install-u-client": "cd user/client && npm install",
+    "install-u-backend": "cd user/backend && npm install",
+    "install-all": "npm run install-u-client && npm run install-u-backend",
+    "dev": "concurrently \"npm run u-client\" \"npm run u-backend\""
   },
   "repository": {
     "type": "git",
