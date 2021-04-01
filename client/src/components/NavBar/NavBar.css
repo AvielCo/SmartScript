@@ -7,6 +7,14 @@ header.MuiAppBar-root {
   background: #d3ad60;
 }
 
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+}
+
 div.navbar-holder {
   display: flex;
   flex-direction: row;
@@ -42,5 +50,46 @@ img {
 
   div.btnGroup {
     padding-right: 0;
+  }
+}
+
+/* Burger */
+.burger {
+  display: none;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+.burger div {
+  width: 35px;
+  height: 3px;
+  margin: 7px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+@media screen and (max-width: 460px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .btnGroup {
+    position: absolute;
+    right: 0px;
+    height: 50vh;
+    top: 7vh;
+    background-color: #701616;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    transform: translateX(100%);
+    transition: transform 0.4s ease-in;
+    border-bottom-left-radius: 10px;
+    border: 1px solid black;
+  }
+
+  .burger {
+    display: block;
   }
 }

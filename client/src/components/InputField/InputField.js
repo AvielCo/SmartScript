@@ -1,22 +1,21 @@
 import React from 'react';
-import TextField from "@material-ui/core/TextField";
+//import TextField from "@material-ui/core/TextField";
 import './InputField.css';
+import { Input } from 'antd';
 
-
-function InputField({ value, type ,name, setProperty}) {
+function InputField({ value, type, name, setProperty, prefix }) {
   return (
-    <div>
-      <TextField
-        variant="outlined"
-        required
-        type={type}
-        label={value} 
-        className="input-field"
-        name={name}
-        onChange={(event)=> {setProperty(event.target.value)}}>
-        {value}
-      </TextField>
-    </div>
+    <Input
+      size='large'
+      className='input-field'
+      placeholder={value}
+      type={type}
+      name={name}
+      onChange={(event) => {
+        setProperty(event.target.value);
+      }}
+      prefix={prefix}
+    />
   );
 }
 export default InputField;

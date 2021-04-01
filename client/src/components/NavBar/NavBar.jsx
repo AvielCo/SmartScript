@@ -18,7 +18,7 @@ function NavBar({ isLoggedIn }) {
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar className="navbar" position="sticky">
       <div className="navbar-holder">
         <Link to="/home">
           <img alt="SmartScript-logo" src={logo} />
@@ -43,7 +43,13 @@ function NavBar({ isLoggedIn }) {
             </Link>
           )}
         </div>
+        <div className="burger" id="burger">
+            <div class="line-1"></div>
+            <div class="line-2"></div>
+            <div class="line-3"></div>
+        </div>
       </div>
+
     </AppBar>
   );
 }
