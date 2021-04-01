@@ -9,6 +9,10 @@ input/
 input/*
 ScannedScripts/
 */.env
+user/client/.env
+user/backend/.env
+admin/client/.env
+admin/backend/.env
 *.h5
 ngrok
 temp*
