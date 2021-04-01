@@ -21,6 +21,6 @@ backend/python-folders
 backend/users-histories
 backend/py-files/input
 backend/py-files/python-folders
-
+package-lock.json
 */node_modules/
 node_modules
