@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { InputField, InputButton, NavBar } from '../../components';
-import { encryptStrings, getAccessToken } from '../../helpers';
+
+import { Form } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
+
+import InputField from '../../components/InputField/InputField';
+import InputButton from '../../components/Buttons/InputButton';
+import NavBar from '../../components/NavBar/NavBar';
+import { encryptStrings } from '../../helpers';
 
 import './Register.css';
 
@@ -35,12 +41,7 @@ function Register() {
         name,
       })
       .then(function (response) {
-        if (response.status === 200) {
-          window.sessionStorage.setItem('accessToken', response.data.accessToken);
-          return;
-        }
-        //TODO: show error that en error has been occurred
-        return;
+        console.log(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -58,18 +59,32 @@ function Register() {
   return (
     <React.Fragment>
       <NavBar />
-      <form className="register-page" onSubmit={handleSubmit}>
+      <Form onFinish={handleSubmit} className="register-page">
         <div className="register-form">
           <h3>Register</h3>
           <div className="register-inputfields">
-            <InputField value="Email" type="text" name="Email" setProperty={setEmail} />
-            <InputField value="Username" type="text" name="Username" setProperty={setUsername} />
-            <InputField value="Password" type="password" name="Password" setProperty={setPassword} />
-            <InputField value="Name" type="text" name="Name" setProperty={setName} />
-            <InputButton name="Register" type="submit"></InputButton>
+            <Form.Item name="Email" label="Email" rules={[{ required: true, message: 'Please enter you email.' }]}>
+              <InputField type="text" setProperty={setEmail} prefix={<MailOutlined />} />
+            </Form.Item>
+            <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter a valid username.' }]}>
+              <InputField type="text" setProperty={setUsername} prefix={<LockOutlined />} />
+            </Form.Item>
+            <Form.Item
+              name="Password"
+              label="Password"
+              rules={[
+                { required: true, message: 'Please enter a valid password.' },
+                { type: 'email', message: 'The input is not valid E-mail!' },
+              ]}>
+              <InputField type="password" setProperty={setPassword} prefix={<KeyOutlined />} />
+            </Form.Item>
+            <Form.Item name="Name" label="Name" rules={[{ required: true, message: 'Please enter a valid name.' }]}>
+              <InputField type="text" setProperty={setName} prefix={<UserOutlined />} />
+            </Form.Item>
+            <InputButton name="Register" type="submit" />
           </div>
         </div>
-      </form>
+      </Form>
     </React.Fragment>
   );
 }

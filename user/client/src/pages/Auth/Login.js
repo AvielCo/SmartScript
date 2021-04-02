@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
-import { Checkbox } from 'antd';
+import { Checkbox, Form } from 'antd';
 import { InputButton, InputField, NavBar } from '../../components';
 import { encryptStrings, getAccessToken } from '../../helpers';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './Login.css';
 
 function Login() {
+  const [form] = Form.useForm();
+
   const [inputUsername, setUsername] = useState('');
   const [inputPassword, setPassword] = useState('');
   const history = useHistory();
@@ -16,11 +19,11 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('login');
     if (!inputUsername || !inputPassword) {
       return;
     }
     const { encryptedUsername, encryptedPassword } = encryptStrings({ encryptedUsername: inputUsername }, { encryptedPassword: inputPassword });
+
     loginUser(encryptedUsername, encryptedPassword);
   };
 
@@ -56,16 +59,27 @@ function Login() {
   return (
     <React.Fragment>
       <NavBar />
-      <form onSubmit={handleSubmit} className="login">
-        <div className="login-container">
+      <form onSubmit={handleSubmit} className='login'>
+        <div className='login-container'>
           <h3>Login</h3>
-          <div className="login-holder">
-            <InputField value="username" type="text" name="username" setProperty={setUsername} />
-            <InputField value="password" type="password" name="password" setProperty={setPassword} />
+          <div className='login-holder'>
+            <Form.Item
+              name='username'
+              label='Username'
+              rules={[
+                { required: true, message: 'Please enter your username.' },
+                { type: 'text', message: 'Please enter a valid username.' },
+              ]}
+            >
+              <Form.Item name='password' label='Password' rules={[{ required: true, message: 'Please input your Password!' }]}>
+                <InputField value='password' type='password' name='password' setProperty={setPassword} prefix={<LockOutlined />} />
+              </Form.Item>
+            </Form.Item>
+            <InputField value='password' type='password' name='password' setProperty={setPassword} />
             <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>
               Remember me
             </Checkbox>
-            <InputButton name="Login" type="submit"></InputButton>
+            <InputButton name='Login' type='submit'></InputButton>
           </div>
         </div>
       </form>
