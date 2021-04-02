@@ -124,3 +124,29 @@
 .cross .line-3 {
   transform: rotate(45deg) translate(-5px, -6px);
 }
+
+/* horizontal view medias */
+@media screen and (max-height: 550px) {
+  .navbar {
+    height: 15vh;
+  }
+  .navbar-holder {
+    top: 15vh;
+    height: 60vh;
+  }
+}
+
+@media screen and (max-height: 320px) {
+  .navbar-holder {
+    height: 70vh;
+  }
+}
+
+@media screen and (max-height: 280px) {
+  .navbar-holder {
+    height: 80vh;
+  }
+  .logo {
+    width: 200px;
+  }
+}
