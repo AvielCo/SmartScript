@@ -1,14 +1,18 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import { AppBar } from '@material-ui/core';
+// import { AppBar } from '@material-ui/core';
 import NavButton from '../Buttons/NavButton';
 import logo from '../../assets/smartscript-logo.png';
+import {useState} from 'react'
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import './NavBar.css';
 import Login from '../../pages/Auth/Login';
 
 function NavBar({ isLoggedIn }) {
+  const [slide,setSlide] = useState(0);
+
+  const showSidebar = () => setSlide(!slide);
   const login = () => {
     return (
       <Router path="/login">
@@ -18,39 +22,39 @@ function NavBar({ isLoggedIn }) {
   };
 
   return (
-    <AppBar className="navbar" position="sticky">
-      <div className="navbar-holder">
-        <Link to="/home">
-          <img alt="SmartScript-logo" src={logo} />
+     <nav className="navbar" position="sticky">
+        <Link className="logo" to="/home">
+          <img  alt="SmartScript-logo" src={logo} />
         </Link>
-        <div className="btnGroup">
-          <NavButton btnText="Scan" />
-          <NavButton btnText="About" />
-          <NavButton btnText="Who we are" />
+      <div className={slide ? 'navbar-holder active' : 'navbar-holder'}
+      slide={slide}>
+        {/* <div className="btnGroup"> */}
+          <NavButton className="nav-button" btnText="Scan" />
+          <NavButton className="nav-button" btnText="About" />
+          <NavButton className="nav-button" btnText="Who we are" />
           {!isLoggedIn && (
             <Link to="/login" style={{ textDecoration: 'none' }}>
-              <NavButton btnText="Login" />
+              <NavButton className="nav-button" btnText="Login" />
             </Link>
           )}
           {!isLoggedIn && (
             <Link to="/register" style={{ textDecoration: 'none' }}>
-              <NavButton btnText="Register" />
+              <NavButton className="nav-button" btnText="Register" />
             </Link>
           )}
           {isLoggedIn && (
             <Link to="/logout" style={{ textDecoration: 'none' }}>
-              <NavButton btnText="Logout" />
+              <NavButton className="nav-button" btnText="Logout" />
             </Link>
           )}
-        </div>
-        <div className="burger" id="burger">
+        {/* </div> */}        
+      </div>
+      <div onClick={showSidebar} className={slide? "burger cross" : "burger"} id="burger">
             <div class="line-1"></div>
             <div class="line-2"></div>
             <div class="line-3"></div>
         </div>
-      </div>
-
-    </AppBar>
+    </nav>
   );
 }
 

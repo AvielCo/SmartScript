@@ -6,7 +6,7 @@ import axios from 'axios';
 import { getAccessToken } from '../../helpers';
 import { Button, Upload } from 'antd';
 
-import square from '../../assets/square_new.png';
+import cursive from '../../assets/cursive_trans.png';
 
 function LandingSection() {
   return (
@@ -129,7 +129,7 @@ function AboutSection() {
         </p>
       </div>
       <div className='image-rotate-holder'>
-        <img className='rotating-image' alt='something' src={square}></img>
+        <img className='rotating-image' alt='something' src={cursive}></img>
       </div>
     </section>
   );
