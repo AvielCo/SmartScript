@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Form } from 'antd';
@@ -7,7 +7,7 @@ import { UserOutlined, LockOutlined, MailOutlined, KeyOutlined } from '@ant-desi
 import InputField from '../../components/InputField/InputField';
 import InputButton from '../../components/Buttons/InputButton';
 import NavBar from '../../components/NavBar/NavBar';
-import { encryptStrings } from '../../helpers';
+import { encryptStrings, getAccessToken } from '../../helpers';
 
 import './Register.css';
 
