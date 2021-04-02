@@ -3,13 +3,6 @@
   font-size: 1rem;
   font-weight: 600;
 }
-/* header.MuiAppBar-root {
-  background: #d3ad60;
-  height: 8vh;
-  position: fixed;
-  max-width: 100vw;
-  top: 0;
-} */
 
 .navbar {
   background: #d3ad60;
@@ -131,20 +124,3 @@
 .cross .line-3 {
   transform: rotate(45deg) translate(-5px, -6px);
 }
-
-/* @media (max-width: 629px) {
-  img {
-    justify-self: center;
-    width: 200px;
-    height: auto;
-  }
-
-  div.navbar-holder {
-    flex-direction: column;
-    align-self: center;
-  }
-
-  div.btnGroup {
-    padding-right: 0;
-  }
-} */
