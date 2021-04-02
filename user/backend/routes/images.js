@@ -1,12 +1,12 @@
 const express = require('express');
 const createError = require('http-errors');
-const { verifyAccessToken } = require('../helpers/jwt');
+const { verifyAccessToken } = require('../../../helpers/jwt');
 const User = require('../models/User');
 const History = require('../models/History');
 const router = express.Router();
 const exec = require('child_process').exec;
 const path = require('path');
-const uploadFile = require('../helpers/upload');
+const uploadFile = require('../../../helpers/upload');
 const fs = require('fs');
 const sharp = require('sharp');
 

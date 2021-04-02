@@ -2,9 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const createError = require('http-errors');
-const { verifyAccessToken, verifyRefreshToken } = require('./helpers/jwt');
 require('dotenv').config();
-require('./helpers/mongodb');
+require('../../helpers/mongodb');
 
 const PORT = process.env.PORT || 8008;
 

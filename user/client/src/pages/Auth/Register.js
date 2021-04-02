@@ -4,10 +4,10 @@ import axios from 'axios';
 import { Form } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
 
-import InputField from '../components/InputField/InputField';
-import InputButton from '../components/Buttons/InputButton';
-import NavBar from '../components/NavBar/NavBar';
-import { encryptStrings } from '../helpers';
+import InputField from '../../components/InputField/InputField';
+import InputButton from '../../components/Buttons/InputButton';
+import NavBar from '../../components/NavBar/NavBar';
+import { encryptStrings } from '../../helpers';
 
 import './Register.css';
 
@@ -59,30 +59,29 @@ function Register() {
   return (
     <React.Fragment>
       <NavBar />
-      <Form onFinish={handleSubmit} className='register-page'>
-        <div className='register-form'>
+      <Form onFinish={handleSubmit} className="register-page">
+        <div className="register-form">
           <h3>Register</h3>
-          <div className='register-inputfields'>
-            <Form.Item name='Email' label='Email' rules={[{ required: true, message: 'Please enter you email.' }]}>
-              <InputField type='text' setProperty={setEmail} prefix={<MailOutlined />} />
+          <div className="register-inputfields">
+            <Form.Item name="Email" label="Email" rules={[{ required: true, message: 'Please enter you email.' }]}>
+              <InputField type="text" setProperty={setEmail} prefix={<MailOutlined />} />
             </Form.Item>
-            <Form.Item name='username' label='Username' rules={[{ required: true, message: 'Please enter a valid username.' }]}>
-              <InputField type='text' setProperty={setUsername} prefix={<LockOutlined />} />
+            <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter a valid username.' }]}>
+              <InputField type="text" setProperty={setUsername} prefix={<LockOutlined />} />
             </Form.Item>
             <Form.Item
-              name='Password'
-              label='Password'
+              name="Password"
+              label="Password"
               rules={[
                 { required: true, message: 'Please enter a valid password.' },
                 { type: 'email', message: 'The input is not valid E-mail!' },
-              ]}
-            >
-              <InputField type='password' setProperty={setPassword} prefix={<KeyOutlined />} />
+              ]}>
+              <InputField type="password" setProperty={setPassword} prefix={<KeyOutlined />} />
             </Form.Item>
-            <Form.Item name='Name' label='Name' rules={[{ required: true, message: 'Please enter a valid name.' }]}>
-              <InputField type='text' setProperty={setName} prefix={<UserOutlined />} />
+            <Form.Item name="Name" label="Name" rules={[{ required: true, message: 'Please enter a valid name.' }]}>
+              <InputField type="text" setProperty={setName} prefix={<UserOutlined />} />
             </Form.Item>
-            <InputButton name='Register' type='submit' />
+            <InputButton name="Register" type="submit" />
           </div>
         </div>
       </Form>
