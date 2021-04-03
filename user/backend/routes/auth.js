@@ -1,22 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const History = require('../models/History');
+const User = require('../../../models/User');
+const History = require('../../../models/History');
 const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../../../helpers/crypto');
 const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../../../helpers/jwt');
 const redisClient = require('../../../helpers/redis');
 require('dotenv').config();
-
-router.get('/get-all', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
 
 router.post('/register', async (req, res, next) => {
   try {
