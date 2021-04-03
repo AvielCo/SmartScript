@@ -4,7 +4,7 @@ const User = require('../../../models/User');
 const createError = require('http-errors');
 const { verifyAccessToken } = require('../../../helpers/jwt');
 
-router.get('/get-all-users', verifyAccessToken, async (req, res, next) => {
+router.get('/get-all-users', async (req, res, next) => {
   try {
     const users = await User.find();
     if (users.length <= 0) {
@@ -16,7 +16,7 @@ router.get('/get-all-users', verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.post('/ban-user', verifyAccessToken, async (req, res, next) => {
+router.post('/ban-user', async (req, res, next) => {
   try {
     if (!req.body.userId) {
       throw createError.BadRequest();
@@ -31,7 +31,7 @@ router.post('/ban-user', verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.post('/unban-user', verifyAccessToken, async (req, res, next) => {
+router.post('/unban-user', async (req, res, next) => {
   try {
     if (!req.body.userId) {
       throw createError.BadRequest();
@@ -46,7 +46,7 @@ router.post('/unban-user', verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.post('/user-profile', verifyAccessToken, async (req, res, next) => {
+router.post('/user-profile', async (req, res, next) => {
   try {
     if (!req.body.userId) {
       throw createError.BadRequest();
