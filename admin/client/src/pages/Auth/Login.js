@@ -32,7 +32,7 @@ function Login() {
 
   const loginUser = (username, password) => {
     axios
-      .post("http://localhost:8008/api/auth/login", { username, password })
+      .post("http://localhost:8080/api/auth/login", { username, password })
       .then((response) => {
         if (response.status === 200) {
           window.sessionStorage.setItem(
