@@ -9,15 +9,6 @@ const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken
 const redisClient = require('../../../helpers/redis');
 require('dotenv').config();
 
-router.get('/get-all', async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
-
 router.post('/register', async (req, res, next) => {
   try {
     const { email, username, password, name } = decryptStrings({ email: req.body.email }, { username: req.body.username }, { password: req.body.password }, { name: req.body.name });
