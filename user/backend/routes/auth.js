@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const History = require('../models/History');
+const User = require('../../../models/User');
+const History = require('../../../models/History');
 const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../../../helpers/crypto');
