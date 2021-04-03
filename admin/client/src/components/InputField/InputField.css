@@ -1,0 +1,30 @@
+.ant-input {
+  width: 300px;
+  border-radius: 10px;
+  padding-left: 10px;
+}
+
+.ant-input:active,
+.ant-input:focus {
+  outline: 0;
+}
+
+@media (max-width: 480px) {
+  .ant-input {
+    width: 220px;
+  }
+}
+
+.ant-form-item-label {
+  margin-left: 40px;
+}
+
+.anticon {
+  font-size: 30px;
+  vertical-align: top;
+}
+
+.ant-form-item-explain {
+  text-align: center;
+  color: red;
+}
