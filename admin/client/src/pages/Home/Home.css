@@ -1,0 +1,17 @@
+div.home-holder{
+    background-color: bisque;
+    padding-right: 40%;
+    padding-top: 5%;
+    padding-left: 5%;
+    justify-content: left;
+    align-items: center;
+    height: 100vh;
+}
+
+div.users-table-container{
+    background-color: aqua;
+}
+
+/* div.logout-btn{
+
+} */
