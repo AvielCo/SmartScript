@@ -18,7 +18,9 @@ app.use('/', express.static('../client/build'));
 //* Routes
 
 //* Authentication routes
-// app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', require('./routes/auth'));
+
+app.use('/api/actions', require('./routes/actions'));
 
 //! 404 Error handling
 app.use(async (req, res, next) => {
