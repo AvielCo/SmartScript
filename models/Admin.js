@@ -27,6 +27,11 @@ const AdminSchema = mongoose.Schema({
   name: reqString,
 });
 
+//! To register a new admin, go to console, and write:
+//* $ nodejs helpers/bcrypt.js
+//! to generate an hashed password.
+//! write the username and hashed password inside the database under Admins db
+
 //Check if password is equal to hashed password.
 AdminSchema.methods.isValidPassword = async function (password) {
   try {
