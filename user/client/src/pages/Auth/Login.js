@@ -75,7 +75,6 @@ function Login() {
             <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please input your Password!' }]}>
               <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
             </Form.Item>
-            <InputField value="password" type="password" name="password" setProperty={setPassword} />
             <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>
               Remember me
             </Checkbox>
