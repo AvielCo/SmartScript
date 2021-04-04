@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const PredictSchema = mongoose.Schema({
   classes: [String],
   probabilities: [String],
+  dates: [Date],
   _id: false,
 });
 

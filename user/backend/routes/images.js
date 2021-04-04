@@ -13,10 +13,11 @@ const sharp = require('sharp');
 const insertNewHistory = async (userHistory, newHistory) => {
   let { predictedResult } = userHistory;
   if (predictedResult === undefined) {
-    predictedResult = { classes: [], probabilities: [] };
+    predictedResult = { classes: [], probabilities: [], dates: [] };
   }
   predictedResult.classes.push(`${newHistory.origin}-${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
+  predictedResult.dates.push(new Date().toLocaleDateString('he'));
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
 };
 
@@ -79,6 +80,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
 
           return res.status(200).send(message);
         } catch (err) {
+          console.log(err);
           return next(createError.InternalServerError());
         }
       }
