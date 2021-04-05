@@ -36,16 +36,25 @@ function Login() {
           if (checked) {
             window.localStorage.setItem('accessToken', response.data.accessToken);
           }
+          axios.interceptors.request.use((req) => {
+            req.headers.authorization = response.data.accessToken;
+          });
           history.replace('/');
           return;
         }
-        //TODO: show error
-        //!garachia kartoshta
-
         return;
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.response) {
+          const { status, message } = err.response.data.error;
+          if (status === 404) {
+            history.replace('/404');
+            return;
+          }
+          alert(message);
+        } else {
+          alert('Internal Server Error');
+        }
       });
   };
 

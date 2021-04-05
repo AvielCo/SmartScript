@@ -28,15 +28,19 @@ router.post('/register', async (req, res, next) => {
     const userExists = await User.findOne({
       $or: [{ email: newUserDetails.email }, { username: newUserDetails.username }],
     });
+
     if (userExists) {
       //! User is exists
       //! Check which fields are the same and throw an error
       if (userExists.username === newUserDetails.username) {
+        console.log('username');
         throw createError.Conflict('Username is already in use.');
       }
       if (userExists.email === newUserDetails.email) {
+        console.log('email');
         throw createError.Conflict('Email is already in use.');
       }
+      console.log('nothing');
       throw createError.Conflict();
     }
 

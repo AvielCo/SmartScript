@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { useHistory } from 'react-router-dom';
 import { Form } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
 
@@ -16,10 +16,12 @@ function Register() {
   const [inputPassword, setPassword] = useState('');
   const [inputEmail, setEmail] = useState('');
   const [inputName, setName] = useState('');
+  const history = useHistory();
+  const [form] = Form.useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!inputUsername || !inputPassword) {
+    if (!inputUsername || !inputPassword || !inputEmail || !inputName) {
       return;
     }
     const { encryptedUsername, encryptedPassword, encryptedEmail, encryptedName } = encryptStrings(
@@ -41,50 +43,65 @@ function Register() {
         name,
       })
       .then(function (response) {
-        console.log(response.data);
+        if (response.status === 200) {
+          window.sessionStorage.setItem('accessToken', response.data.accessToken);
+          axios.interceptors.request.use((req) => {
+            req.headers.authorization = response.data.accessToken;
+          });
+          history.replace('/');
+          return;
+        }
       })
-      .catch(function (error) {
-        console.log(error);
-        //if(error.username || error.email) username or email already exists.
+      .catch((err) => {
+        if (err.response) {
+          const { status, message } = err.response.data.error;
+          if (status === 404) {
+            history.replace('/404');
+            return;
+          }
+          alert(message);
+        } else {
+          alert('Internal Server Error');
+        }
       });
   };
 
   useEffect(() => {
     const accessToken = getAccessToken();
     if (accessToken) {
-      // redirect to home
+      history.replace('/');
     }
   });
 
   return (
     <React.Fragment>
       <NavBar />
-      <Form onFinish={handleSubmit} className="register-page">
+      <form onSubmit={handleSubmit} className="register-page">
         <div className="register-form">
           <h3>Register</h3>
           <div className="register-inputfields">
-            <Form.Item name="Email" label="Email" rules={[{ required: true, message: 'Please enter you email.' }]}>
-              <InputField type="text" setProperty={setEmail} prefix={<MailOutlined />} />
+            <Form.Item name="email" label="Email" rules={[{ required: true, message: 'Please enter your email.' }]}>
+              <InputField type="text" value="email" name="email" setProperty={setEmail} prefix={<MailOutlined />} />
             </Form.Item>
             <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter a valid username.' }]}>
-              <InputField type="text" setProperty={setUsername} prefix={<LockOutlined />} />
+              <InputField type="text" value="username" name="username" setProperty={setUsername} prefix={<LockOutlined />} />
             </Form.Item>
             <Form.Item
-              name="Password"
+              name="password"
               label="Password"
               rules={[
                 { required: true, message: 'Please enter a valid password.' },
                 { type: 'email', message: 'The input is not valid E-mail!' },
               ]}>
-              <InputField type="password" setProperty={setPassword} prefix={<KeyOutlined />} />
+              <InputField type="password" value="password" name="password" setProperty={setPassword} prefix={<KeyOutlined />} />
             </Form.Item>
-            <Form.Item name="Name" label="Name" rules={[{ required: true, message: 'Please enter a valid name.' }]}>
-              <InputField type="text" setProperty={setName} prefix={<UserOutlined />} />
+            <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter a valid name.' }]}>
+              <InputField type="text" value="name" name="name" setProperty={setName} prefix={<UserOutlined />} />
             </Form.Item>
             <InputButton name="Register" type="submit" />
           </div>
         </div>
-      </Form>
+      </form>
     </React.Fragment>
   );
 }
