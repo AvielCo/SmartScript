@@ -36,9 +36,6 @@ function Login() {
           if (checked) {
             window.localStorage.setItem('accessToken', response.data.accessToken);
           }
-          axios.interceptors.request.use((req) => {
-            req.headers.authorization = response.data.accessToken;
-          });
           history.replace('/');
           return;
         }

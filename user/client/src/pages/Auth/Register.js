@@ -45,9 +45,6 @@ function Register() {
       .then(function (response) {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
-          axios.interceptors.request.use((req) => {
-            req.headers.authorization = response.data.accessToken;
-          });
           history.replace('/');
           return;
         }
