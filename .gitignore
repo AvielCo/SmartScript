@@ -17,10 +17,10 @@ admin/backend/.env
 ngrok
 temp*
 old/
-backend/python-folders
-backend/users-histories
-backend/py-files/input
-backend/py-files/python-folders
+user/backend/python-folders
+user/backend/users-histories
+user/backend/py-files/input
+user/backend/py-files/python-folders
 package-lock.json
 */node_modules/
 node_modules
