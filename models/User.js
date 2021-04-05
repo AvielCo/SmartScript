@@ -33,7 +33,6 @@ const UserSchema = mongoose.Schema({
   password: reqHideString,
   name: reqString,
   historyId: emptyString,
-  imageToScan: emptyString,
   banned: {
     type: Boolean,
     default: false,

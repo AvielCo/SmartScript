@@ -39,13 +39,19 @@ function Login() {
           history.replace('/');
           return;
         }
-        //TODO: show error
-        //!garachia kartoshta
-
         return;
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.response) {
+          const { status, message } = err.response.data.error;
+          if (status === 404) {
+            history.replace('/404');
+            return;
+          }
+          alert(message);
+        } else {
+          alert('Internal Server Error');
+        }
       });
   };
 

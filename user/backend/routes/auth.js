@@ -5,8 +5,7 @@ const History = require('../../../models/History');
 const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../../../helpers/crypto');
-const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../../../helpers/jwt');
-const redisClient = require('../../../helpers/redis');
+const { signAccessToken, verifyAccessToken } = require('../../../helpers/jwt');
 require('dotenv').config();
 
 router.post('/register', async (req, res, next) => {
@@ -28,15 +27,19 @@ router.post('/register', async (req, res, next) => {
     const userExists = await User.findOne({
       $or: [{ email: newUserDetails.email }, { username: newUserDetails.username }],
     });
+
     if (userExists) {
       //! User is exists
       //! Check which fields are the same and throw an error
       if (userExists.username === newUserDetails.username) {
+        console.log('username');
         throw createError.Conflict('Username is already in use.');
       }
       if (userExists.email === newUserDetails.email) {
+        console.log('email');
         throw createError.Conflict('Email is already in use.');
       }
+      console.log('nothing');
       throw createError.Conflict();
     }
 
@@ -48,7 +51,6 @@ router.post('/register', async (req, res, next) => {
     await User.findOneAndUpdate({ _id: newUser._id }, { historyId: history._id });
 
     await signAccessToken(newUser.id);
-    await signRefreshToken(newUser.id);
 
     res.status(200).send('Registered user successfully.');
   } catch (err) {
@@ -70,7 +72,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     const accessToken = await signAccessToken(user.id);
-    await signRefreshToken(user.id);
+
     res.status(200).json({ accessToken });
   } catch (err) {
     if (err.isJoi) {
@@ -80,41 +82,9 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.delete('/logout', verifyAccessToken, (req, res, next) => {
-  try {
-    const userId = req.payload['aud'];
-    redisClient.DEL(userId, (err, val) => {
-      if (err) {
-        console.log(err, val);
-        throw createError.InternalServerError();
-      }
-      res.sendStatus(204);
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
 router.get('/user', verifyAccessToken, (req, res, next) => {
   const userId = req.payload['aud'];
   return res.status(200).json('OK');
-});
-
-router.post('/refresh-token', async (req, res, next) => {
-  try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      throw createError.BadRequest();
-    }
-    const userId = await verifyRefreshToken(refreshToken);
-
-    await signAccessToken(userId);
-    await signRefreshToken(userId);
-
-    res.status(200).send('New access and refresh tokens has been generated.');
-  } catch (err) {
-    next(err);
-  }
 });
 
 module.exports = router;

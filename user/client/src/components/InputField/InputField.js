@@ -6,8 +6,8 @@ import { Input } from 'antd';
 function InputField({ value, type, name, setProperty, prefix }) {
   return (
     <Input
-      size='large'
-      className='input-field'
+      size="large"
+      className="input-field"
       placeholder={value}
       type={type}
       name={name}

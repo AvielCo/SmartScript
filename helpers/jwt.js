@@ -1,32 +1,11 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
-const redisClient = require('./redis');
 require('dotenv').config();
-
-const YEAR = 60 * 60 * 24 * 365;
 
 const signAccessToken = (userId) => {
   return new Promise((resolve, reject) => {
     const payload = {};
     const secret = process.env.JWT_SECRET;
-    const options = {
-      expiresIn: '24h',
-      audience: userId,
-    };
-    JWT.sign(payload, secret, options, (err, token) => {
-      if (err) {
-        console.log(err);
-        reject(createError.InternalServerError());
-      }
-      resolve(token);
-    });
-  });
-};
-
-const signRefreshToken = (userId) => {
-  return new Promise((resolve, reject) => {
-    const payload = {};
-    const secret = process.env.REFRESH_TOKEN_SECRET;
     const options = {
       expiresIn: '1y',
       audience: userId,
@@ -36,13 +15,7 @@ const signRefreshToken = (userId) => {
         console.log(err);
         reject(createError.InternalServerError());
       }
-      redisClient.SET(userId, token, 'EX', YEAR, (err) => {
-        if (err) {
-          console.log(err.message);
-          reject(createError.InternalServerError());
-        }
-        resolve(token);
-      });
+      resolve(token);
     });
   });
 };
@@ -64,32 +37,7 @@ const verifyAccessToken = (req, res, next) => {
   });
 };
 
-const verifyRefreshToken = (refToken) => {
-  return new Promise((resolve, reject) => {
-    JWT.verify(refToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
-      if (err) {
-        return reject(createError.Unauthorized());
-      }
-
-      const userId = payload.aud;
-      redisClient.GET(userId, (err, result) => {
-        if (err) {
-          console.log(err.message);
-          return reject(createError.InternalServerError());
-        }
-        if (result === refToken) {
-          console.log('ok');
-          return resolve(userId);
-        }
-        return reject(createError.Unauthorized());
-      });
-    });
-  });
-};
-
 module.exports = {
   signAccessToken,
-  signRefreshToken,
   verifyAccessToken,
-  verifyRefreshToken,
 };
