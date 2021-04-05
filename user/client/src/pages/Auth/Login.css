@@ -17,18 +17,18 @@
 
 .login {
   background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
-  height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 20px;
 }
 
 h3 {
   text-align: center;
-  padding: 50px;
+  padding-top: 150px;
 }
 
 .login-container {
-  justify-content: center;
-  align-items: center;
-  display: grid;
+  margin: 0 auto;
+  width: 45%;
 }
 
 .login-holder {
@@ -44,14 +44,71 @@ h3 {
   gap: var(--gap);
 }
 
-@media (max-width: 480px) {
-  .login-holder {
-    padding: 20px 50px;
+/* Vertical responsiveness */
+@media (max-width: 540px) {
+  .login-container {
+    width: 90%;
+  }
+  h3 {
+    padding-top: 80px;
   }
 }
 
 @media (max-width: 360px) {
+  h3 {
+    padding-top: 80px;
+  }
+}
+
+@media (max-width: 320px) {
+  h3 {
+    padding-top: 50px;
+  }
+}
+
+@media (min-width: 375px) and (min-height: 670px) {
+  h3 {
+    padding-top: 80px;
+  }
+}
+
+@media (min-width: 400px) and (min-height: 800px) {
+  h3 {
+    padding-top: 150px;
+  }
+}
+
+@media (min-width: 750px) and (min-height: 1024px) {
+  .login-container {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 1366px) {
+  h3 {
+    padding-top: 300px;
+  }
+}
+
+/* Landscape responsiveness */
+@media (max-height: 360px) and (max-width: 640px) {
+  h3 {
+    padding-top: 80px;
+    font-size: 1.5em;
+  }
+  .login-container {
+    width: 90%;
+  }
   .login-holder {
-    padding: 20px 30px;
+    padding-top: 15px;
+  }
+}
+
+@media (max-height: 540px) and (max-width: 825px) {
+  h3 {
+    padding-top: 80px;
+  }
+  .login-container {
+    width: 90%;
   }
 }
