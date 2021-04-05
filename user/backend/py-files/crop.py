@@ -235,7 +235,7 @@ def crop_files(images_input, folder_name: str, path: str):
             if to_continue is False:
                 return False
         except Exception as e:
-            raise(e)
+            raise e
 
 def runThreads(input_path: str, folder_name: str, type_):
     """

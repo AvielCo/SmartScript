@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import "./Login.css";
-import { Checkbox, Form } from "antd";
-import { InputButton, InputField } from "../../components";
-import { encryptStrings, getAccessToken } from "../../helpers";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
+import './Login.css';
+import { Checkbox, Form } from 'antd';
+import { InputButton, InputField } from '../../components';
+import { encryptStrings, getAccessToken } from '../../helpers';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import "./Login.css";
+import './Login.css';
 
 function Login() {
   const [form] = Form.useForm();
 
-  const [inputUsername, setUsername] = useState("");
-  const [inputPassword, setPassword] = useState("");
+  const [inputUsername, setUsername] = useState('');
+  const [inputPassword, setPassword] = useState('');
   const history = useHistory();
   const [checked, setChecked] = useState(false);
 
@@ -22,30 +22,21 @@ function Login() {
     if (!inputUsername || !inputPassword) {
       return;
     }
-    const { encryptedUsername, encryptedPassword } = encryptStrings(
-      { encryptedUsername: inputUsername },
-      { encryptedPassword: inputPassword }
-    );
+    const { encryptedUsername, encryptedPassword } = encryptStrings({ encryptedUsername: inputUsername }, { encryptedPassword: inputPassword });
 
     loginUser(encryptedUsername, encryptedPassword);
   };
 
   const loginUser = (username, password) => {
     axios
-      .post("http://localhost:8080/api/auth/login", { username, password })
+      .post('http://localhost:8080/api/auth/login', { username, password })
       .then((response) => {
         if (response.status === 200) {
-          window.sessionStorage.setItem(
-            "accessToken",
-            response.data.accessToken
-          );
+          window.sessionStorage.setItem('accessToken', response.data.accessToken);
           if (checked) {
-            window.localStorage.setItem(
-              "accessToken",
-              response.data.accessToken
-            );
+            window.localStorage.setItem('accessToken', response.data.accessToken);
           }
-          history.replace("/");
+          history.replace('/');
           return;
         }
         //TODO: show error
@@ -61,7 +52,7 @@ function Login() {
   useEffect(() => {
     const accessToken = getAccessToken();
     if (accessToken) {
-      history.replace("/");
+      history.replace('/');
     }
   });
   //garachia kartoshta
@@ -75,39 +66,18 @@ function Login() {
               name="username"
               label="Username"
               rules={[
-                { required: true, message: "Please enter your username." },
-                { type: "text", message: "Please enter a valid username." },
-              ]}
-            >
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                  { required: true, message: "Please input your Password!" },
-                ]}
-              >
-                <InputField
-                  value="password"
-                  type="password"
-                  name="password"
-                  setProperty={setPassword}
-                  prefix={<LockOutlined />}
-                />
-              </Form.Item>
+                { required: true, message: 'Please enter your username.' },
+                { type: 'text', message: 'Please enter a valid username.' },
+              ]}>
+              <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
             </Form.Item>
-            <InputField
-              value="password"
-              type="password"
-              name="password"
-              setProperty={setPassword}
-            />
-            <Checkbox
-              checked={checked}
-              onChange={(e) => setChecked(e.target.checked)}
-            >
+            <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please input your Password!' }]}>
+              <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
+            </Form.Item>
+            <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>
               Remember me
             </Checkbox>
-            <InputButton name="Login" type="submit"></InputButton>
+            <InputButton name="Login" type="submit" />
           </div>
         </div>
       </form>

@@ -59,27 +59,26 @@ function Login() {
   return (
     <React.Fragment>
       <NavBar />
-      <form onSubmit={handleSubmit} className='login'>
-        <div className='login-container'>
+      <form onSubmit={handleSubmit} className="login">
+        <div className="login-container">
           <h3>Login</h3>
-          <div className='login-holder'>
+          <div className="login-holder">
             <Form.Item
-              name='username'
-              label='Username'
+              name="username"
+              label="Username"
               rules={[
                 { required: true, message: 'Please enter your username.' },
                 { type: 'text', message: 'Please enter a valid username.' },
-              ]}
-            >
-              <Form.Item name='password' label='Password' rules={[{ required: true, message: 'Please input your Password!' }]}>
-                <InputField value='password' type='password' name='password' setProperty={setPassword} prefix={<LockOutlined />} />
-              </Form.Item>
+              ]}>
+              <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
             </Form.Item>
-            <InputField value='password' type='password' name='password' setProperty={setPassword} />
+            <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please input your Password!' }]}>
+              <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
+            </Form.Item>
             <Checkbox checked={checked} onChange={(e) => setChecked(e.target.checked)}>
               Remember me
             </Checkbox>
-            <InputButton name='Login' type='submit'></InputButton>
+            <InputButton name="Login" type="submit"></InputButton>
           </div>
         </div>
       </form>

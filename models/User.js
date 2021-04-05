@@ -34,6 +34,10 @@ const UserSchema = mongoose.Schema({
   name: reqString,
   historyId: emptyString,
   imageToScan: emptyString,
+  banned: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //Check if password is equal to hashed password.

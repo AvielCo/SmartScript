@@ -1,6 +1,5 @@
 import React from 'react';
-import {Login, NotFound} from './pages';
-
+import {Login, NotFound,Home} from './pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function App() {
@@ -10,9 +9,9 @@ function App() {
         {/* <Route exact path="/profile" component={Profile} />
         <Route exact path="/register" component={Register} /> */}
         <Route exact path="/login" component={Login} />
-        {/* <Route exact path="/logout" component={Logout} />
-        <Route exact path="/home" component={Home} /> */}
-        {/* <Route exact path="/" component={Home} /> */}
+        {/* <Route exact path="/logout" component={Logout} />*/}
+        <Route exact path="/home" component={Home} /> 
+        <Route exact path="/" component={Home} />
         <Route component={NotFound} />
       </Switch>
     </Router>

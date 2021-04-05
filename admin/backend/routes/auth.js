@@ -19,6 +19,7 @@ router.post('/login', async (req, res, next) => {
 
     await signAccessToken(admin.id);
     await signRefreshToken(admin.id);
+
     res.status(200);
   } catch (err) {
     if (err.isJoi) {
