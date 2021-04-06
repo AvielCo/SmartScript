@@ -12,7 +12,8 @@
 .profile-page {
   background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 20px;
 }
 
 .profile-form {
