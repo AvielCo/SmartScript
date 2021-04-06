@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8008;
 //* Middlewares
 const app = express();
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan('combined'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/', express.static('../client/build'));
@@ -22,6 +22,8 @@ app.use('/api/images', require('./routes/images'));
 
 //* Authentication routes
 app.use('/api/auth', require('./routes/auth'));
+
+app.use('/api/profile', require('./routes/profile'));
 
 //! 404 Error handling
 app.use(async (req, res, next) => {

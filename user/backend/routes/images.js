@@ -70,7 +70,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
             if (err) return next(createError.InternalServerError());
           });
           sharp(imagePath) // resize the image to width: 400px (height is auto scale)
-            .resize(400)
+            .resize(250)
             .toFile(path.join(savePath, `${totalImages}.jpg`))
             .catch((err) => {
               return next(createError.InternalServerError());
