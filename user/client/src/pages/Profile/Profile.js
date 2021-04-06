@@ -2,17 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { RoundImage, NavBar, List } from '../../components';
 import EdiText from 'react-editext';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import { getAccessToken } from '../../helpers';
+import staticImage from '../../assets/2.jpg';
+
 import './Profile.css';
 
 function Profile() {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    details: {
+      email: 'some@email.com',
+      username: 'some username',
+      name: 'some name',
+    },
+    history: [
+      { img: staticImage, class: 'Ashkenazi cursive', probability: '99%', date: new Date().toLocaleDateString('he') },
+      { img: staticImage, class: 'Sephardic square', probability: '98%', date: new Date().toLocaleDateString('he') },
+      { img: staticImage, class: 'Byzantine semi square', probability: '97%', date: new Date().toLocaleDateString('he') },
+      { img: staticImage, class: 'Byzantine semi square', probability: '97%', date: new Date().toLocaleDateString('he') },
+      { img: staticImage, class: 'Byzantine semi square', probability: '97%', date: new Date().toLocaleDateString('he') },
+      { img: staticImage, class: 'Byzantine semi square', probability: '97%', date: new Date().toLocaleDateString('he') },
+      { img: staticImage, class: 'Byzantine semi square', probability: '97%', date: new Date().toLocaleDateString('he') },
+    ],
+  });
   const handleChanges = (value, fieldName) => {
     //! handle change of one of the fields by sending a request to the backend.
     console.log(value, fieldName);
   };
-
+  const history = useHistory();
   const TextFieldsHolder = () => {
     //* example on how the data foramt should look like
+
     const textFields = [
       { label: 'Email', name: 'email', value: userData.details.email, hint: 'Press enter to save changes.', type: 'email', index: 3 },
       { label: 'Username', name: 'username', value: userData.details.username, hint: 'Press enter to save changes.', index: 1 },
@@ -65,18 +85,7 @@ function Profile() {
           setUserData(res.data.userData);
         }
       })
-      .catch((err) => {
-        if (err.response) {
-          const { status, message } = err.response.data.error;
-          if (status === 404) {
-            history.replace('/404');
-            return;
-          }
-          alert(message);
-        } else {
-          alert('Internal Server Error');
-        }
-      });
+      .catch((err) => {});
   }, []);
   return (
     <div className='profile-page'>
