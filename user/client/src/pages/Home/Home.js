@@ -6,8 +6,11 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { getAccessToken } from '../../helpers';
 import { Button, Upload } from 'antd';
-
+import Carousel from 'react-material-ui-carousel';
+import { Paper } from '@material-ui/core';
 import cursive from '../../assets/cursive_trans.png';
+import square from '../../assets/square_trans.png';
+import semi_square from '../../assets/semi_square_trans.png';
 
 function LandingSection() {
   return (
@@ -130,7 +133,17 @@ function AboutSection() {
         </p>
       </div>
       <div className="image-rotate-holder">
-        <img className="rotating-image" alt="something" src={cursive}></img>
+        <Carousel animation="slide" indicatorIconButtonProps={{ className: 'rotating-image-indicator-icon' }} indicatorContainerProps={{ className: 'rotating-image-indicators-container' }}>
+          <div>
+            <img className="rotating-image" alt="cursive" src={cursive} />
+          </div>
+          <div>
+            <img className="rotating-image" alt="semi_square" src={semi_square} />
+          </div>
+          <div>
+            <img className="rotating-image" alt="square" src={square} />
+          </div>
+        </Carousel>
       </div>
     </section>
   );

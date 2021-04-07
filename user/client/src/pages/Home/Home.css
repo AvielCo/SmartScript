@@ -139,13 +139,22 @@ section.about {
   font-size: 1.5rem;
   letter-spacing: 1px;
 }
+
 .image-rotate-holder {
-  width: 40%;
+  width: 500px;
 }
 
 .rotating-image {
   width: 90%;
   height: 90%;
+}
+
+button.rotating-image-indicator-icon {
+  outline: 0;
+}
+
+div.rotating-image-indicators-container {
+  gap: 5px;
 }
 
 /* ---------------------WWA------------------------ */
