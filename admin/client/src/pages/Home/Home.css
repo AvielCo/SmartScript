@@ -1,13 +1,34 @@
 div.home-holder {
   background-color: bisque;
-  padding-right: 40%;
-  padding-top: 5%;
-  padding-left: 5%;
-  justify-content: left;
-  align-items: center;
   height: 100vh;
+  padding-top:5%;
+  background-color:#043a6c93;
+
 }
 
 div.users-table-container {
-  background-color: aqua;
+  float: left;
+  width: auto;
+  padding: 10px 10px;
+  margin-left: 5%;
+
+}
+
+div.stats-container {
+  float: right;
+  width: 500px;
+  margin-right: 10%;
+}
+
+/* div.greeting{
+} */
+
+h5{
+  float:right;
+  margin-right: 20px;
+}
+
+h2{
+  text-align:center;
+  padding: 0px 50px;
 }
