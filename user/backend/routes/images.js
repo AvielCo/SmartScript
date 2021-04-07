@@ -12,7 +12,7 @@ const sharp = require('sharp');
 
 const insertNewHistory = async (userHistory, newHistory) => {
   let { predictedResult } = userHistory;
-  if (predictedResult === undefined) {
+  if (!predictedResult) {
     predictedResult = { classes: [], probabilities: [], dates: [] };
   }
   predictedResult.classes.push(`${newHistory.origin}-${newHistory.shape}`);

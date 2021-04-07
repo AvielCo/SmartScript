@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 8008;
 //* Middlewares
 const app = express();
 app.use(cors());
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/', express.static('../client/build'));
