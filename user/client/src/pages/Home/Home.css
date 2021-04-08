@@ -117,12 +117,12 @@ section.scan h3 {
 
 section.about {
   background: #046364;
-  height: 100vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
   gap: 10px;
+  padding: 20px 0px;
 }
 
 .about-text-holder {
@@ -141,20 +141,35 @@ section.about {
 }
 
 .image-rotate-holder {
-  width: 500px;
+  width: 40%;
 }
 
 .rotating-image {
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
 }
 
-button.rotating-image-indicator-icon {
+button.rotating-image-indicator-icon,
+button.rotating-image-nav-button {
   outline: 0;
 }
 
 div.rotating-image-indicators-container {
+  display: flex;
+  justify-content: center;
   gap: 5px;
+}
+
+@media screen and (max-width: 1025px) {
+  section.about {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .about-text-holder {
+    flex-direction: row;
+    height: 40%;
+    width: auto;
+  }
 }
 
 /* ---------------------WWA------------------------ */

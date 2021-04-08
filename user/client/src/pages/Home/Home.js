@@ -123,17 +123,22 @@ function AboutSection() {
       <div className="about-text-holder">
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          nisi ut aliquip ex ea commodo consequat.
         </p>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          nisi ut aliquip ex ea commodo consequat.
         </p>
       </div>
       <div className="image-rotate-holder">
-        <Carousel animation="slide" indicatorIconButtonProps={{ className: 'rotating-image-indicator-icon' }} indicatorContainerProps={{ className: 'rotating-image-indicators-container' }}>
+        <Carousel
+          cycleNavigation
+          navButtonsAlwaysVisible
+          stopAutoPlayOnHover
+          animation="slide"
+          indicatorIconButtonProps={{ className: 'rotating-image-indicator-icon' }}
+          indicatorContainerProps={{ className: 'rotating-image-indicators-container' }}
+          navButtonsProps={{ className: 'rotating-image-nav-button' }}>
           <div>
             <img className="rotating-image" alt="cursive" src={cursive} />
           </div>
