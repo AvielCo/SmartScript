@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-
 import { Select } from 'antd';
+import Button from '../Buttons/InputButton';
+
+import './Searchbar.css';
 
 const { Option, OptGroup } = Select;
 
@@ -38,44 +40,40 @@ function Searchbar({ setQuery }) {
     setQuery(cartesian);
   };
   return (
-    <React.Fragment>
-      <Select mode='tags' style={{ width: 200 }} onChange={chooseOrigin}>
-        <OptGroup label='origin'>
-          <Option key={1} value='Ashkenazi'>
-            Ashkenazi
-          </Option>
-          <Option key={2} value='Byzantine'>
-            Byzantine
-          </Option>
-          <Option key={3} value='Italian'>
-            Italian
-          </Option>
-          <Option key={4} value='Oriental'>
-            Oriental
-          </Option>
-          <Option key={5} value='Sephardic'>
-            Sephardic
-          </Option>
-          <Option key={6} value='Yemenite'>
-            Yemenite
-          </Option>
-        </OptGroup>
+    <div className='search-container'>
+      <Select className='select-tags' mode='tags' onChange={chooseOrigin} placeholder='Origin'>
+        <Option key={1} value='Ashkenazi'>
+          Ashkenazi
+        </Option>
+        <Option key={2} value='Byzantine'>
+          Byzantine
+        </Option>
+        <Option key={3} value='Italian'>
+          Italian
+        </Option>
+        <Option key={4} value='Oriental'>
+          Oriental
+        </Option>
+        <Option key={5} value='Sephardic'>
+          Sephardic
+        </Option>
+        <Option key={6} value='Yemenite'>
+          Yemenite
+        </Option>
       </Select>
-      <Select mode='tags' style={{ width: 200 }} onChange={chooseShape}>
-        <OptGroup label='Shape'>
-          <Option key={1} value='cursive'>
-            Cursive
-          </Option>
-          <Option key={2} value='square'>
-            Square
-          </Option>
-          <Option key={3} value='semi-square'>
-            Semi-Square
-          </Option>
-        </OptGroup>
+      <Select className='select-tags' mode='tags' onChange={chooseShape} placeholder='Shape'>
+        <Option key={1} value='cursive'>
+          Cursive
+        </Option>
+        <Option key={2} value='square'>
+          Square
+        </Option>
+        <Option key={3} value='semi square'>
+          Semi-Square
+        </Option>
       </Select>
-      <button onClick={search}>Search</button>
-    </React.Fragment>
+      <Button onClick={search} name='Search'></Button>
+    </div>
   );
 }
 

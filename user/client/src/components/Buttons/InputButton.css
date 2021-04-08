@@ -8,4 +8,5 @@ button.MuiButton-contained {
   text-transform: capitalize;
   text-align: center;
   font-weight: 700;
+  outline: none;
 }

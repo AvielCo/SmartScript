@@ -96,8 +96,10 @@ function Profile() {
         {/* picture property should be an object, not url */}
         {/* <RoundImage picture={aviel} /> */}
       </div>
-      <Searchbar setQuery={setQuery} />
-      <List data={userData.history} query={query} />
+      <div className='history-container'>
+        <Searchbar setQuery={setQuery} />
+        <List data={userData.history} query={query} />
+      </div>
     </div>
   );
 }
