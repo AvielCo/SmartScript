@@ -37,9 +37,9 @@ function NavBar({ isLoggedIn }) {
         {/* </div> */}
       </div>
       <div onClick={showSidebar} className={slide ? 'burger cross' : 'burger'} id="burger">
-        <div class="line-1"></div>
-        <div class="line-2"></div>
-        <div class="line-3"></div>
+        <div className="line-1"></div>
+        <div className="line-2"></div>
+        <div className="line-3"></div>
       </div>
     </nav>
   );

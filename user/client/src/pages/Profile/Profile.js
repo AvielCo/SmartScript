@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RoundImage, NavBar, List } from '../../components';
+import { RoundImage, NavBar, List, Searchbar } from '../../components';
 import EdiText from 'react-editext';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
@@ -29,6 +29,7 @@ function Profile() {
     //! handle change of one of the fields by sending a request to the backend.
     console.log(value, fieldName);
   };
+  const [query, setQuery] = useState([]);
   const history = useHistory();
   const TextFieldsHolder = () => {
     //* example on how the data foramt should look like
@@ -50,7 +51,6 @@ function Profile() {
                 value={textField.value}
                 hint={textField.hint}
                 type={textField.type ? textField.type : 'text'}
-                inputProps={textField.name}
                 saveButtonClassName='hidden-btn'
                 cancelButtonClassName='hidden-btn'
                 editButtonClassName='hidden-btn'
@@ -87,6 +87,7 @@ function Profile() {
       })
       .catch((err) => {});
   }, []);
+
   return (
     <div className='profile-page'>
       <NavBar />
@@ -95,7 +96,8 @@ function Profile() {
         {/* picture property should be an object, not url */}
         {/* <RoundImage picture={aviel} /> */}
       </div>
-      <List data={userData.history} />
+      <Searchbar setQuery={setQuery} />
+      <List data={userData.history} query={query} />
     </div>
   );
 }
