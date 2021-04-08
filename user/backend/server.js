@@ -23,6 +23,8 @@ app.use('/api/images', require('./routes/images'));
 //* Authentication routes
 app.use('/api/auth', require('./routes/auth'));
 
+app.use('/api/profile', require('./routes/profile'));
+
 //! 404 Error handling
 app.use(async (req, res, next) => {
   next(createError.NotFound());
