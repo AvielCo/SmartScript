@@ -13,7 +13,7 @@
   background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
   width: 100%;
   min-height: 100vh;
-  padding-bottom: 20px;
+  padding: 40px 0px;
 }
 
 .profile-form {
@@ -80,17 +80,10 @@ input[editext='input'] {
     margin: 30px;
   }
   .profile-textfields {
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: nowrap;
     padding-top: 25px;
     width: auto;
     gap: 10px;
-  }
-}
-/*TODO: 662px-629px white space on the right side of the page, fix it */
-
-@media (max-width: 680px) {
-  .profile-textfields {
-    flex-direction: column;
   }
 }

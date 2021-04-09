@@ -15,7 +15,7 @@ const insertNewHistory = async (userHistory, newHistory) => {
   if (!predictedResult) {
     predictedResult = { classes: [], probabilities: [], dates: [] };
   }
-  predictedResult.classes.push(`${newHistory.origin}-${newHistory.shape}`);
+  predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
   predictedResult.dates.push(new Date().toLocaleDateString('he'));
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });

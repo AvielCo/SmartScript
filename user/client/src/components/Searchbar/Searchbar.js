@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
-import { Select } from 'antd';
+import { Select, Tag } from 'antd';
 import Button from '../Buttons/InputButton';
 
 import './Searchbar.css';
 
-const { Option, OptGroup } = Select;
+const { Option } = Select;
 
 function Searchbar({ setQuery }) {
   const [shape, setShape] = useState([]);
   const [origin, setOrigin] = useState([]);
 
-  const chooseOrigin = (value) => {
-    setOrigin(value);
-  };
-  const chooseShape = (value) => {
-    setShape(value);
-  };
-
   const cartesianProduct = (...arr) => {
-    return arr.reduce(
+    if (arr[0].length === 0 && arr[1].length === 0) {
+      // if user click search with both empty fields
+      return { searchBy: [], searchType: 'none' };
+    } else if (arr[0].length === 0 && arr[1].length !== 0) {
+      // if user search by shape only
+      return { searchBy: arr[1], searchType: 'shape' };
+    } else if (arr[1].length === 0 && arr[0].length !== 0) {
+      // if user search by origin only
+      return { searchBy: arr[0], searchType: 'origin' };
+    }
+    // if user search by both shape and origin
+    const searchBy = arr.reduce(
       (acc, val) => {
         return acc
           .map((el) => {
@@ -30,49 +34,52 @@ function Searchbar({ setQuery }) {
       },
       [[]]
     );
+    return { searchBy, searchType: 'both' };
   };
 
   const search = () => {
     const cartesianResult = cartesianProduct(origin, shape);
-    const cartesian = cartesianResult.map((element) => {
-      return element.join(' ');
-    });
-    setQuery(cartesian);
+    if (cartesianResult.searchType === 'both') {
+      // if user search by both, combine.
+      cartesianResult.searchBy = cartesianResult.searchBy.map((element) => {
+        return element.join(' ');
+      });
+    }
+    setQuery(cartesianResult);
   };
+
+  const originOptions = [
+    { value: 'ashkenazi', display: 'Ashkenazi' },
+    { value: 'byzantine', display: 'Byzantine' },
+    { value: 'italian', display: 'Italian' },
+    { value: 'oriental', display: 'Oriental' },
+    { value: 'sephardic', display: 'Sephardic' },
+    { value: 'yemenite', display: 'Yemenite' },
+  ];
+
+  const shapeOptions = [
+    { value: 'cursive', display: 'Cursive' },
+    { value: 'semi_square', display: 'Semi Square' },
+    { value: 'square', display: 'Square' },
+  ];
+
+  const selectOptions = [
+    { onChange: (value) => setOrigin(value), placeholder: 'Origin', options: originOptions },
+    { onChange: (value) => setShape(value), placeholder: 'Shape', options: shapeOptions },
+  ];
+
   return (
-    <div className='search-container'>
-      <Select className='select-tags' mode='tags' onChange={chooseOrigin} placeholder='Origin'>
-        <Option key={1} value='Ashkenazi'>
-          Ashkenazi
-        </Option>
-        <Option key={2} value='Byzantine'>
-          Byzantine
-        </Option>
-        <Option key={3} value='Italian'>
-          Italian
-        </Option>
-        <Option key={4} value='Oriental'>
-          Oriental
-        </Option>
-        <Option key={5} value='Sephardic'>
-          Sephardic
-        </Option>
-        <Option key={6} value='Yemenite'>
-          Yemenite
-        </Option>
-      </Select>
-      <Select className='select-tags' mode='tags' onChange={chooseShape} placeholder='Shape'>
-        <Option key={1} value='cursive'>
-          Cursive
-        </Option>
-        <Option key={2} value='square'>
-          Square
-        </Option>
-        <Option key={3} value='semi square'>
-          Semi-Square
-        </Option>
-      </Select>
-      <Button onClick={search} name='Search'></Button>
+    <div className="search-container">
+      {selectOptions.map((select) => (
+        <Select className="select-tags" mode="tags" onChange={select.onChange} placeholder={select.placeholder}>
+          {select.options.map((option, i) => (
+            <Option key={i} value={option.value}>
+              {option.display}
+            </Option>
+          ))}
+        </Select>
+      ))}
+      <Button onClick={search} name="Search" />
     </div>
   );
 }
