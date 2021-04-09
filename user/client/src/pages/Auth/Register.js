@@ -46,6 +46,7 @@ function Register() {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
           history.replace('/');
+          window.dispatchEvent(new Event('storage'));
           return;
         }
       })
@@ -62,13 +63,6 @@ function Register() {
         }
       });
   };
-
-  useEffect(() => {
-    const accessToken = getAccessToken();
-    if (accessToken) {
-      history.replace('/');
-    }
-  });
 
   return (
     <React.Fragment>

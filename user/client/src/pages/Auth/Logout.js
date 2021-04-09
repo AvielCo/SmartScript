@@ -13,6 +13,8 @@ function Logout() {
     }
     window.localStorage.removeItem('accessToken');
     window.sessionStorage.removeItem('accessToken');
+    window.dispatchEvent(new Event('storage'));
+
     history.replace('/');
   }, []);
   return <div></div>;
