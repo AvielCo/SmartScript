@@ -1,0 +1,25 @@
+:root {
+}
+
+.search-container {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+  gap: 15px;
+  width: 50%;
+}
+.select-tags,
+.ant-select {
+  width: 70%;
+  border-radius: 20px;
+}
+
+.ant-select-selector {
+  line-height: 2em;
+}
+
+.anticon svg {
+  padding-bottom: 5px;
+}

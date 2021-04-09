@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { RoundImage, NavBar } from '../../components';
-import EdiText from 'react-editext';
+import { NavBar, List, Searchbar } from '../../components';
 import axios from 'axios';
+import { Skeleton } from 'antd';
+import { getAccessToken } from '../../helpers';
+
 import './Profile.css';
 
 function Profile() {
-  const handleChanges = (value, fieldName) => {
-    //! handle change of one of the fields by sending a request to the backend.
-    console.log(value, fieldName);
-  };
+  const [userData, setUserData] = useState({
+    details: {
+      email: '',
+      username: '',
+      name: '',
+    },
+    history: [],
+  });
+  const [loadingData, setLoadingData] = useState(true);
+  const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
 
-  const TextFieldsHolder = ({ username, email, name }) => {
+  const TextFieldsHolder = () => {
     //* example on how the data foramt should look like
+
     const textFields = [
-      { label: 'Email', name: 'email', value: email, hint: 'Press enter to save changes.', type: 'email', index: 3 },
-      { label: 'Username', name: 'username', value: username, hint: 'Press enter to save changes.', index: 1 },
-      { label: 'Name', name: 'name', value: name, hint: 'Press enter to save changes.', index: 2 },
+      { label: 'Email', value: userData.details.email },
+      { label: 'Username', value: userData.details.username },
+      { label: 'Name', value: userData.details.name },
     ];
     return (
       <div className="profile-textfields">
@@ -25,21 +34,7 @@ function Profile() {
               <label>
                 <u>{textField.label}</u>
               </label>
-              <EdiText
-                value={textField.value}
-                hint={textField.hint}
-                type={textField.type ? textField.type : 'text'}
-                inputProps={textField.name}
-                saveButtonClassName="hidden-btn"
-                cancelButtonClassName="hidden-btn"
-                editButtonClassName="hidden-btn"
-                tabIndex={textField.index}
-                onSave={handleChanges}
-                cancelOnEscape
-                cancelOnUnfocus
-                startEditingOnFocus
-                submitOnEnter
-              />
+              <h4>{textField.value}</h4>
             </div>
           );
         })}
@@ -47,15 +42,53 @@ function Profile() {
     );
   };
 
-  //TODO: use useEffect to get current user details with the accesstoken inside session storage(if exists).
+  useEffect(() => {
+    let accessToken = getAccessToken();
+
+    const cfg = {
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+      },
+    };
+    axios
+      .get('http://localhost:8008/api/profile', cfg)
+      .then((res) => {
+        if (res.status === 200) {
+          let { details, history } = res.data;
+          history = history.map((event) => {
+            const base64image = event.image;
+            const byteCharacters = atob(base64image);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+
+            const imageBlob = new Blob([byteArray], { type: 'image/jpeg' });
+            const image = URL.createObjectURL(imageBlob);
+            event.image = image;
+            return event;
+          });
+          setLoadingData(false);
+          setUserData({ details, history });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <div className="profile-page">
       <NavBar />
       <div className="profile-form">
-        <TextFieldsHolder username="AvielCo" email="avielcohen15@gmail.com" name="Aviel Cohen" />
-        {/* picture property should be an object, not url */}
-        {/* <RoundImage picture={aviel} /> */}
+        <TextFieldsHolder />
+      </div>
+      <div className="history-container">
+        <Searchbar setQuery={setQuery} />
+        <Skeleton loading={loadingData} active round>
+          <List data={userData.history} query={query} />
+        </Skeleton>
       </div>
     </div>
   );

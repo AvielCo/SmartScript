@@ -12,10 +12,10 @@ const sharp = require('sharp');
 
 const insertNewHistory = async (userHistory, newHistory) => {
   let { predictedResult } = userHistory;
-  if (predictedResult === undefined) {
+  if (!predictedResult) {
     predictedResult = { classes: [], probabilities: [], dates: [] };
   }
-  predictedResult.classes.push(`${newHistory.origin}-${newHistory.shape}`);
+  predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
   predictedResult.dates.push(new Date().toLocaleDateString('he'));
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
@@ -70,7 +70,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
             if (err) return next(createError.InternalServerError());
           });
           sharp(imagePath) // resize the image to width: 400px (height is auto scale)
-            .resize(400)
+            .resize(250)
             .toFile(path.join(savePath, `${totalImages}.jpg`))
             .catch((err) => {
               return next(createError.InternalServerError());

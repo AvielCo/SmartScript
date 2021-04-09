@@ -7,6 +7,7 @@
 .navbar {
   background: #d3ad60;
   position: fixed;
+  top: 0;
   display: flex;
   min-height: 8vh;
   justify-content: space-around;
