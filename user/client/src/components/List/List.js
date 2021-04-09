@@ -1,11 +1,11 @@
 import React from 'react';
-
+import axios from 'axios';
 import './List.css';
+
 function CustomList({ data, query }) {
   const dataList = data
     .filter((single) => {
       const [origin, shape] = single.class.split(' '); // split the class from 'origin shape' to 'origin', 'shape'
-      console.log(query);
       switch (query.searchType) {
         case 'origin': // search by origin
           if (query.searchBy.includes(origin)) return single;
@@ -21,7 +21,7 @@ function CustomList({ data, query }) {
           return single;
       }
     })
-    .map((single) => {
+    .map((single, i) => {
       return (
         <React.Fragment>
           <div className="list-item">
@@ -34,6 +34,7 @@ function CustomList({ data, query }) {
         </React.Fragment>
       );
     });
+
   return <div className="theallfather">{dataList}</div>;
 }
 

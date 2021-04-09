@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { RoundImage, NavBar, List, Searchbar } from '../../components';
-import EdiText from 'react-editext';
+import { NavBar, List, Searchbar } from '../../components';
 import axios from 'axios';
 import { Skeleton } from 'antd';
-import { useHistory } from 'react-router-dom';
 import { getAccessToken } from '../../helpers';
 
 import './Profile.css';
@@ -19,11 +17,6 @@ function Profile() {
   });
   const [loadingData, setLoadingData] = useState(true);
   const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
-  const history = useHistory();
-  const handleChanges = (value, fieldName) => {
-    //! handle change of one of the fields by sending a request to the backend.
-    console.log(value, fieldName);
-  };
 
   const TextFieldsHolder = () => {
     //* example on how the data foramt should look like
@@ -77,7 +70,6 @@ function Profile() {
             return event;
           });
           setLoadingData(false);
-          console.log(history);
           setUserData({ details, history });
         }
       })
@@ -91,8 +83,6 @@ function Profile() {
       <NavBar />
       <div className="profile-form">
         <TextFieldsHolder />
-        {/* picture property should be an object, not url */}
-        {/* <RoundImage picture={aviel} /> */}
       </div>
       <div className="history-container">
         <Searchbar setQuery={setQuery} />
