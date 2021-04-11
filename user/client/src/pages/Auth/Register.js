@@ -36,7 +36,7 @@ function Register() {
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post('/api/auth/register', {
+      .post('http://34.76.66.213:8008/api/auth/register', {
         email,
         username,
         password,

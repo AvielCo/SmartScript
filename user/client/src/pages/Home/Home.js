@@ -63,7 +63,7 @@ function ScanSection({ isLoggedIn }) {
     };
 
     axios
-      .post('/api/images/scan', null, cfg)
+      .post('http://34.76.66.213:8008/api/images/scan', null, cfg)
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
@@ -146,7 +146,7 @@ function Home() {
       },
     };
     axios
-      .get('/api/auth/user', cfg)
+      .get('http://34.76.66.213:8008/api/auth/user', cfg)
       .then((res) => {
         if (res.status === 200) {
           setIsLoggedIn(true);
