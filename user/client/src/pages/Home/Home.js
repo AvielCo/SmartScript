@@ -63,7 +63,7 @@ function ScanSection({ isLoggedIn }) {
     };
 
     axios
-      .post('http://localhost:8008/api/images/scan', null, cfg)
+      .post('/api/images/scan', null, cfg)
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
@@ -85,13 +85,7 @@ function ScanSection({ isLoggedIn }) {
         {isLoggedIn ? (
           <form className="scan-btn-holder" onSubmit={handleImageChange}>
             <h3>Scan Image</h3>
-            <Upload
-              action="http://localhost:8008/api/images/upload"
-              headers={{ Authorization: 'Bearer ' + getAccessToken() }}
-              onChange={handleImageChange}
-              accept="image/*"
-              maxCount={1}
-              showUploadList={false}>
+            <Upload action="/api/images/upload" headers={{ Authorization: 'Bearer ' + getAccessToken() }} onChange={handleImageChange} accept="image/*" maxCount={1} showUploadList={false}>
               <Button className="scan-btn" component="span" type="submit" loading={isLoading}>
                 Upload an image
               </Button>
@@ -152,7 +146,7 @@ function Home() {
       },
     };
     axios
-      .get('http://localhost:8008/api/auth/user', cfg)
+      .get('/api/auth/user', cfg)
       .then((res) => {
         if (res.status === 200) {
           setIsLoggedIn(true);

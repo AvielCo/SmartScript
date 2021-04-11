@@ -45,7 +45,7 @@ function Home() {
   const editBanUser = (userId, isBanned, event) => {
     event.preventDefault();
     axios
-      .post(`http://localhost:8080/api/actions/${isBanned ? 'un' : ''}ban-user`, { userId })
+      .post(`/api/actions/${isBanned ? 'un' : ''}ban-user`, { userId })
       .then((res) => {
         setUpdatedField(true);
       })
@@ -59,7 +59,7 @@ function Home() {
       return;
     }
     axios
-      .get('http://localhost:8080/api/actions/get-all-users')
+      .get('/api/actions/get-all-users')
       .then((res) => {
         console.log(res.data);
         setData(res.data);

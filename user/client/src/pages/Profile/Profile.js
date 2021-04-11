@@ -51,7 +51,7 @@ function Profile() {
       },
     };
     axios
-      .get('http://localhost:8008/api/profile', cfg)
+      .get('/api/profile', cfg)
       .then((res) => {
         if (res.status === 200) {
           let { details, history } = res.data;

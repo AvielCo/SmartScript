@@ -29,7 +29,7 @@ function Login() {
 
   const loginUser = (username, password) => {
     axios
-      .post('http://localhost:8008/api/auth/login', { username, password })
+      .post('/api/auth/login', { username, password })
       .then((response) => {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);

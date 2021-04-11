@@ -36,7 +36,7 @@ function Register() {
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post('http://localhost:8008/api/auth/register', {
+      .post('/api/auth/register', {
         email,
         username,
         password,
