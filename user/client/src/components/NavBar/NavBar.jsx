@@ -30,11 +30,15 @@ function NavBar({ isLoggedIn }) {
           </Link>
         )}
         {isLoggedIn && (
+          <Link to="/profile" style={{ textDecoration: 'none' }}>
+            <NavButton className="nav-button" btnText="Profile" />
+          </Link>
+        )}
+        {isLoggedIn && (
           <Link to="/logout" style={{ textDecoration: 'none' }}>
             <NavButton className="nav-button" btnText="Logout" />
           </Link>
         )}
-        {/* </div> */}
       </div>
       <div onClick={showSidebar} className={slide ? 'burger cross' : 'burger'} id="burger">
         <div className="line-1"></div>

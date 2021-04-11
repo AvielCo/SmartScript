@@ -11,8 +11,10 @@ ScannedScripts/
 */.env
 user/client/.env
 user/backend/.env
+user/backend/build
 admin/client/.env
 admin/backend/.env
+admin/backend/build
 *.h5
 ngrok
 temp*
