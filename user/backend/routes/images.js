@@ -46,7 +46,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
 
     child.stdout.on('data', async (data) => {
       // message is the response from python script
-      console.log(typeof data);
+      console.log(typeof data, data);
       const message = JSON.parse(data);
       console.log(message.success);
       console.log(message.origin);
