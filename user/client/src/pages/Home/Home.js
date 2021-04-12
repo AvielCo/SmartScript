@@ -39,7 +39,6 @@ function ScanSection({ isLoggedIn }) {
         break;
       case 'done':
         setIsLoading(false);
-        console.log(info.file.originFileObj);
         setImageUri(URL.createObjectURL(info.file.originFileObj));
         break;
       case 'error':
@@ -69,7 +68,6 @@ function ScanSection({ isLoggedIn }) {
           setResult(res.data);
           return;
         }
-        console.log(res.data);
       })
       .then(() => {
         setIsLoading(false);

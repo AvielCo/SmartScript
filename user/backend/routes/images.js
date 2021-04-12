@@ -49,7 +49,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
       const message = JSON.parse(data);
       if (message.success) {
         /**
-         * massage: {
+         * message: {
          *  success: True,
          *  origin: One of the following: "ashkenazi", "bizantine" .....
          *  shape: One of the following: "cursive", "square", "semi-square"
@@ -85,12 +85,13 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
         }
       }
       /**
-       * massage: {
+       * message: {
        *  success: False,
        * `reason: Reason that the script failed
        * }
        */
-      return next(createError.BadRequest(message.reason));
+      console.log(message.reason);
+      return next(createError.BadRequest());
     });
 
     child.stderr.on('data', (data) => {
