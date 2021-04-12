@@ -50,7 +50,10 @@ def build_prediction_dataset():
         raise IndexError("Image to predict not found.")
 
     process_image(path=user_predict_image_path, folder_name=user_id, image_name=image)
+    print('image cropped', flush=True)
+
     dataset = load_patches_from_path(user_predict_patches_path)
+    print('dataset created', flush=True)
     return dataset
 
 
