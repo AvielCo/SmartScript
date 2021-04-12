@@ -41,9 +41,8 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const pythonScriptPath = path.join(process.cwd(), 'py-files', pythonScript);
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
-    const condaInit = 'conda init bash';
-    const condaCommand = `conda activate ${envName}`;
-    const child = exec(`${condaInit} && ${condaCommand} && ${pythonScriptCommand}`);
+    const condaCommand = `conda run -n ${envName}`;
+    const child = exec(`${condaCommand} && ${pythonScriptCommand}`);
 
     child.stdout.on('data', async (data) => {
       // message is the response from python script
