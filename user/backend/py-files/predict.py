@@ -84,7 +84,7 @@ def extract_max_prediction(model, model_type, dataset):
         predicted_class (type: string): Predicted class the model has predicted using the dataset
         probability (type: float): percentage of the probability that the model has predicted
     """
-    predictions = model.predict(dataset, verbose=1)
+    predictions = model.predict(dataset, verbose=0)
     summ = [0] * len(predictions[0])  # init summ to the len of the first predict list
     for prediction in predictions:
         for i in range(len(prediction)):
