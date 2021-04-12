@@ -14,7 +14,6 @@
       "react-app/jest"
     ]
   },
-  "homepage": "http://34.76.66.213:8008/",
   "browserslist": {
     "production": [
       ">0.2%",
