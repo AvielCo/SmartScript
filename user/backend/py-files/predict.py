@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import sys
 import json
+from dual_print import dual_print
 
 from tensorflow.keras.models import load_model
 from consts import *
@@ -105,10 +106,10 @@ def predict_on_origin(predicted_shape, dataset):
         dataset (type ndarray): patches of the image to predict on
 
     """
-    # model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
-    # predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
+    model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
+    predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
 
-    print(json.dumps({"success": True, "origin": "ashkenazi", "shape": predicted_shape, "probability": "99%"}))
+    print(json.dumps({"success": True, "origin": predicted_origin, "shape": predicted_shape, "probability": probability}))
 
     shutil.rmtree(user_predict_patches_path)
 
@@ -123,38 +124,23 @@ def predict_on_shape():
         os.makedirs(MODELS_DIR)
     except FileExistsError:
         pass
-    # try:
-    #     model = load_model(os.path.join(MODELS_DIR, "main.h5"))
-    # except:
-    #     print(json.dumps({"success": False}))
-    #     exit(-1)
+    model = load_model(os.path.join(MODELS_DIR, "main.h5"))
     try:
         dataset = build_prediction_dataset()
     except Exception as e:
-        
         try:
             shutil.rmtree(user_predict_patches_path)
         except FileNotFoundError:
             pass
         raise Exception(e)
 
-    ###########! delete this on production ###########
-    try:
-        shutil.rmtree(user_predict_patches_path)
-    except FileNotFoundError:
-        pass
-    print(json.dumps({"success": True, "origin": "ashkenazi", "shape": "square", "probability": "99%"}))
-    return
-    ###########! delete this on production ###########
-
-
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
-    # print("Predicting {} patches...".format(len(dataset)))
-    # predicted_shape, probability = extract_max_prediction(model, "main", dataset)
+    dual_print("Predicting {} patches...".format(len(dataset)))
+    predicted_shape, probability = extract_max_prediction(model, "main", dataset)
 
-    # print(f"Done!\n{predicted_shape}: {probability}%")
-    predict_on_origin("cursive", dataset)
+    dual_print(f"Done!\n{predicted_shape}: {probability}%")
+    predict_on_origin(predicted_shape, dataset)
 
 user_id = sys.argv[1]
 user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images", user_id)

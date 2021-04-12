@@ -38,7 +38,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const user = await User.findOne({ _id: req.payload.aud });
 
     const pythonScript = 'predict.py';
-    const pythonScriptPath = path.join(process.cwd(), 'py-files', pythonScript);
+    const pythonScriptPath = path.join(__dirname, 'py-files', pythonScript);
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
     const condaCommand = `conda run -n ${envName}`;
@@ -58,14 +58,14 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          */
         try {
           let totalImages = 0; // total images that the user has seen predicted
-          const imagePath = path.join(process.cwd(), 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
+          const imagePath = path.join(__dirname, 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
           const userHistory = await History.findById({ _id: user.historyId });
           if (userHistory.predictedResult) {
             // get the amount of the images that the user has predicted so far.
             totalImages = userHistory.predictedResult.classes.length;
           }
           // path to save the resized image to view later in the user profile
-          const savePath = path.join(process.cwd(), 'users-histories', `${user._id}`);
+          const savePath = path.join(__dirname, 'users-histories', `${user._id}`);
           fs.mkdir(savePath, { recursive: true }, (err) => {
             if (err) return next(createError.InternalServerError());
           });

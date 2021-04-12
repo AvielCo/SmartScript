@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(process.cwd(), 'python-folders', 'predict-files', 'predict_images', req.payload.aud);
+    const uploadPath = path.join(__dirname, 'python-folders', 'predict-files', 'predict_images', req.payload.aud);
     fs.mkdir(uploadPath, { recursive: true }, (err) => {
       console.log(err);
     });

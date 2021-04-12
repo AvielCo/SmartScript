@@ -17,7 +17,7 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
       predictedResult: { classes, dates, probabilities },
     } = await History.findById(user.historyId);
 
-    const imagesPath = path.join(process.cwd(), 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
     const userData = {
       details: {
         email: user.email,
@@ -71,7 +71,7 @@ router.delete('/delete-event', verifyAccessToken, async (req, res, next) => {
     }
 
     history.predictedResult = predictedResult;
-    const imagesPath = path.join(process.cwd(), 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
     fs.rmSync(path.join(imagesPath, `${indexToDelete}.jpg`));
     await history.save();
     return res.status(200).send('OK');
@@ -84,7 +84,7 @@ router.delete('/clear-history', verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload['aud'];
     await History.findOneAndUpdate({ userId }, { predictedResult: { classes: [], probabilities: [], dates: [] } });
-    const imagesPath = path.join(process.cwd(), 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
     fs.rmdirSync(imagesPath, { recursive: true });
     return res.status(200).send('OK');
   } catch (err) {
