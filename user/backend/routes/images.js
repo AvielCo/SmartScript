@@ -47,12 +47,12 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     child.stdout.on('data', async (data) => {
       // message is the response from python script
       console.log(typeof data);
-      // const message = JSON.parse(data);
-      console.log(data.success);
-      console.log(data.origin);
-      console.log(data.shape);
-      console.log(data.probability);
-      if (data.success) {
+      const message = JSON.parse(data);
+      console.log(message.success);
+      console.log(message.origin);
+      console.log(message.shape);
+      console.log(message.probability);
+      if (message.success) {
         /**
          * message: {
          *  success: True,
@@ -81,9 +81,9 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
               return next(createError.InternalServerError());
             });
 
-          await insertNewHistory(userHistory, data);
+          await insertNewHistory(userHistory, message);
 
-          return res.status(200).send(data);
+          return res.status(200).send(message);
         } catch (err) {
           console.log(err);
           return next(createError.InternalServerError());
@@ -95,7 +95,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
        * `reason: Reason that the script failed
        * }
        */
-      console.log(data.reason);
+      console.log(message.reason);
       return next(createError.BadRequest());
     });
 
