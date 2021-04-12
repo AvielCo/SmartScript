@@ -46,9 +46,10 @@ router.post('/register', async (req, res, next) => {
     //* User is not exists with the same email or username
     const newUser = await new User(newUserDetails).save();
     console.log(newUser);
-    const history = await new History({ userId: newUser._id }).save();
+    const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
 
-    await User.findOneAndUpdate({ _id: newUser._id }, { historyId: history._id });
+    newUser.update({ historyId: history._id });
+    await newUser.save();
 
     await signAccessToken(newUser.id);
 

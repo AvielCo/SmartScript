@@ -13,11 +13,6 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
     const userId = req.payload['aud'];
     const user = await User.findById(userId);
 
-    const {
-      predictedResult: { classes, dates, probabilities },
-    } = await History.findById(user.historyId);
-
-    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
     const userData = {
       details: {
         email: user.email,
@@ -26,6 +21,16 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
       },
       history: [],
     };
+
+    const {
+      predictedResult: { classes, dates, probabilities },
+    } = await History.findById(user.historyId);
+
+    if (!classes || !probabilities || !dates) {
+      return res.send(userData);
+    }
+
+    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
     for (let i = 0; i < classes.length; i++) {
       const imageContent = fs.readFileSync(path.join(imagesPath, `${i}.jpg`), 'base64');
       const history = {
@@ -36,6 +41,7 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
       };
       userData.history.push(history);
     }
+
     res.send(userData);
   } catch (err) {
     next(err);
