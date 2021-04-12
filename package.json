@@ -11,7 +11,8 @@
     "u-build": "cd user/client && npm run build",
     "a-build": "cd admin/client && npm run build",
     "a-dev": "concurrently \"npm run a-client\" \"npm run a-backend\"",
-    "u-dev": "concurrently \"npm run u-client\" \"npm run u-backend\""
+    "u-dev": "concurrently \"npm run u-client\" \"npm run u-backend\"",
+    "build": "npm run a-build && npm run u-build"
   },
   "repository": {
     "type": "git",
