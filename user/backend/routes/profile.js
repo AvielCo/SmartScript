@@ -34,12 +34,14 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
     console.log(imagesPath);
     for (let i = 0; i < classes.length; i++) {
       const imageContent = fs.readFileSync(path.join(imagesPath, `${i}.jpg`), 'base64');
+      console.log(imageContent);
       const history = {
         class: classes[i],
         probability: probabilities[i],
         dates: dates[i],
         image: imageContent,
       };
+      console.log(history);
       userData.history.push(history);
     }
     console.log(userData);
