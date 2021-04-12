@@ -12,7 +12,7 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload['aud'];
     const user = await User.findById(userId);
-    console.log('found user');
+
     const userData = {
       details: {
         email: user.email,
@@ -25,14 +25,12 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
     const {
       predictedResult: { classes, dates, probabilities },
     } = await History.findById(user.historyId);
-    console.log('found predictedResult');
 
     if (!classes || !probabilities || !dates) {
       return res.send(userData);
     }
-    console.log('found classes probabilities dates');
 
-    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
     console.log(imagesPath);
     for (let i = 0; i < classes.length; i++) {
       const imageContent = fs.readFileSync(path.join(imagesPath, `${i}.jpg`), 'base64');
@@ -80,7 +78,7 @@ router.delete('/delete-event', verifyAccessToken, async (req, res, next) => {
     }
 
     history.predictedResult = predictedResult;
-    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
     fs.rmSync(path.join(imagesPath, `${indexToDelete}.jpg`));
     await history.save();
     return res.status(200).send('OK');
@@ -93,7 +91,7 @@ router.delete('/clear-history', verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload['aud'];
     await History.findOneAndUpdate({ userId }, { predictedResult: { classes: [], probabilities: [], dates: [] } });
-    const imagesPath = path.join(__dirname, 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
     fs.rmdirSync(imagesPath, { recursive: true });
     return res.status(200).send('OK');
   } catch (err) {
