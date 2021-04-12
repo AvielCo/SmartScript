@@ -50,10 +50,8 @@ def build_prediction_dataset():
         raise IndexError("Image to predict not found.")
 
     process_image(path=user_predict_image_path, folder_name=user_id, image_name=image)
-    print('image cropped', flush=True)
 
     dataset = load_patches_from_path(user_predict_patches_path)
-    print('dataset created', flush=True)
     return dataset
 
 
@@ -112,7 +110,7 @@ def predict_on_origin(predicted_shape, dataset):
     model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
     predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
 
-    print(json.dumps({'success': True, 'origin': str(predicted_origin), 'shape': str(predicted_shape), 'probability': str(probability)}))
+    print(f'{"success": {True}, "origin": {str(predicted_origin)}, "shape": {str(predicted_shape)}, "probability": {str(probability)}}'))
 
     shutil.rmtree(user_predict_patches_path)
 
