@@ -109,7 +109,7 @@ def predict_on_origin(predicted_shape, dataset):
     """
     model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
     predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
-    dump = json.dumps({'success': True, 'origin': predicted_origin, 'shape': predicted_shape, 'probability': probability})
+    dump = json.dumps({"success": True, "origin": predicted_origin, "shape": predicted_shape, "probability": probability})
     print(dump, flush=True)
     print(dump)
 
