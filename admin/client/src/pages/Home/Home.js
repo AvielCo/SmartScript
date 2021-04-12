@@ -5,8 +5,9 @@ import { Table, Space } from 'antd';
 import axios from 'axios';
 import greenCircle from '../../assets/green-circle.svg';
 import redCircle from '../../assets/red-circle.svg';
-import users from '../../assets/people-circle-outline.svg';
-import block from '../../assets/ban-outline.svg';
+import sun from '../../assets/icon-sun.png'
+import moon from "../../assets/icon-moon.png";
+
 import {PieChart} from '../../components';
 
 
@@ -17,6 +18,8 @@ function Home() {
   const [blockedUsers,setBlockedUsers] = useState(0);
   const [time, setTime] = useState(new Date().getTime());
   const [greetingMsg, setGreetingMsg] = useState(" ");
+  const [weather,setWeather] = useState(" ");
+  const title = "Welcome To SmartScript`s Admin Panel";
 
   const usersColumns = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
@@ -91,13 +94,16 @@ function Home() {
     }
 
     if(hour>=6 && hour<12){
-      setGreetingMsg(greetings.morningMsg)
+      setGreetingMsg(greetings.morningMsg);
+      setWeather(<img src={sun} alt='sun'/>);
     }
-    else if (hour >= 12 && hour < 17) {
+    else if (hour >= 12 && hour < 19) {
       setGreetingMsg(greetings.noonMsg);
+      setWeather(<img className="weather-icon" src={sun} alt="sun" />);
     }
     else {
       setGreetingMsg(greetings.eveMsg);
+      setWeather(<img className="weather-icon" src={moon} alt="moon" />);
     }
 
   }
@@ -130,12 +136,17 @@ function Home() {
   
   return (
     <div className="home-holder">
-      <div>
-        <div className="greeting">
+      <div className="home-title">
+        <div className="weather-time">
+          {weather}
           <h5>{time}</h5>
-          <h2>Welcome To SmartScript`s Admin Panel</h2>
+        </div>
+        <div className="greeting">
+          <h2>{title}</h2>
           <h3>{greetingMsg}</h3>
         </div>
+      </div>
+      <div className="info">
         <div className="users-table-container">
           <Table
             rowKey={(record) => record._id}
