@@ -14,7 +14,7 @@
       "react-app/jest"
     ]
   },
-  "homepage": "./",
+  "homepage": "http://34.76.66.213:8008/",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -26,6 +26,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:8008"
+  }
 }
