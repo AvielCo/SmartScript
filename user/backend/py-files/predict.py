@@ -132,7 +132,8 @@ def predict_on_shape():
             shutil.rmtree(user_predict_patches_path)
         except FileNotFoundError:
             pass
-        raise Exception(e)
+        finally:
+            raise Exception(e)
 
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
