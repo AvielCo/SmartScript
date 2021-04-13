@@ -15,7 +15,7 @@
     "build": "npm run a-build && npm run u-build && (rm admin/backend/build || true) && (rm user/backend/build || true) && mv admin/client/build admin/backend && mv user/client/build user/backend",
     "a-prod": "pm2 start admin/backend/server.js",
     "u-prod": "pm2 start user/backend/server.js",
-    "prod": "pm2 delete all && npm run a-prod && npm run u-prod"
+    "prod": "pm2 delete all || : && npm run a-prod && npm run u-prod"
   },
   "repository": {
     "type": "git",
