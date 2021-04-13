@@ -13,7 +13,7 @@
     "a-dev": "concurrently \"npm run a-client\" \"npm run a-backend\"",
     "u-dev": "concurrently \"npm run u-client\" \"npm run u-backend\"",
     "build": "npm run a-build && npm run u-build && (rm admin/backend/build || true) && (rm user/backend/build || true) && mv admin/client/build admin/backend && mv user/client/build user/backend",
-    "prod": "pm2 start admin/backend/server.js && pm2 start user/backend/server.js"
+    "prod": "pm2 start -f admin/backend/server.js && pm2 start -f user/backend/server.js"
   },
   "repository": {
     "type": "git",
