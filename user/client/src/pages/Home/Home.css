@@ -1,54 +1,54 @@
 .home {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
 }
 /* ---------------------LANDING------------------------ */
-section.landing {
+.landing {
   text-align: center;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
-}
-
-section.landing div {
-  background-image: url('../../assets/landing-bg.jpg');
+  background-image: url("../../assets/landing-bg.jpg");
   opacity: 0.5;
   height: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-section.landing p {
+.landing p {
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
+  width: 90%;
   color: white;
   font-weight: bold;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 90%;
+  margin: 0 auto;
   text-align: center;
   font-size: 2rem;
   font-weight: 400;
+  border-radius: 15px;
   line-height: 3em;
 }
 
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-  section.landing p {
+  .landing p {
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    border-radius: 15px;
   }
 }
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+}
 /* ---------------------SCAN------------------------ */
-section.scan {
+.scan {
   background: #d3af37;
   padding: 50px;
 }
 
-section.scan h3 {
+.scan h3 {
   text-align: center;
 }
 
@@ -152,4 +152,8 @@ section.about {
 section.wwa {
   background: hotpink;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
 }

@@ -1,11 +1,11 @@
 * {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .navbar {
-  background: #d3ad60;
+  background: #093263;
   position: fixed;
   top: 0;
   display: flex;
