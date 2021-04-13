@@ -110,11 +110,12 @@ def predict_on_origin(predicted_shape, dataset):
     model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
     predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
     success = True
+    print(type(predicted_origin), type(probability), type(predicted_shape), flush=True)
     dump = json.dumps({success, predicted_origin, predicted_shape, probability})
     print(dump, flush=True)
-    print(dump)
-
     shutil.rmtree(user_predict_patches_path)
+    print(dump)
+    exit(0)
 
 
 def predict_on_shape():
