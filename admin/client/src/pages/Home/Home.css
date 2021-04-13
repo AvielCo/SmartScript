@@ -1,120 +1,91 @@
-@import url("https://fonts.googleapis.com/css?family=Modak");
+@import url('https://fonts.googleapis.com/css?family=Modak');
 
 div.home-holder {
   min-height: 100vh;
-  padding-top:1%;
-  background-color:#043a6c93;
-  justify-content:center;
-  position: relative;
+  padding-top: 1%;
+  background-color: rgba(101, 110, 164, 1);
+  justify-content: center;
 }
 
-.info{
+.info {
   display: flex;
-  flex-direction: row;
-  gap: 100px;
+  flex-direction: column;
 }
 
-div.users-table-container {
-  width: 60%;
+.users-table-container {
+  width: 90%;
+  margin: 0 auto;
   padding: 0 10px;
-  margin-left: 5%;
 }
 
-div.stats-container {
-  width: 30%;
-  margin-right: 5%;
+.chart-container {
+  margin: 0 auto;
+  width: 50%;
 }
 
-.weather-time{
+.weather-time {
   position: absolute;
-  top:10px;
-  right:70px;
-  display:flex;
+  top: 10px;
+  right: 70px;
+  display: flex;
   flex-direction: row;
   gap: 7px;
   width: 40px;
   height: 40px;
 }
 
-
-h5{
+h5 {
   margin: 10px 5px;
 }
 
-h2{
-  text-align:center;
+h2 {
+  text-align: center;
   font-size: 50px;
   padding: 10px 50px;
   font-family: Modak, sans-serif;
   text-shadow: 7px 7px 0px #d2d2d22e;
   background-clip: text;
-    -webkit-background-clip: text;
+  -webkit-background-clip: text;
   color: transparent;
   background-image: url('../../assets/tie-dye-2.jpg');
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 
-h3{
-  top:0;
+h3 {
+  top: 0;
   font-size: 40px;
   font-family: Modak;
   text-shadow: 7px 7px 0px #d2d2d22e;
   background-clip: text;
-    -webkit-background-clip: text;
+  -webkit-background-clip: text;
   color: transparent;
   background-image: url('../../assets/tie-dye-2.jpg');
 }
 
-.weather-icon{
+.weather-icon {
   width: 100%;
-  height:100%;
-  float:right;
+  height: 100%;
+  float: right;
 }
 
-
-
-@media screen and (max-width:1333px){
-  div.users-table-container {
-      margin-left: 1%;
-    }
-
-  div.stats-container {
-    margin-right: 1%;
-  }
-}
-
-@media screen and (max-width:1130px){
-  .info{
-    gap:40px;
-  }
-  h2{
+@media screen and (max-width: 1130px) {
+  h2 {
     font-size: 35px;
   }
-  h3{
+  h3 {
     padding-top: 0;
-    font-size: 35px;
+    font-size: 20px;
+  }
+  .chart-container {
+    width: 80%;
   }
 }
 
-@media screen and (max-width:1095px){
-  .info {
-    flex-direction: column;
+@media screen and (max-width: 768px) {
+  .weather-time {
+    gap: 5px;
   }
-
-  div.users-table-container {
-    width: 90%;
-    align-self: center;
-  } 
-
-  div.stats-container {
-    align-self: center;
+  .chart-container {
+    width: 100%;
   }
-
-}
-
-@media screen and (max-width:768px){
-  .weather-time{
-    gap:5px;
-  }
-
 }
