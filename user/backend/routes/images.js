@@ -17,7 +17,7 @@ const insertNewHistory = async (userHistory, newHistory) => {
   }
   predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
-  predictedResult.dates.push(new Date().toLocaleDateString('he'));
+  predictedResult.dates.push(new Date());
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
 };
 
@@ -46,12 +46,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
 
     child.stdout.on('data', async (data) => {
       // message is the response from python script
-      console.log(typeof data, data);
       const message = JSON.parse(data);
-      console.log(message.success);
-      console.log(message.origin);
-      console.log(message.shape);
-      console.log(message.probability);
       if (message.success) {
         /**
          * message: {
