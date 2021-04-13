@@ -60,7 +60,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
           let totalImages = 0; // total images that the user has seen predicted
           const imagePath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
           const userHistory = await History.findById({ _id: user.historyId });
-          if (userHistory.predictedResult) {
+          if (userHistory.predictedResult.classes.length > 0) {
             // get the amount of the images that the user has predicted so far.
             totalImages = userHistory.predictedResult.classes.length;
           }
@@ -69,7 +69,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
           fs.mkdir(savePath, { recursive: true }, (err) => {
             if (err) return next(createError.InternalServerError());
           });
-          sharp(imagePath) // resize the image to width: 400px (height is auto scale)
+          sharp(imagePath) // resize the image to width: 250px (height is auto scale)
             .resize(250)
             .toFile(path.join(savePath, `${totalImages}.jpg`))
             .catch((err) => {

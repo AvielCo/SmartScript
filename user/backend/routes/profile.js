@@ -31,7 +31,7 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
     }
 
     const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
-    for (let i = 1; i <= classes.length; i++) {
+    for (let i = 0; i < classes.length; i++) {
       const imageContent = fs.readFileSync(path.join(imagesPath, `${i}.jpg`), 'base64');
       const history = {
         class: classes[i],
@@ -66,7 +66,7 @@ router.delete('/delete-event', verifyAccessToken, async (req, res, next) => {
     }
 
     const predictedResult = { classes: [], probabilities: [], dates: [] };
-    for (let i = 1; i <= classes.length; i++) {
+    for (let i = 0; i < classes.length; i++) {
       if (i === indexToDelete) {
         continue;
       }
