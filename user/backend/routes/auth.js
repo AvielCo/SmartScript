@@ -44,10 +44,9 @@ router.post('/register', async (req, res, next) => {
     const newUser = await new User(newUserDetails).save();
     const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
 
-    newUser.update({ historyId: history._id });
-    await newUser.save();
+    await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
 
-    await signAccessToken(newUser.id);
+    await signAccessToken(newUser._id);
 
     res.status(200).send('Registered user successfully.');
   } catch (err) {
