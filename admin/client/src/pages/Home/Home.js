@@ -72,6 +72,7 @@ function Home() {
     if (!updatedField) {
       return;
     }
+    setLoading(true);
     axios
       .get('http://34.76.66.213:8080/api/actions/get-all-users')
       .then((res) => {
