@@ -5,31 +5,101 @@ import { Table, Space } from 'antd';
 import axios from 'axios';
 import greenCircle from '../../assets/green-circle.svg';
 import redCircle from '../../assets/red-circle.svg';
-import sun from '../../assets/icon-sun.png'
-import moon from "../../assets/icon-moon.png";
-
-import {PieChart} from '../../components';
-
+import sun from '../../assets/icon-sun.png';
+import moon from '../../assets/icon-moon.png';
+import { useWindowDimensions } from '../../helpers';
+import { Doughnut } from 'react-chartjs-2';
 
 function Home() {
   const [data, setData] = useState([{}]);
   const [updatedField, setUpdatedField] = useState(true);
   const [totalusers, setTotalUsers] = useState(0);
-  const [blockedUsers,setBlockedUsers] = useState(0);
+  const [blockedUsers, setBlockedUsers] = useState(0);
   const [time, setTime] = useState(new Date().getTime());
-  const [greetingMsg, setGreetingMsg] = useState(" ");
-  const [weather,setWeather] = useState(" ");
-  const title = "Welcome To SmartScript`s Admin Panel";
+  const [greetingMsg, setGreetingMsg] = useState(' ');
+  const [weather, setWeather] = useState(' ');
+  const { width } = useWindowDimensions();
+  const title = 'Welcome To SmartScript`s Admin Panel';
+
+  const editBanUser = (userId, isBanned, event) => {
+    event.preventDefault();
+    axios
+      .post(`http://34.76.66.213:8080/api/actions/${isBanned ? 'un' : ''}ban-user`, { userId })
+      .then((res) => {
+        setUpdatedField(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getGreetingMsg = (hour) => {
+    const greetings = {
+      morningMsg: 'Good Morning',
+      noonMsg: 'Good Afternoon',
+      eveMsg: 'Good Evening',
+    };
+
+    if (hour >= 6 && hour < 12) {
+      setGreetingMsg(greetings.morningMsg);
+      setWeather(<img src={sun} alt="sun" />);
+    } else if (hour >= 12 && hour < 19) {
+      setGreetingMsg(greetings.noonMsg);
+      setWeather(<img className="weather-icon" src={sun} alt="sun" />);
+    } else {
+      setGreetingMsg(greetings.eveMsg);
+      setWeather(<img className="weather-icon" src={moon} alt="moon" />);
+    }
+  };
+
+  const getCurrentTime = () => {
+    const today = new Date();
+    const currTime = today.getHours() + ':' + today.getMinutes();
+    if (time !== currTime) {
+      setTime(currTime);
+      getGreetingMsg(today.getHours());
+    }
+  };
+
+  useEffect(() => {
+    if (!updatedField) {
+      return;
+    }
+    axios
+      .get('http://34.76.66.213:8080/api/actions/get-all-users')
+      .then((res) => {
+        setData(res.data);
+        setTotalUsers(res.data.length);
+        let sum = 0;
+        res.data.map((d) => d.banned && sum++);
+        setBlockedUsers(sum);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setUpdatedField(false);
+  }, [updatedField]);
+
+  useEffect(() => {
+    getCurrentTime();
+  }, [time]);
 
   const usersColumns = [
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Username', dataIndex: 'username', key: 'username' },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Banned', dataIndex: 'banned', key: 'banned', render: (banned) => (banned ? <img alt="V" src={redCircle} width="20" /> : <img alt="X" src={greenCircle} width="20" />) },
+    { title: 'Name', dataIndex: 'name', key: 'name', width: width < 1220 ? '12%' : '20%' },
+    { title: 'Username', dataIndex: 'username', key: 'username', width: width < 1220 ? '12%' : '17%' },
+    { title: 'Email', dataIndex: 'email', key: 'email', width: width < 1220 ? '20%' : '30%' },
+    {
+      title: 'Banned',
+      dataIndex: 'banned',
+      width: width < 1220 ? '7%' : '12%',
+      key: 'banned',
+      render: (banned) => (banned ? <img alt="V" src={redCircle} width="20" /> : <img alt="X" src={greenCircle} width="20" />),
+    },
     {
       title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
+      width: width < 1220 ? '6%' : '13%',
       render: (text, record) => (
         <Space size="middle">
           <a href="#" onClick={(e) => editBanUser(record._id, record.banned, e)}>
@@ -39,7 +109,6 @@ function Home() {
       ),
     },
   ];
-
 
   const historyColumns = [
     {
@@ -54,86 +123,29 @@ function Home() {
     { title: 'Probability', dataIndex: 'probability', key: 'probability' },
   ];
 
-  const editBanUser = (userId, isBanned, event) => {
-    event.preventDefault();
-    axios
-      .post(`http://34.76.66.213:8080/api/actions/${isBanned ? 'un' : ''}ban-user`, { userId })
-      .then((res) => {
-        setUpdatedField(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const chartData = {
+    labels: ['Blocked', 'Unblocked'],
+    datasets: [
+      {
+        label: '# of Users',
+        data: [blockedUsers, totalusers - blockedUsers],
+        backgroundColor: ['rgba(255,65,65,0.5)', 'rgba(107,190,102,0.5)'],
+        borderColor: ['rgba(255,65,65,1)', 'rgba(107,190,102,255)'],
+        borderWidth: 2,
+        hoverOffset: 30,
+      },
+    ],
   };
 
-  useEffect(() => {
-    if (!updatedField) {
-      return;
-    }
-    axios
-      .get('http://34.76.66.213:8080/api/actions/get-all-users')
-      .then((res) => {
-        setData(res.data);
-        setTotalUsers(res.data.length)
-        let sum = 0;
-        res.data.map((d) => (d.banned && (sum++)));
-        setBlockedUsers(sum);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setUpdatedField(false);
-  }, [updatedField]);
-
-
-  const getGreetingMsg=(hour)=>{
-    const greetings={
-      morningMsg:'Good Morning',
-      noonMsg:'Good Afternoon',
-      eveMsg:'Good Evening'
-    }
-
-    if(hour>=6 && hour<12){
-      setGreetingMsg(greetings.morningMsg);
-      setWeather(<img src={sun} alt='sun'/>);
-    }
-    else if (hour >= 12 && hour < 19) {
-      setGreetingMsg(greetings.noonMsg);
-      setWeather(<img className="weather-icon" src={sun} alt="sun" />);
-    }
-    else {
-      setGreetingMsg(greetings.eveMsg);
-      setWeather(<img className="weather-icon" src={moon} alt="moon" />);
-    }
-
-  }
-
-  const getCurrentTime = () => {
-    const today = new Date();
-    const time = today.getHours() + ":" + today.getMinutes();
-    setTime(time);
-    getGreetingMsg(today.getHours());
-  }
-
-  useEffect(() => {
-    getCurrentTime();
-  })
-
-
-  const chartData = [
-    {
-      label: "Unblocked Users",
-      y: totalusers - blockedUsers,
-      p: ((totalusers - blockedUsers) / totalusers) * 100,
+  const chartOptions = {
+    maintainAspectRatio: true,
+    animation: false,
+    legend: {
+      position: 'bottom',
+      labels: { fontColor: '#000000', fontSize: 15, fontFamily: 'Times New Roman, Times, serif' },
     },
-    {
-      label: "Blocked Users",
-      y: blockedUsers,
-      p: ((blockedUsers) / totalusers) * 100,
-    },
-  ];
+  };
 
-  
   return (
     <div className="home-holder">
       <div className="home-title">
@@ -150,22 +162,17 @@ function Home() {
         <div className="users-table-container">
           <Table
             rowKey={(record) => record._id}
+            scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
             columns={usersColumns}
             dataSource={data}
             expandable={{
-              expandedRowRender: (record) => (
-                <Table
-                  columns={historyColumns}
-                  dataSource={record.history}
-                  pagination={false}
-                />
-              ),
+              expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
               rowExpandable: (record) => record.history,
             }}
           />
         </div>
-        <div className="stats-container">
-          <PieChart text={"User Statistics"} dataPoints={chartData} />
+        <div class="chart-container">
+          <Doughnut data={chartData} options={chartOptions} />
         </div>
       </div>
     </div>
