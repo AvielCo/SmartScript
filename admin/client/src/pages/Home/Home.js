@@ -27,7 +27,7 @@ function Home() {
     setLoading(true);
     event.preventDefault();
     axios
-      .post(`http://34.76.66.213:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
+      .post(`http://localhost:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
       .then((res) => {
         if (res.status === 200) {
           setUpdatedField(true);
