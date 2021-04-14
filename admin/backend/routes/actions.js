@@ -11,7 +11,7 @@ router.get('/get-all-users', async (req, res, next) => {
     if (users.length <= 0) {
       return res.status(204);
     }
-
+    console.log(users);
     const usersHistories = [];
     for (const user of users) {
       const history = await History.findById({ _id: user.historyId });
@@ -21,10 +21,12 @@ router.get('/get-all-users', async (req, res, next) => {
         const { classes, probabilities, dates } = history.predictedResult;
         const h = [];
         for (let i = 0; i < classes.length; i++) {
+          console.log(`user: ${user.name} history: ${i}`);
           h.push({ class: classes[i], probability: probabilities[i], date: dates[i] });
         }
         userHistory.history = h;
       }
+      console.log(userHistory);
       usersHistories.push(userHistory);
     }
 
