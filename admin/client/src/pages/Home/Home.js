@@ -74,7 +74,7 @@ function Home() {
     }
     setLoading(true);
     axios
-      .get('http://34.76.66.213:8080/api/actions/get-all-users')
+      .get('http://localhost:8080/api/actions/get-all-users')
       .then((res) => {
         setData(res.data);
         setTotalUsers(res.data.length);
