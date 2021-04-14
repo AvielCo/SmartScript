@@ -11,7 +11,6 @@ router.get('/get-all-users', async (req, res, next) => {
     if (users.length <= 0) {
       return res.status(204);
     }
-    console.log(users);
     const usersHistories = [];
     for (const user of users) {
       const history = await History.findById({ _id: user.historyId });
@@ -26,7 +25,6 @@ router.get('/get-all-users', async (req, res, next) => {
         }
         userHistory.history = h;
       }
-      console.log(userHistory);
       usersHistories.push(userHistory);
     }
 
