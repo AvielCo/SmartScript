@@ -12,7 +12,7 @@
     "a-build": "cd admin/client && npm run build",
     "a-dev": "concurrently \"npm run a-client\" \"npm run a-backend\"",
     "u-dev": "concurrently \"npm run u-client\" \"npm run u-backend\"",
-    "build": "npm run a-build && npm run u-build && (rm admin/backend/build || true) && (rm user/backend/build || true) && mv admin/client/build admin/backend && mv user/client/build user/backend",
+    "build": "npm run a-build && npm run u-build && (rm -r admin/backend/build || true) && (rm -r user/backend/build || true) && mv admin/client/build admin/backend && mv user/client/build user/backend",
     "a-prod": "pm2 start admin/backend/server.js",
     "u-prod": "pm2 start user/backend/server.js",
     "prod": "pm2 delete all || : && npm run a-prod && npm run u-prod"
