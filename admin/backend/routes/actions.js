@@ -11,16 +11,16 @@ router.get('/get-all-users', async (req, res, next) => {
     if (users.length <= 0) {
       return res.status(204);
     }
-
     const usersHistories = [];
     for (const user of users) {
       const history = await History.findById({ _id: user.historyId });
       const { _id, banned, email, username, name } = user;
       const userHistory = { _id, banned, email, username, name };
-      if (history.predictedResult) {
+      if (history.predictedResult.classes > 0) {
         const { classes, probabilities, dates } = history.predictedResult;
         const h = [];
         for (let i = 0; i < classes.length; i++) {
+          console.log(`user: ${user.name} history: ${i}`);
           h.push({ class: classes[i], probability: probabilities[i], date: dates[i] });
         }
         userHistory.history = h;
@@ -34,31 +34,16 @@ router.get('/get-all-users', async (req, res, next) => {
   }
 });
 
-router.post('/ban-user', async (req, res, next) => {
+router.post('/edit-ban', async (req, res, next) => {
   try {
     if (!req.body.userId) {
       throw createError.BadRequest();
     }
-    const user = await User.findByIdAndUpdate({ _id: req.body.userId }, { banned: true });
+    const user = await User.findByIdAndUpdate({ _id: req.body.userId }, { banned: req.body.ban });
     if (!user) {
       return res.status(204).send('User not found');
     }
-    return res.status(200).json('User banned');
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.post('/unban-user', async (req, res, next) => {
-  try {
-    if (!req.body.userId) {
-      throw createError.BadRequest();
-    }
-    const user = await User.findByIdAndUpdate({ _id: req.body.userId }, { banned: false });
-    if (!user) {
-      return res.status(204).send('User not found');
-    }
-    return res.status(200).json('User unbanned');
+    return res.status(200).json('OK');
   } catch (err) {
     next(err);
   }

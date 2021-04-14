@@ -17,7 +17,7 @@ export const decryptStrings = (...encryptedStrings) => {
   encryptedStrings.forEach((encryptedString) => {
     const key = Object.keys(encryptedString);
     const value = Object.values(encryptedString)[0];
-    const decryptedString = CryptoJS.AES.decrypt(value, process.env.CRYPTO_SECRET).toString(CryptoJS.enc.Utf8);
+    const decryptedString = CryptoJS.AES.decrypt(value, process.env.REACT_APP_CRYPTO_SECRET).toString(CryptoJS.enc.Utf8);
     decryptedStrings = { ...decryptedStrings, [key]: decryptedString };
   });
   return decryptedStrings;

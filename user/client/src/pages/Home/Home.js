@@ -39,7 +39,6 @@ function ScanSection({ isLoggedIn }) {
         break;
       case 'done':
         setIsLoading(false);
-        console.log(info.file.originFileObj);
         setImageUri(URL.createObjectURL(info.file.originFileObj));
         break;
       case 'error':
@@ -63,13 +62,12 @@ function ScanSection({ isLoggedIn }) {
     };
 
     axios
-      .post('http://localhost:8008/api/images/scan', null, cfg)
+      .post('http://34.76.66.213:8008/api/images/scan', null, cfg)
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
           return;
         }
-        console.log(res.data);
       })
       .then(() => {
         setIsLoading(false);
@@ -85,13 +83,7 @@ function ScanSection({ isLoggedIn }) {
         {isLoggedIn ? (
           <form className="scan-btn-holder" onSubmit={handleImageChange}>
             <h3>Scan Image</h3>
-            <Upload
-              action="http://localhost:8008/api/images/upload"
-              headers={{ Authorization: 'Bearer ' + getAccessToken() }}
-              onChange={handleImageChange}
-              accept="image/*"
-              maxCount={1}
-              showUploadList={false}>
+            <Upload action="/api/images/upload" headers={{ Authorization: 'Bearer ' + getAccessToken() }} onChange={handleImageChange} accept="image/*" maxCount={1} showUploadList={false}>
               <Button className="scan-btn" component="span" type="submit" loading={isLoading}>
                 Upload an image
               </Button>
@@ -152,7 +144,7 @@ function Home() {
       },
     };
     axios
-      .get('http://localhost:8008/api/auth/user', cfg)
+      .get('http://34.76.66.213:8008/api/auth/user', cfg)
       .then((res) => {
         if (res.status === 200) {
           setIsLoggedIn(true);

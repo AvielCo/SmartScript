@@ -18,18 +18,25 @@ function Home() {
   const [time, setTime] = useState(new Date().getTime());
   const [greetingMsg, setGreetingMsg] = useState(' ');
   const [weather, setWeather] = useState(' ');
+  const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
   const title = 'Welcome To SmartScript`s Admin Panel';
 
   const editBanUser = (userId, isBanned, event) => {
+    if (loading) return;
+    setLoading(true);
     event.preventDefault();
     axios
-      .post(`http://localhost:8080/api/actions/${isBanned ? 'un' : ''}ban-user`, { userId })
+      .post(`http://34.76.66.213:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
       .then((res) => {
-        setUpdatedField(true);
+        if (res.status === 200) {
+          setUpdatedField(true);
+          setLoading(false);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        alert(err.message);
+        setLoading(false);
       });
   };
 
@@ -65,6 +72,7 @@ function Home() {
     if (!updatedField) {
       return;
     }
+    setLoading(true);
     axios
       .get('http://localhost:8080/api/actions/get-all-users')
       .then((res) => {
@@ -73,9 +81,11 @@ function Home() {
         let sum = 0;
         res.data.map((d) => d.banned && sum++);
         setBlockedUsers(sum);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
       });
     setUpdatedField(false);
   }, [updatedField]);
@@ -163,6 +173,7 @@ function Home() {
           <Table
             rowKey={(record) => record._id}
             scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
+            loading={loading}
             columns={usersColumns}
             dataSource={data}
             expandable={{
@@ -171,9 +182,11 @@ function Home() {
             }}
           />
         </div>
-        <div class="chart-container">
-          <Doughnut data={chartData} options={chartOptions} />
-        </div>
+        {data.length > 0 && (
+          <div class="chart-container">
+            <Doughnut data={chartData} options={chartOptions} />
+          </div>
+        )}
       </div>
     </div>
   );

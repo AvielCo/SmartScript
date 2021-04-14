@@ -32,25 +32,21 @@ router.post('/register', async (req, res, next) => {
       //! User is exists
       //! Check which fields are the same and throw an error
       if (userExists.username === newUserDetails.username) {
-        console.log('username');
         throw createError.Conflict('Username is already in use.');
       }
       if (userExists.email === newUserDetails.email) {
-        console.log('email');
         throw createError.Conflict('Email is already in use.');
       }
-      console.log('nothing');
       throw createError.Conflict();
     }
 
     //* User is not exists with the same email or username
     const newUser = await new User(newUserDetails).save();
-    console.log(newUser);
-    const history = await new History({ userId: newUser._id }).save();
+    const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
 
-    await User.findOneAndUpdate({ _id: newUser._id }, { historyId: history._id });
+    await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
 
-    await signAccessToken(newUser.id);
+    await signAccessToken(newUser._id);
 
     res.status(200).send('Registered user successfully.');
   } catch (err) {

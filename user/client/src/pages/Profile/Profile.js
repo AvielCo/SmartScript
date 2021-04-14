@@ -19,8 +19,6 @@ function Profile() {
   const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
 
   const TextFieldsHolder = () => {
-    //* example on how the data foramt should look like
-
     const textFields = [
       { label: 'Email', value: userData.details.email },
       { label: 'Username', value: userData.details.username },
@@ -51,7 +49,7 @@ function Profile() {
       },
     };
     axios
-      .get('http://localhost:8008/api/profile', cfg)
+      .get('http://34.76.66.213:8008/api/profile', cfg)
       .then((res) => {
         if (res.status === 200) {
           let { details, history } = res.data;
