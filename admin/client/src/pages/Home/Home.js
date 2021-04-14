@@ -24,7 +24,7 @@ function Home() {
   const editBanUser = (userId, isBanned, event) => {
     event.preventDefault();
     axios
-      .post(`http://34.76.66.213:8080/api/actions/edit-ban`, { userId, ban: !isBaneed })
+      .post(`http://34.76.66.213:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
       .then((res) => {
         setUpdatedField(true);
       })
