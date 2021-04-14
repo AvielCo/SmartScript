@@ -24,7 +24,7 @@ function Home() {
   const editBanUser = (userId, isBanned, event) => {
     event.preventDefault();
     axios
-      .post(`http://34.76.66.213:8080/api/actions/${isBanned ? 'un' : ''}ban-user`, { userId })
+      .post(`http://34.76.66.213:8080/api/actions/edit-ban`, { userId, ban: !isBaneed })
       .then((res) => {
         setUpdatedField(true);
       })
@@ -171,9 +171,11 @@ function Home() {
             }}
           />
         </div>
-        <div class="chart-container">
-          <Doughnut data={chartData} options={chartOptions} />
-        </div>
+        {data.length > 0 && (
+          <div class="chart-container">
+            <Doughnut data={chartData} options={chartOptions} />
+          </div>
+        )}
       </div>
     </div>
   );
