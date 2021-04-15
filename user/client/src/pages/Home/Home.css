@@ -1,15 +1,16 @@
 .home {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
+}
+section {
+  min-width: 100%;
 }
 /* ---------------------LANDING------------------------ */
 .landing {
-  text-align: center;
   min-height: 100vh;
-  position: relative;
-  background-image: url("../../assets/landing-bg.jpg");
+  min-width: 100%;
+  background-image: url('../../assets/landing-bg.jpg');
   opacity: 0.5;
-  height: 100%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -17,21 +18,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-x: hidden;
 }
 
 .landing p {
   background-color: rgba(0, 0, 0, 0.3);
-  padding: 10px;
+  padding: 0 15px;
   width: 90%;
-  color: white;
-  font-weight: bold;
-  position: absolute;
+  color: #f2f2f2;
   margin: 0 auto;
   text-align: center;
   font-size: 2rem;
   font-weight: 400;
   border-radius: 15px;
-  line-height: 3em;
+  line-height: 2.5em;
 }
 
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
@@ -40,8 +40,47 @@
     backdrop-filter: blur(10px);
   }
 }
-@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+
+@media screen and (max-width: 970px) {
+  .landing p {
+    font-size: 1.7rem;
+  }
 }
+
+@media screen and (max-width: 780px) {
+  .landing p {
+    font-size: 1.5rem;
+  }
+}
+@media screen and (max-width: 570px) {
+  .landing p {
+    font-size: 1.3rem;
+    width: 80%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .landing p {
+    font-size: 1.1rem;
+  }
+}
+@media screen and (max-width: 420px) {
+  .landing p {
+    font-size: 0.9rem;
+  }
+}
+@media screen and (max-width: 350 px) {
+  .landing p {
+    font-size: 0.9rem;
+  }
+}
+/* @media screen and (max-width: 900px) and (max-height: 1024px) {
+  .landing p {
+    width: 80%;
+    font-size: 1.5rem;
+  }
+} */
+/* @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+} */
 /* ---------------------SCAN------------------------ */
 .scan {
   background: #d3af37;
