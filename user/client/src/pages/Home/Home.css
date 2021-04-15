@@ -2,25 +2,24 @@
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
 }
-section {
-  min-width: 100%;
-}
+
 /* ---------------------LANDING------------------------ */
 .landing {
   min-height: 100vh;
-  min-width: 100%;
-  background-image: url('../../assets/landing-bg.jpg');
-  opacity: 0.5;
+  background: url('../../assets/landing-bg.jpg') no-repeat center fixed;
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  opacity: 0.5;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
+  padding-bottom: 20px;
 }
 
+.landing div {
+  height: auto;
+  margin: 15px 15px;
+}
 .landing p {
   background-color: rgba(0, 0, 0, 0.3);
   padding: 0 15px;
