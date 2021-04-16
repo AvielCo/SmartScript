@@ -1,27 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 import './Login.css';
 import { Checkbox, Form } from 'antd';
 import { InputButton, InputField, NavBar } from '../../components';
-import { encryptStrings, getAccessToken } from '../../helpers';
+import { encryptStrings } from '../../helpers';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './Login.css';
 
 function Login() {
-  const [form] = Form.useForm();
-
   const [inputUsername, setUsername] = useState('');
   const [inputPassword, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const [checked, setChecked] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!inputUsername || !inputPassword) {
+    if (isLoading) {
+      toast.info('Please wait.');
       return;
     }
+    if (!inputUsername || !inputPassword) {
+      toast.info('Username and password are required.');
+      return;
+    }
+    setIsLoading(true);
     const { encryptedUsername, encryptedPassword } = encryptStrings({ encryptedUsername: inputUsername }, { encryptedPassword: inputPassword });
 
     loginUser(encryptedUsername, encryptedPassword);
@@ -31,6 +37,7 @@ function Login() {
     axios
       .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/login`, { username, password })
       .then((response) => {
+        setIsLoading(false);
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
           if (checked) {
@@ -47,15 +54,17 @@ function Login() {
           const { status, message } = err.response.data.error;
           if (status === 404) {
             history.replace('/404');
-            return;
-          }
-          alert(message);
+          } else if (status === 401) {
+            toast.error(message);
+          } else toast.error('Internal Server Error.');
+          setIsLoading(false);
         }
       });
   };
   //garachia kartoshta
   return (
     <React.Fragment>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <NavBar />
       <form onSubmit={handleSubmit} className="login">
         <div className="login-container">

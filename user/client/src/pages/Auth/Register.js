@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { Form } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
-
+import { ToastContainer, toast } from 'react-toastify';
 import InputField from '../../components/InputField/InputField';
 import InputButton from '../../components/Buttons/InputButton';
 import NavBar from '../../components/NavBar/NavBar';
@@ -16,14 +16,20 @@ function Register() {
   const [inputPassword, setPassword] = useState('');
   const [inputEmail, setEmail] = useState('');
   const [inputName, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
-  const [form] = Form.useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!inputUsername || !inputPassword || !inputEmail || !inputName) {
+    if (isLoading) {
+      toast.info('Please wait.');
       return;
     }
+    if (!inputUsername || !inputPassword || !inputEmail || !inputName) {
+      toast.info('Some fields are empty.');
+      return;
+    }
+    setIsLoading(true);
     const { encryptedUsername, encryptedPassword, encryptedEmail, encryptedName } = encryptStrings(
       { encryptedUsername: inputUsername },
       { encryptedPassword: inputPassword },
@@ -43,6 +49,7 @@ function Register() {
         name,
       })
       .then(function (response) {
+        setIsLoading(false);
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);
           history.replace('/');
@@ -51,19 +58,21 @@ function Register() {
         }
       })
       .catch((err) => {
+        setIsLoading(false);
         if (err.response) {
           const { status, message } = err.response.data.error;
           if (status === 404) {
             history.replace('/404');
             return;
           }
-          alert(message);
+          toast(message);
         }
       });
   };
 
   return (
     <React.Fragment>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <NavBar />
       <form onSubmit={handleSubmit} className="register-page">
         <div className="register-form">

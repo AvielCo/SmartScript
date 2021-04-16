@@ -72,7 +72,7 @@ router.post('/login', async (req, res, next) => {
     res.status(200).json({ accessToken });
   } catch (err) {
     if (err.isJoi) {
-      return next(createError.BadRequest('Invalid username or password.'));
+      return next(createError.Unauthorized('Username or password are incorrect.'));
     }
     next(err);
   }

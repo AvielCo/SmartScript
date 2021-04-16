@@ -2,6 +2,7 @@ import './Home.css';
 import { NavBar, ResultTextView } from '../../components';
 import React, { useState, useEffect } from 'react';
 import pic from '../../assets/landing-bg.jpg';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { getAccessToken } from '../../helpers';
@@ -50,7 +51,15 @@ function ScanSection({ isLoggedIn }) {
   };
 
   const handlePredict = () => {
-    if (!imageUri || isLoading) return;
+    if (!imageUri) {
+      toast.error('Upload an image before predict.');
+      return;
+    }
+    if (isLoading) {
+      toast.info('Please wait, another predict process is running.');
+      return;
+    }
+    toast.info('Predicting image, please wait.');
     setIsLoading(true);
 
     let accessToken = getAccessToken();
@@ -66,14 +75,15 @@ function ScanSection({ isLoggedIn }) {
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
-          return;
+          setIsLoading(false);
+          toast.success('Predicting image done, see the result in your profile page.');
         }
       })
-      .then(() => {
-        setIsLoading(false);
-      })
       .catch((err) => {
-        setIsLoading(false);
+        if (err) {
+          toast.error('An error has been encountered while trying to predict.');
+          setIsLoading(false);
+        }
       });
   };
 
@@ -157,19 +167,22 @@ function Home() {
             history.replace('/404');
             return;
           }
-          alert(message);
+          toast.info('Please log in to upload and predict an image.');
         }
       });
   }, [isLoggedIn]);
 
   return (
-    <div className="home">
-      <NavBar isLoggedIn={isLoggedIn} />
-      <LandingSection />
-      <ScanSection isLoggedIn={isLoggedIn} />
-      <AboutSection />
-      <WWASection />
-    </div>
+    <>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <div className="home">
+        <NavBar isLoggedIn={isLoggedIn} />
+        <LandingSection />
+        <ScanSection isLoggedIn={isLoggedIn} />
+        <AboutSection />
+        <WWASection />
+      </div>
+    </>
   );
 }
 export default Home;

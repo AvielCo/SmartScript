@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavBar, List, Searchbar } from '../../components';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { Skeleton } from 'antd';
 import { getAccessToken } from '../../helpers';
@@ -72,23 +73,27 @@ function Profile() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        setLoadingData(false);
+        toast('Internal Server Error.');
       });
   }, []);
 
   return (
-    <div className="profile-page">
-      <NavBar />
-      <div className="profile-form">
-        <TextFieldsHolder />
+    <>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <div className="profile-page">
+        <NavBar />
+        <div className="profile-form">
+          <TextFieldsHolder />
+        </div>
+        <div className="history-container">
+          <Searchbar setQuery={setQuery} />
+          <Skeleton loading={loadingData} active round>
+            <List data={userData.history} query={query} />
+          </Skeleton>
+        </div>
       </div>
-      <div className="history-container">
-        <Searchbar setQuery={setQuery} />
-        <Skeleton loading={loadingData} active round>
-          <List data={userData.history} query={query} />
-        </Skeleton>
-      </div>
-    </div>
+    </>
   );
 }
 

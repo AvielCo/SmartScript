@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import './Home.css';
-import { Table, Space, Modal } from 'antd';
+import { Table, Space } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import greenCircle from '../../assets/green-circle.svg';
