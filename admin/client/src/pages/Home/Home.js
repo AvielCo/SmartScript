@@ -27,7 +27,7 @@ function Home() {
     setLoading(true);
     event.preventDefault();
     axios
-      .post(`http://localhost:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
       .then((res) => {
         if (res.status === 200) {
           setUpdatedField(true);
@@ -74,7 +74,7 @@ function Home() {
     }
     setLoading(true);
     axios
-      .get('http://localhost:8080/api/actions/get-all-users')
+      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/get-all-users`)
       .then((res) => {
         setData(res.data);
         setTotalUsers(res.data.length);
@@ -163,24 +163,26 @@ function Home() {
           {weather}
           <h5>{time}</h5>
         </div>
-        <div className="greeting">
-          <h2>{title}</h2>
-          <h3>{greetingMsg}</h3>
-        </div>
-      </div>
-      <div className="info">
-        <div className="users-table-container">
-          <Table
-            rowKey={(record) => record._id}
-            scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
-            loading={loading}
-            columns={usersColumns}
-            dataSource={data}
-            expandable={{
-              expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
-              rowExpandable: (record) => record.history,
-            }}
-          />
+        <div className="info">
+          <div className="users-table-container">
+            <Table
+              pagination={false}
+              rowKey={(record) => record._id}
+              scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
+              loading={loading}
+              columns={usersColumns}
+              dataSource={data}
+              expandable={{
+                expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
+                rowExpandable: (record) => record.history,
+              }}
+            />
+          </div>
+          {data.length > 0 && (
+            <div className="chart-container">
+              <Doughnut data={chartData} options={chartOptions} />
+            </div>
+          )}
         </div>
         {data.length > 0 && (
           <div class="chart-container">

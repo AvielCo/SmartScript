@@ -62,7 +62,7 @@ function ScanSection({ isLoggedIn }) {
     };
 
     axios
-      .post('http://localhost:8008/api/images/scan', null, cfg)
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/scan`, null, cfg)
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
@@ -144,7 +144,7 @@ function Home() {
       },
     };
     axios
-      .get('http://localhost:8008/api/auth/user', cfg)
+      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/user`, cfg)
       .then((res) => {
         if (res.status === 200) {
           setIsLoggedIn(true);
@@ -157,8 +157,7 @@ function Home() {
             history.replace('/404');
             return;
           }
-        } else {
-          alert('Internal Server Error');
+          alert(message);
         }
       });
   }, [isLoggedIn]);

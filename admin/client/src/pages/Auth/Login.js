@@ -29,7 +29,7 @@ function Login() {
 
   const loginUser = (username, password) => {
     axios
-      .post('http://localhost:8080/api/auth/login', { username, password })
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/auth/login`, { username, password })
       .then((response) => {
         if (response.status === 200) {
           window.sessionStorage.setItem('accessToken', response.data.accessToken);

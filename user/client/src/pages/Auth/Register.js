@@ -36,7 +36,7 @@ function Register() {
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post('http://localhost:8008/api/auth/register', {
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/register`, {
         email,
         username,
         password,
@@ -58,8 +58,6 @@ function Register() {
             return;
           }
           alert(message);
-        } else {
-          alert('Internal Server Error');
         }
       });
   };

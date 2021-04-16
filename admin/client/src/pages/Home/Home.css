@@ -19,6 +19,7 @@ div.home-holder {
 }
 
 .chart-container {
+  padding: 10px 0px;
   margin: 0 auto;
   width: 50%;
 }
