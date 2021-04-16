@@ -8,6 +8,7 @@ import { InputButton, InputField, NavBar } from '../../components';
 import { encryptStrings } from '../../helpers';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
+import 'react-toastify/dist/ReactToastify.css';
 import './Login.css';
 
 function Login() {
