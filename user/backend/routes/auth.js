@@ -62,6 +62,10 @@ router.post('/login', async (req, res, next) => {
     const { username, password } = decryptStrings({ username: req.body.username }, { password: req.body.password });
     const user = await User.findOne({ username }).select('+password');
 
+    if (!user) {
+      throw createError.Unauthorized('Username or password are incorrect.');
+    }
+
     const isMatch = await user.isValidPassword(password);
     if (!isMatch) {
       throw createError.Unauthorized('Username or password are incorrect.');
