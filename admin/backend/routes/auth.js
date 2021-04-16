@@ -17,7 +17,6 @@ router.post('/login', async (req, res, next) => {
     }
 
     await signAccessToken(admin.id);
-    await signRefreshToken(admin.id);
 
     res.status(200);
   } catch (err) {
@@ -42,7 +41,6 @@ router.post('/refresh-token', async (req, res, next) => {
     const userId = await verifyRefreshToken(refreshToken);
 
     await signAccessToken(userId);
-    await signRefreshToken(userId);
 
     res.status(200).send('New access and refresh tokens has been generated.');
   } catch (err) {

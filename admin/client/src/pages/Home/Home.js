@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import './Home.css';
-import { Table, Space } from 'antd';
+import { Table, Space, Modal } from 'antd';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import greenCircle from '../../assets/green-circle.svg';
 import redCircle from '../../assets/red-circle.svg';
@@ -9,6 +10,8 @@ import sun from '../../assets/icon-sun.png';
 import moon from '../../assets/icon-moon.png';
 import { useWindowDimensions } from '../../helpers';
 import { Doughnut } from 'react-chartjs-2';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
   const [data, setData] = useState([{}]);
@@ -32,6 +35,7 @@ function Home() {
         if (res.status === 200) {
           setUpdatedField(true);
           setLoading(false);
+          toast.info(!isBanned ? 'Banned Successfully!' : 'Unbanned Successfully!');
         }
       })
       .catch((err) => {
@@ -157,12 +161,20 @@ function Home() {
   };
 
   return (
-    <div className="home-holder">
-      <div className="home-title">
-        <div className="weather-time">
-          {weather}
-          <h5>{time}</h5>
+    <>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <div className="home-holder">
+        <div className="home-title">
+          <div className="weather-time">
+            {weather}
+            <h5>{time}</h5>
+          </div>
+          <div className="greeting">
+            <h2>{title}</h2>
+            <h3>{greetingMsg}</h3>
+          </div>
         </div>
+
         <div className="info">
           <div className="users-table-container">
             <Table
@@ -184,13 +196,8 @@ function Home() {
             </div>
           )}
         </div>
-        {data.length > 0 && (
-          <div class="chart-container">
-            <Doughnut data={chartData} options={chartOptions} />
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 }
 
