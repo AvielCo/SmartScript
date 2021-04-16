@@ -9,6 +9,7 @@ import InputButton from '../../components/Buttons/InputButton';
 import NavBar from '../../components/NavBar/NavBar';
 import { encryptStrings, getAccessToken } from '../../helpers';
 
+import 'react-toastify/dist/ReactToastify.css';
 import './Register.css';
 
 function Register() {
