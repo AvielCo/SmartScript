@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Skeleton } from 'antd';
 import { getAccessToken } from '../../helpers';
 
+import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css';
 
 function Profile() {

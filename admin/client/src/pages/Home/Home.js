@@ -31,6 +31,7 @@ function Home() {
     event.preventDefault();
     axios
       .post(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
+
       .then((res) => {
         if (res.status === 200) {
           setUpdatedField(true);
@@ -174,7 +175,6 @@ function Home() {
             <h3>{greetingMsg}</h3>
           </div>
         </div>
-
         <div className="info">
           <div className="users-table-container">
             <Table
