@@ -1,4 +1,4 @@
-import './Home.css';
+
 import { NavBar, ResultTextView } from '../../components';
 import React, { useState, useEffect } from 'react';
 import pic from '../../assets/landing-bg.jpg';
@@ -9,6 +9,9 @@ import { getAccessToken } from '../../helpers';
 import { Button, Upload } from 'antd';
 
 import cursive from '../../assets/cursive_trans.png';
+
+import 'react-toastify/dist/ReactToastify.css';
+import './Home.css';
 
 function LandingSection() {
   return (
