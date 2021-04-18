@@ -34,7 +34,7 @@ function App() {
       },
     };
     axios
-      .get("http://localhost:8008/api/auth/user", cfg)
+      .get("http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/user", cfg)
       .then((res) => {
         setToken(accessToken);
       })
