@@ -96,6 +96,7 @@ function Profile() {
         }
       })
       .catch((err) => {
+        setLoadingData(false);
         toast('Internal Server Error.');
       });
   }, [isDataChanged]);

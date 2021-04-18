@@ -1,5 +1,5 @@
-import { NavBar, ResultTextView } from '../../components';
 import React, { useState, useEffect } from 'react';
+import { NavBar, ResultTextView } from '../../components';
 import pic from '../../assets/landing-bg.jpg';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
@@ -14,9 +14,9 @@ import cursive from '../../assets/cursive_trans.png';
 import Emilia from '../../assets/emilia.jpg';
 import Noah from '../../assets/noah.png';
 import Aviel from '../../assets/aviel.png';
+
 import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
-
 
 function LandingSection() {
   return (
