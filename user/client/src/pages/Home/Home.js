@@ -1,4 +1,3 @@
-
 import { NavBar, ResultTextView } from '../../components';
 import React, { useState, useEffect } from 'react';
 import pic from '../../assets/landing-bg.jpg';
@@ -96,7 +95,13 @@ function ScanSection({ isLoggedIn }) {
         {isLoggedIn ? (
           <form className="scan-btn-holder" onSubmit={handleImageChange}>
             <h3>Scan Image</h3>
-            <Upload action="/api/images/upload" headers={{ Authorization: 'Bearer ' + getAccessToken() }} onChange={handleImageChange} accept="image/*" maxCount={1} showUploadList={false}>
+            <Upload
+              action={`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/upload`}
+              headers={{ Authorization: 'Bearer ' + getAccessToken() }}
+              onChange={handleImageChange}
+              accept="image/*"
+              maxCount={1}
+              showUploadList={false}>
               <Button className="scan-btn" component="span" type="submit" loading={isLoading}>
                 Upload an image
               </Button>
