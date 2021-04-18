@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const morgan = require('morgan');
 const createError = require('http-errors');
+const history = require('connect-history-api-fallback');
 require('dotenv').config();
 require('../../helpers/mongodb');
 
@@ -11,9 +13,10 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 app.use(cors());
 app.use(morgan('dev'));
+app.use(history());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/', express.static('./client/build'));
+app.use('/', express.static(path.join(__dirname, 'build')));
 
 //* Routes
 

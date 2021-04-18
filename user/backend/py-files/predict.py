@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import sys
 import json
+from dual_print import dual_print
 
 from tensorflow.keras.models import load_model
 from consts import *
@@ -49,6 +50,7 @@ def build_prediction_dataset():
         raise IndexError("Image to predict not found.")
 
     process_image(path=user_predict_image_path, folder_name=user_id, image_name=image)
+
     dataset = load_patches_from_path(user_predict_patches_path)
     return dataset
 
@@ -82,7 +84,7 @@ def extract_max_prediction(model, model_type, dataset):
         predicted_class (type: string): Predicted class the model has predicted using the dataset
         probability (type: float): percentage of the probability that the model has predicted
     """
-    predictions = model.predict(dataset, verbose=1)
+    predictions = model.predict(dataset, verbose=0)
     summ = [0] * len(predictions[0])  # init summ to the len of the first predict list
     for prediction in predictions:
         for i in range(len(prediction)):
@@ -105,12 +107,11 @@ def predict_on_origin(predicted_shape, dataset):
         dataset (type ndarray): patches of the image to predict on
 
     """
-    # model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
-    # predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
-
-    print(json.dumps({"success": True, "origin": "ashkenazi", "shape": predicted_shape, "probability": "99%"}))
-
+    model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
+    predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
     shutil.rmtree(user_predict_patches_path)
+    print(json.dumps({"success": True, "origin": predicted_origin, "shape": predicted_shape, "probability": probability}))
+    exit(0)
 
 
 def predict_on_shape():
@@ -123,38 +124,24 @@ def predict_on_shape():
         os.makedirs(MODELS_DIR)
     except FileExistsError:
         pass
-    # try:
-    #     model = load_model(os.path.join(MODELS_DIR, "main.h5"))
-    # except:
-    #     print(json.dumps({"success": False}))
-    #     exit(-1)
+    model = load_model(os.path.join(MODELS_DIR, "main.h5"))
     try:
         dataset = build_prediction_dataset()
     except Exception as e:
-        
         try:
             shutil.rmtree(user_predict_patches_path)
         except FileNotFoundError:
             pass
-        raise Exception(e)
-
-    ###########! delete this on production ###########
-    try:
-        shutil.rmtree(user_predict_patches_path)
-    except FileNotFoundError:
-        pass
-    print(json.dumps({"success": True, "origin": "ashkenazi", "shape": "square", "probability": "99%"}))
-    return
-    ###########! delete this on production ###########
-
+        finally:
+            raise Exception(e)
 
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
-    # print("Predicting {} patches...".format(len(dataset)))
-    # predicted_shape, probability = extract_max_prediction(model, "main", dataset)
+    dual_print("Predicting {} patches...".format(len(dataset)))
+    predicted_shape, probability = extract_max_prediction(model, "main", dataset)
 
-    # print(f"Done!\n{predicted_shape}: {probability}%")
-    predict_on_origin("cursive", dataset)
+    dual_print(f"Done!\n{predicted_shape}: {probability}%")
+    predict_on_origin(predicted_shape, dataset)
 
 user_id = sys.argv[1]
 user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images", user_id)

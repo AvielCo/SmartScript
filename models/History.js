@@ -4,6 +4,7 @@ const PredictSchema = mongoose.Schema({
   classes: [String],
   probabilities: [String],
   dates: [Date],
+  images: [String],
   _id: false,
 });
 

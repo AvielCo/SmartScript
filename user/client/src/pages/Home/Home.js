@@ -1,7 +1,7 @@
-import './Home.css';
 import { NavBar, ResultTextView } from '../../components';
 import React, { useState, useEffect } from 'react';
 import pic from '../../assets/landing-bg.jpg';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { getAccessToken } from '../../helpers';
@@ -14,6 +14,9 @@ import cursive from '../../assets/cursive_trans.png';
 import Emilia from '../../assets/emilia.jpg';
 import Noah from '../../assets/noah.png';
 import Aviel from '../../assets/aviel.png';
+import 'react-toastify/dist/ReactToastify.css';
+import './Home.css';
+
 
 function LandingSection() {
   return (
@@ -45,7 +48,6 @@ function ScanSection({ isLoggedIn }) {
         break;
       case 'done':
         setIsLoading(false);
-        console.log(info.file.originFileObj);
         setImageUri(URL.createObjectURL(info.file.originFileObj));
         break;
       case 'error':
@@ -57,7 +59,15 @@ function ScanSection({ isLoggedIn }) {
   };
 
   const handlePredict = () => {
-    if (!imageUri || isLoading) return;
+    if (!imageUri) {
+      toast.error('Upload an image before predict.');
+      return;
+    }
+    if (isLoading) {
+      toast.info('Please wait, another predict process is running.');
+      return;
+    }
+    toast.info('Predicting image, please wait.');
     setIsLoading(true);
 
     let accessToken = getAccessToken();
@@ -69,19 +79,19 @@ function ScanSection({ isLoggedIn }) {
     };
 
     axios
-      .post('http://localhost:8008/api/images/scan', null, cfg)
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/scan`, null, cfg)
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
-          return;
+          setIsLoading(false);
+          toast.success('Predicting image done, see the result in your profile page.');
         }
-        console.log(res.data);
-      })
-      .then(() => {
-        setIsLoading(false);
       })
       .catch((err) => {
-        setIsLoading(false);
+        if (err) {
+          toast.error('An error has been encountered while trying to predict.');
+          setIsLoading(false);
+        }
       });
   };
 
@@ -92,7 +102,7 @@ function ScanSection({ isLoggedIn }) {
           <form className='scan-btn-holder' onSubmit={handleImageChange}>
             <h3>Upload and Predict</h3>
             <Upload
-              action='http://localhost:8008/api/images/upload'
+              action={`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/upload`}
               headers={{ Authorization: 'Bearer ' + getAccessToken() }}
               onChange={handleImageChange}
               accept='image/*'
@@ -181,7 +191,7 @@ function Home() {
       },
     };
     axios
-      .get('http://localhost:8008/api/auth/user', cfg)
+      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/user`, cfg)
       .then((res) => {
         if (res.status === 200) {
           setIsLoggedIn(true);
@@ -194,20 +204,22 @@ function Home() {
             history.replace('/404');
             return;
           }
-        } else {
-          alert('Internal Server Error');
+          toast.info('Please log in to upload and predict an image.');
         }
       });
   }, [isLoggedIn]);
 
   return (
-    <div className='home'>
-      <NavBar isLoggedIn={isLoggedIn} />
-      <LandingSection />
-      <ScanSection isLoggedIn={isLoggedIn} />
-      <AboutSection />
-      <WWASection />
-    </div>
+    <>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <div className="home">
+        <NavBar isLoggedIn={isLoggedIn} />
+        <LandingSection />
+        <ScanSection isLoggedIn={isLoggedIn} />
+        <AboutSection />
+        <WWASection />
+      </div>
+    </>
   );
 }
 export default Home;

@@ -8,12 +8,13 @@ import {
   MailOutlined,
   KeyOutlined,
 } from "@ant-design/icons";
-
+import { ToastContainer, toast } from 'react-toastify';
 import InputField from "../../components/InputField/InputField";
 import InputButton from "../../components/Buttons/InputButton";
 import NavBar from "../../components/NavBar/NavBar";
 import { encryptStrings, getAccessToken } from "../../helpers";
 
+import 'react-toastify/dist/ReactToastify.css';
 import "./Register.css";
 
 function Register() {
@@ -21,20 +22,22 @@ function Register() {
   const [inputPassword, setPassword] = useState("");
   const [inputEmail, setEmail] = useState("");
   const [inputName, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const history = useHistory();
-  const [form] = Form.useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!inputUsername || !inputPassword || !inputEmail || !inputName) {
+    if (isLoading) {
+      toast.info('Please wait.');
       return;
     }
-    const {
-      encryptedUsername,
-      encryptedPassword,
-      encryptedEmail,
-      encryptedName,
-    } = encryptStrings(
+    if (!inputUsername || !inputPassword || !inputEmail || !inputName) {
+      toast.info('Some fields are empty.');
+      return;
+    }
+    setIsLoading(true);
+    const { encryptedUsername, encryptedPassword, encryptedEmail, encryptedName } = encryptStrings(
       { encryptedUsername: inputUsername },
       { encryptedPassword: inputPassword },
       { encryptedEmail: inputEmail },
@@ -51,13 +54,14 @@ function Register() {
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post("http://localhost:8008/api/auth/register", {
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/register`, {
         email,
         username,
         password,
         name,
       })
       .then(function (response) {
+        setIsLoading(false);
         if (response.status === 200) {
           window.sessionStorage.setItem(
             "accessToken",
@@ -69,21 +73,21 @@ function Register() {
         }
       })
       .catch((err) => {
+        setIsLoading(false);
         if (err.response) {
           const { status, message } = err.response.data.error;
           if (status === 404) {
             history.replace("/404");
             return;
           }
-          alert(message);
-        } else {
-          alert("Internal Server Error");
+          toast(message);
         }
       });
   };
 
   return (
     <React.Fragment>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <NavBar />
       <form onSubmit={handleSubmit} className="register-page">
         <div className="register-form">
