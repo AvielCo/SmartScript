@@ -5,8 +5,9 @@ import pic from '../../assets/landing-bg.jpg';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { getAccessToken } from '../../helpers';
-import { Button, Upload } from 'antd';
+import { Upload } from 'antd';
 import Card from '../../components/Card/ProfileCard';
+import Button from '../../components/Buttons/InputButton';
 
 import cursive from '../../assets/cursive_trans.png';
 
@@ -98,13 +99,11 @@ function ScanSection({ isLoggedIn }) {
               maxCount={1}
               showUploadList={false}
             >
-              <Button className='scan-btn' component='span' type='submit' loading={isLoading}>
-                Upload an image
-              </Button>
+              <Button className='scan-btn' component='span' type='submit' name={'Upload'} disabled={isLoading}></Button>
             </Upload>
-            <Button className='scan-btn' onClick={handlePredict} loading={isLoading}>
-              Predict
-            </Button>
+            <Button className='scan-btn' onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
+
+            <div className='scan-btn'></div>
 
             <ResultTextView result={result} />
           </form>

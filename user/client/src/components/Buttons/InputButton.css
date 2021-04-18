@@ -10,3 +10,7 @@ button.MuiButton-contained {
   font-weight: 700;
   outline: none;
 }
+
+.loader {
+  margin-left: 20px;
+}

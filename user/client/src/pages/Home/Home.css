@@ -127,7 +127,7 @@ p > h2 {
   background-color: rgba(219, 219, 219, 255);
   border: 2px solid #a7a7a7;
   border-radius: 20px;
-
+  margin-top: 80px;
   flex: 0.00001;
   -webkit-animation: flexGrow 0.5s ease forwards;
   -o-animation: flexGrow 0.5s ease forwards;
@@ -157,7 +157,7 @@ p > h2 {
   border-radius: 20px;
 }
 
-.scan-btn {
+.ant-btn {
   width: 250px;
   height: 50px;
   background: #d3ad60;
