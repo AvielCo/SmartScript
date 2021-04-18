@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 //import TextField from "@material-ui/core/TextField";
-import './InputField.css';
-import { Input } from 'antd';
+import "./InputField.css";
+import { Input } from "antd";
 
 function InputField({ value, type, name, setProperty, prefix }) {
   return (

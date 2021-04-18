@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 import './Home.css';
 import { Table, Space } from 'antd';
+import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import greenCircle from '../../assets/green-circle.svg';
 import redCircle from '../../assets/red-circle.svg';
@@ -9,6 +10,8 @@ import sun from '../../assets/icon-sun.png';
 import moon from '../../assets/icon-moon.png';
 import { useWindowDimensions } from '../../helpers';
 import { Doughnut } from 'react-chartjs-2';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
   const [data, setData] = useState([{}]);
@@ -27,11 +30,13 @@ function Home() {
     setLoading(true);
     event.preventDefault();
     axios
-      .post(`http://34.76.66.213:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
+
       .then((res) => {
         if (res.status === 200) {
           setUpdatedField(true);
           setLoading(false);
+          toast.info(!isBanned ? 'Banned Successfully!' : 'Unbanned Successfully!');
         }
       })
       .catch((err) => {
@@ -74,7 +79,7 @@ function Home() {
     }
     setLoading(true);
     axios
-      .get('http://localhost:8080/api/actions/get-all-users')
+      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/get-all-users`)
       .then((res) => {
         setData(res.data);
         setTotalUsers(res.data.length);
@@ -157,38 +162,42 @@ function Home() {
   };
 
   return (
-    <div className="home-holder">
-      <div className="home-title">
-        <div className="weather-time">
-          {weather}
-          <h5>{time}</h5>
-        </div>
-        <div className="greeting">
-          <h2>{title}</h2>
-          <h3>{greetingMsg}</h3>
-        </div>
-      </div>
-      <div className="info">
-        <div className="users-table-container">
-          <Table
-            rowKey={(record) => record._id}
-            scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
-            loading={loading}
-            columns={usersColumns}
-            dataSource={data}
-            expandable={{
-              expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
-              rowExpandable: (record) => record.history,
-            }}
-          />
-        </div>
-        {data.length > 0 && (
-          <div class="chart-container">
-            <Doughnut data={chartData} options={chartOptions} />
+    <>
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <div className="home-holder">
+        <div className="home-title">
+          <div className="weather-time">
+            {weather}
+            <h5>{time}</h5>
           </div>
-        )}
+          <div className="greeting">
+            <h2>{title}</h2>
+            <h3>{greetingMsg}</h3>
+          </div>
+        </div>
+        <div className="info">
+          <div className="users-table-container">
+            <Table
+              pagination={false}
+              rowKey={(record) => record._id}
+              scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
+              loading={loading}
+              columns={usersColumns}
+              dataSource={data}
+              expandable={{
+                expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
+                rowExpandable: (record) => record.history,
+              }}
+            />
+          </div>
+          {data.length > 0 && (
+            <div className="chart-container">
+              <Doughnut data={chartData} options={chartOptions} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
