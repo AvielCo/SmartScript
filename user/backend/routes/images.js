@@ -10,7 +10,7 @@ const uploadFile = require('../../../helpers/upload');
 const fs = require('fs');
 const sharp = require('sharp');
 
-const insertNewHistory = async (userHistory, newHistory, imageName) => {
+const insertNewHistory = async (userHistory, newHistory) => {
   let { predictedResult } = userHistory;
   if (!predictedResult) {
     predictedResult = { classes: [], probabilities: [], dates: [] };
@@ -18,17 +18,7 @@ const insertNewHistory = async (userHistory, newHistory, imageName) => {
   predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
   predictedResult.dates.push(new Date());
-  predictedResult.images.push(imageName);
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
-};
-
-const genRandomString = (length) => {
-  let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-  }
-  return result;
 };
 
 router.post('/upload', verifyAccessToken, async (req, res, next) => {
@@ -77,20 +67,16 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
           // path to save the resized image to view later in the user profile
           const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
           fs.mkdir(savePath, { recursive: true }, (err) => {
-            if (err) throw createError.InternalServerError();
+            if (err) return next(createError.InternalServerError());
           });
-
-          // generate unique hash for image name
-          const imageName = genRandomString(40);
-
           sharp(imagePath) // resize the image to width: 250px (height is auto scale)
             .resize(250)
-            .toFile(path.join(savePath, `${imageName}.jpg`))
+            .toFile(path.join(savePath, `${totalImages}.jpg`))
             .catch((err) => {
-              if (err) throw createError.InternalServerError();
+              return next(createError.InternalServerError());
             });
 
-          await insertNewHistory(userHistory, message, imageName);
+          await insertNewHistory(userHistory, message);
 
           return res.status(200).send(message);
         } catch (err) {

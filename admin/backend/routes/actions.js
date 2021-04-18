@@ -19,8 +19,10 @@ router.get('/get-all-users', async (req, res, next) => {
         predictedResult: { classes, probabilities, dates },
       } = await History.findById({ _id: user.historyId });
       if (classes && classes.length > 0) {
+
         const h = [];
         for (let i = 0; i < classes.length; i++) {
+          console.log(`user: ${user.name} history: ${i}`);
           h.push({ class: classes[i], probability: probabilities[i], date: dates[i] });
         }
         userHistory.history = h;

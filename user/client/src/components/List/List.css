@@ -10,13 +10,12 @@
   align-content: center;
   gap: 5%;
 }
-
 .list-item {
   padding: 15px 30px;
   border: 1px solid black;
   margin: 0px 15px;
   border-radius: 10px;
-  min-width: 20%;
+  min-width: 25%;
   margin-bottom: 30px;
   list-style: none;
   padding-left: 15px;
@@ -30,14 +29,10 @@
 }
 
 .item-meta {
+  width: 200px;
 }
 .item-date {
   top: 30px;
-}
-button.ant-btn-icon-only {
-  bottom: 50%;
-  width: 0;
-  height: 0;
 }
 
 @media screen and (max-width: 1023px) {

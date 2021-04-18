@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button } from 'antd';
-import trashIcon from '../../assets/delete-16.ico';
+import axios from 'axios';
 import './List.css';
 
-function CustomList({ data, query, removeItem }) {
+function CustomList({ data, query }) {
   const dataList = data
     .filter((single) => {
       const [origin, shape] = single.class.split(' '); // split the class from 'origin shape' to 'origin', 'shape'
@@ -26,7 +25,6 @@ function CustomList({ data, query, removeItem }) {
       return (
         <React.Fragment>
           <div className="list-item">
-            <Button type="text" icon={<img alt="remove" src={trashIcon} />} onClick={(e) => removeItem(i)} />
             <div className="item-meta">
               <div className="title">{`${single.class} - ${single.probability}`}</div>
               <div className="desc">{<h6 className="item-date">{single.date}</h6>}</div>

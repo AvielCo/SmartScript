@@ -18,7 +18,6 @@ function Profile() {
     history: [],
   });
   const [loadingData, setLoadingData] = useState(true);
-  const [isDataChanged, setIsDataChanged] = useState(true);
   const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
 
   const TextFieldsHolder = () => {
@@ -43,28 +42,7 @@ function Profile() {
     );
   };
 
-  const removeItemFromHistory = (indexToDelete) => {
-    if (indexToDelete < 0) {
-      return;
-    }
-    setLoadingData(true);
-    const cfg = {
-      headers: {
-        Authorization: 'Bearer ' + getAccessToken(),
-      },
-    };
-    axios
-      .delete(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/profile/delete-event/${indexToDelete}`, cfg)
-      .then((res) => {
-        if (res.status === 200) {
-          setIsDataChanged(true);
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-
   useEffect(() => {
-    if (!isDataChanged) return;
     let accessToken = getAccessToken();
 
     const cfg = {
@@ -93,13 +71,13 @@ function Profile() {
           });
           setLoadingData(false);
           setUserData({ details, history });
-          setIsDataChanged(false);
         }
       })
       .catch((err) => {
+        setLoadingData(false);
         toast('Internal Server Error.');
       });
-  }, [isDataChanged]);
+  }, []);
 
   return (
     <>
@@ -112,7 +90,7 @@ function Profile() {
         <div className="history-container">
           <Searchbar setQuery={setQuery} />
           <Skeleton loading={loadingData} active round>
-            <List data={userData.history} query={query} removeItem={removeItemFromHistory} />
+            <List data={userData.history} query={query} />
           </Skeleton>
         </div>
       </div>
