@@ -1,7 +1,7 @@
 :root {
   /*page vars*/
-  --clr-background-dark: rgba(206, 168, 104, 1);
-  --clr-background-light: rgba(206, 168, 104, 0.4);
+  --clr-register-background-dark: #046364;
+  --clr-register-background-light: #0aeef2;
 
   /*register-inputfields vars*/
   /*           offset x, offset y, blur radius, spread, color*/
@@ -18,14 +18,18 @@
 }
 
 .register-page {
-  background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
+  background: linear-gradient(
+    to bottom,
+    var(--clr-register-background-dark),
+    var(--clr-register-background-light)
+  );
   min-height: 100vh;
   padding-bottom: 20px;
 }
 
 .register-form {
   margin: 0 auto;
-  width: 90%;
+  width: 45%;
 }
 
 .register-inputfields {
@@ -41,8 +45,79 @@
   gap: var(--input-gap);
 }
 
+.anticon {
+  transform: scale(1.5);
+}
 @media screen and (max-width: 320px) {
   h3 {
     padding-top: 70px;
+  }
+}
+
+@media (max-width: 840px) {
+  .register-form {
+    width: 90%;
+  }
+  h3 {
+    padding-top: 80px;
+  }
+}
+
+@media (max-width: 360px) {
+  h3 {
+    padding-top: 80px;
+  }
+}
+
+@media (max-width: 320px) {
+  h3 {
+    padding-top: 50px;
+  }
+}
+
+@media (min-width: 375px) and (min-height: 670px) {
+  h3 {
+    padding-top: 80px;
+  }
+}
+
+@media (min-width: 400px) and (min-height: 800px) {
+  h3 {
+    padding-top: 150px;
+  }
+}
+
+@media (min-width: 750px) and (min-height: 1024px) {
+  .register-form {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1024px) and (min-height: 1366px) {
+  h3 {
+    padding-top: 300px;
+  }
+}
+
+/* Landscape responsiveness */
+@media (max-height: 360px) and (max-width: 640px) {
+  h3 {
+    padding-top: 80px;
+    font-size: 1.5em;
+  }
+  .register-form {
+    width: 90%;
+  }
+  .register-inputfields {
+    padding-top: 15px;
+  }
+}
+
+@media (max-height: 540px) and (max-width: 825px) {
+  h3 {
+    padding-top: 80px;
+  }
+  .register-form {
+    width: 90%;
   }
 }

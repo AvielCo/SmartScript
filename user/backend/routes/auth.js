@@ -40,28 +40,20 @@ router.post("/register", async (req, res, next) => {
       //! User is exists
       //! Check which fields are the same and throw an error
       if (userExists.username === newUserDetails.username) {
-        console.log("username");
-        throw createError.Conflict("Username is already in use.");
+        throw createError.Conflict('Username is already in use.');
       }
       if (userExists.email === newUserDetails.email) {
-        console.log("email");
-        throw createError.Conflict("Email is already in use.");
+        throw createError.Conflict('Email is already in use.');
       }
-      console.log("nothing");
       throw createError.Conflict();
     }
 
     //* User is not exists with the same email or username
     const newUser = await new User(newUserDetails).save();
-    console.log(newUser);
-    const history = await new History({ userId: newUser._id }).save();
+    const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
+    await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
 
-    await User.findOneAndUpdate(
-      { _id: newUser._id },
-      { historyId: history._id }
-    );
-
-    await signAccessToken(newUser.id);
+    await signAccessToken(newUser._id);
 
     res.status(200).send("Registered user successfully.");
   } catch (err) {
@@ -80,6 +72,10 @@ router.post("/login", async (req, res, next) => {
     );
     const user = await User.findOne({ username }).select("+password");
 
+    if (!user) {
+      throw createError.Unauthorized('Username or password are incorrect.');
+    }
+
     const isMatch = await user.isValidPassword(password);
     if (!isMatch) {
       throw createError.Unauthorized("Username or password are incorrect.");
@@ -90,7 +86,7 @@ router.post("/login", async (req, res, next) => {
     res.status(200).json({ accessToken });
   } catch (err) {
     if (err.isJoi) {
-      return next(createError.BadRequest("Invalid username or password."));
+      return next(createError.Unauthorized('Username or password are incorrect.'));
     }
     next(err);
   }

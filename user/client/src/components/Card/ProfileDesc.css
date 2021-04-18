@@ -1,0 +1,12 @@
+.lower-container {
+  height: 200px;
+  background-color: white;
+  text-align: center;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.lower-container h3 {
+  font-size: 2rem;
+  padding-top: 50px;
+}
