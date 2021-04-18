@@ -151,6 +151,15 @@ function WWASection() {
   return (
     <section className='wwa'>
       <h3>Who we are</h3>
+      <p>
+        We are 4th year Software Engineering students at SCE Sami Shamoon. We decided to join Dr. Irina Rabaev and with her guidance tackle this challenge. During summer time and the first semester we
+        researched and experimented with different models and architectures and strive for high accuracies with the limitations and the challenges presented to us during the Covid outbreak in 2020.
+      </p>
+      <p>
+        In the second semester we shifted towards developing the website that will allow paleographers to easily classify hebrew scripts with ease. We focused on developing strong functionality from
+        front to back. Combining RESTapi to handle requests and JWT we developed a secure login and registration. Additionally, we made sure that our website will be functional and resonsive on
+        different devices and resolutions
+      </p>
       <div className='cards-holder'>
         <Card name={'Noah Solomon'} image={Noah} />
         <Card name={'Emilia Zorin'} image={Emilia} />

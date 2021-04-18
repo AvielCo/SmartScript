@@ -3,8 +3,14 @@
   font-size: 1rem;
 }
 
-h3 {
+h3,
+h2 {
   padding-top: 50px;
+  font-family: 'Lobster', sans-serif;
+}
+
+p {
+  font-family: Rubik;
 }
 /* ---------------------LANDING------------------------ */
 .landing {
@@ -24,7 +30,6 @@ h3 {
   margin: 15px 15px;
 }
 .landing p {
-  font-family: Rubik;
   background-color: rgba(0, 0, 0, 0.3);
   padding: 15px 30px;
   width: 80%;
@@ -38,11 +43,11 @@ h3 {
 }
 
 p > h2 {
-  font-family: 'Lobster', sans-serif;
   color: #f2f2f2;
   font-weight: 500;
   font-size: 4rem;
   margin: 0;
+  padding-top: 0;
 }
 
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
@@ -205,14 +210,26 @@ p > h2 {
 }
 
 /* ---------------------WWA------------------------ */
-section.wwa {
+.wwa {
   background: #046364;
-  height: 100vh;
+  min-height: 100vh;
 }
 
+.wwa > * {
+  text-align: center;
+  color: #f2f2f2;
+}
+
+.wwa p {
+  font-size: 1.5rem;
+  width: 80%;
+  margin: 0 auto;
+  padding-bottom: 15px;
+}
 .cards-holder {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 50px;
+  padding-bottom: 15px;
 }
