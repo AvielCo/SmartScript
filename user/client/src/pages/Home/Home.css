@@ -157,27 +157,6 @@ p > h2 {
   border-radius: 20px;
 }
 
-.ant-btn {
-  width: 250px;
-  height: 50px;
-  background: #d3ad60;
-  border-radius: 50px;
-  color: #233237;
-  text-transform: capitalize;
-  text-align: center;
-  font-weight: bold;
-  outline: 0;
-}
-
-.scan-btn:active,
-.scan-btn:focus {
-  outline: 0;
-}
-
-.scan-btn:hover {
-  background: #cc972c;
-}
-
 @media (max-width: 1150px) {
   .scan-container {
     flex-direction: column;
