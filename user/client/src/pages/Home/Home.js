@@ -108,7 +108,9 @@ function ScanSection({ isLoggedIn }) {
             <ResultTextView result={result} />
           </form>
         ) : (
-          <div>Login so you can scan</div>
+          <h3>
+            Please login to gain access to the "Scan" feature. <br /> Consider registering if you don't have an account.
+          </h3>
         )}
         {imageUri && (
           <div className='scan-img-holder'>
