@@ -1,7 +1,7 @@
 :root {
   /*page vars*/
-  --clr-background-dark: rgba(206, 168, 104, 1);
-  --clr-background-light: rgba(206, 168, 104, 0.4);
+  --clr-login-background-dark: #046364;
+  --clr-login-background-light: #0aeef2;
 
   --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
   --inputfields-bg: rgba(255, 255, 255, 0.15);
@@ -16,7 +16,11 @@
 }
 
 .login {
-  background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
+  background: linear-gradient(
+    to bottom,
+    var(--clr-login-background-dark),
+    var(--clr-login-background-light)
+  );
   min-height: 100vh;
   padding-bottom: 20px;
 }
@@ -24,6 +28,8 @@
 h3 {
   text-align: center;
   padding-top: 150px;
+  font-family: "Lobster", sans-serif;
+  font-size: 3rem;
 }
 
 .login-container {

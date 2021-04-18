@@ -1,7 +1,7 @@
 :root {
   --clr-background: #cea868;
-  --clr-background-dark: rgba(206, 168, 104, 1);
-  --clr-background-light: rgba(206, 168, 104, 0.4);
+  --clr-background-dark: #046364;
+  --clr-background-light: #0aeef2;
   --clr-text: rgba(35, 50, 55, 1);
 
   --box-shadow: 15px 10px 10px rgba(0, 0, 0, 0.4);
