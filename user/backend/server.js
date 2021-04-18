@@ -16,7 +16,7 @@ app.use(history());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/', express.static(path.join(__dirname, 'build')));
+// app.use('/', express.static(path.join(__dirname, 'build')));
 
 //* Routes
 

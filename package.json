@@ -30,7 +30,6 @@
   "homepage": "https://github.com/AvielCo/SmartScript#readme",
   "dependencies": {
     "@ant-design/charts": "^1.1.1",
-    "@ant-design/icons": "^4.6.2",
     "@hapi/joi": "^17.1.1",
     "@material-ui/core": "^4.11.3",
     "@testing-library/jest-dom": "^5.11.9",

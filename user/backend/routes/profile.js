@@ -23,16 +23,16 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
     };
 
     const {
-      predictedResult: { classes, dates, probabilities },
+      predictedResult: { classes, dates, probabilities, images },
     } = await History.findById(user.historyId);
 
-    if (!classes || !probabilities || !dates) {
+    if (!classes || !probabilities || !dates || !images) {
       return res.send(userData);
     }
 
     const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
     for (let i = 0; i < classes.length; i++) {
-      const imageContent = fs.readFileSync(path.join(imagesPath, `${i}.jpg`), 'base64');
+      const imageContent = fs.readFileSync(path.join(imagesPath, `${images[i]}.jpg`), 'base64');
       const history = {
         class: classes[i],
         probability: probabilities[i],
@@ -47,10 +47,12 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.delete('/delete-event', verifyAccessToken, async (req, res, next) => {
+router.delete('/delete-event/:index', verifyAccessToken, async (req, res, next) => {
   try {
-    const { indexToDelete } = req.body;
-    if (indexToDelete < 0) {
+    let { index } = req.params;
+    index = parseInt(index);
+
+    if (index < 0) {
       throw createError.BadRequest('Index cannot be less than 0.');
     }
 
@@ -58,29 +60,40 @@ router.delete('/delete-event', verifyAccessToken, async (req, res, next) => {
     const history = await History.findOne({ userId });
 
     const {
-      predictedResult: { classes, probabilities, dates },
+      predictedResult: { classes, probabilities, dates, images },
     } = history;
 
-    if (!classes || !probabilities || !dates || classes.length - 1 < indexToDelete) {
+    if (!classes || !probabilities || !dates || !images || classes.length - 1 < index) {
       return res.status(200).send('OK');
     }
 
-    const predictedResult = { classes: [], probabilities: [], dates: [] };
+    const predictedResult = { classes: [], probabilities: [], dates: [], images: [] };
+    let imageToDeletePath = '';
     for (let i = 0; i < classes.length; i++) {
-      if (i === indexToDelete) {
+      if (i === index) {
+        imageToDeletePath = path.join(__dirname, '..', 'users-histories', req.payload.aud, `${images[i]}.jpg`);
         continue;
       }
+
       predictedResult.classes.push(classes[i]);
       predictedResult.probabilities.push(probabilities[i]);
       predictedResult.dates.push(dates[i]);
+      predictedResult.images.push(images[i]);
     }
 
     history.predictedResult = predictedResult;
-    const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
-    fs.rmSync(path.join(imagesPath, `${indexToDelete}.jpg`));
     await history.save();
+
+    // remove the image
+    fs.rm(imageToDeletePath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
     return res.status(200).send('OK');
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });
@@ -88,7 +101,7 @@ router.delete('/delete-event', verifyAccessToken, async (req, res, next) => {
 router.delete('/clear-history', verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload['aud'];
-    await History.findOneAndUpdate({ userId }, { predictedResult: { classes: [], probabilities: [], dates: [] } });
+    await History.findOneAndUpdate({ userId }, { predictedResult: { classes: [], probabilities: [], dates: [], images: [] } });
     const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
     fs.rmdirSync(imagesPath, { recursive: true });
     return res.status(200).send('OK');
