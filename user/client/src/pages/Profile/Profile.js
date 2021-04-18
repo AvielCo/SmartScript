@@ -11,9 +11,9 @@ import './Profile.css';
 function Profile() {
   const [userData, setUserData] = useState({
     details: {
-      email: '',
-      username: '',
-      name: '',
+      email: "",
+      username: "",
+      name: "",
     },
     history: [],
   });
@@ -23,9 +23,9 @@ function Profile() {
 
   const TextFieldsHolder = () => {
     const textFields = [
-      { label: 'Email', value: userData.details.email },
-      { label: 'Username', value: userData.details.username },
-      { label: 'Name', value: userData.details.name },
+      { label: "Email", value: userData.details.email },
+      { label: "Username", value: userData.details.username },
+      { label: "Name", value: userData.details.name },
     ];
     return (
       <div className="profile-textfields">
@@ -69,7 +69,7 @@ function Profile() {
 
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
     };
     axios
