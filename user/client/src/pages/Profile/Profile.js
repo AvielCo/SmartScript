@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { NavBar, List, Searchbar } from '../../components';
-import axios from 'axios';
-import { Skeleton } from 'antd';
-import { getAccessToken } from '../../helpers';
+import React, { useState, useEffect } from "react";
+import { NavBar, List, Searchbar } from "../../components";
+import axios from "axios";
+import { Skeleton } from "antd";
+import { getAccessToken } from "../../helpers";
 
-import './Profile.css';
+import "./Profile.css";
 
 function Profile() {
   const [userData, setUserData] = useState({
     details: {
-      email: '',
-      username: '',
-      name: '',
+      email: "",
+      username: "",
+      name: "",
     },
     history: [],
   });
   const [loadingData, setLoadingData] = useState(true);
-  const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
+  const [query, setQuery] = useState({ searchBy: [], searchType: "none" });
 
   const TextFieldsHolder = () => {
     //* example on how the data foramt should look like
 
     const textFields = [
-      { label: 'Email', value: userData.details.email },
-      { label: 'Username', value: userData.details.username },
-      { label: 'Name', value: userData.details.name },
+      { label: "Email", value: userData.details.email },
+      { label: "Username", value: userData.details.username },
+      { label: "Name", value: userData.details.name },
     ];
     return (
       <div className="profile-textfields">
@@ -47,11 +47,11 @@ function Profile() {
 
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
     };
     axios
-      .get('http://localhost:8008/api/profile', cfg)
+      .get("http://localhost:8008/api/profile", cfg)
       .then((res) => {
         if (res.status === 200) {
           let { details, history } = res.data;
@@ -64,7 +64,7 @@ function Profile() {
             }
             const byteArray = new Uint8Array(byteNumbers);
 
-            const imageBlob = new Blob([byteArray], { type: 'image/jpeg' });
+            const imageBlob = new Blob([byteArray], { type: "image/jpeg" });
             const image = URL.createObjectURL(imageBlob);
             event.image = image;
             return event;
