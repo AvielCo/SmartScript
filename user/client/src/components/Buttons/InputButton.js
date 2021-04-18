@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 function InputButton({ name, type, component, onClick }) {
   return (
     <div>
-      <Button variant="contained" type={type} component={component} onClick={onClick}>
+      <Button variant='contained' type={type} component={component} onClick={onClick}>
         {name}
       </Button>
     </div>

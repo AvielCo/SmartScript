@@ -1,6 +1,7 @@
 button.MuiButtonBase-root {
   background: #093263;
   transition-duration: 0.3s;
+  outline: none;
 }
 button.MuiButtonBase-root:hover,
 span.MuiButtonBase-root:hover {

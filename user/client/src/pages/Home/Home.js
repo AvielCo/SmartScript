@@ -10,14 +10,17 @@ import Card from '../../components/Card/ProfileCard';
 
 import cursive from '../../assets/cursive_trans.png';
 
+import Emilia from '../../assets/emilia.jpg';
+import Noah from '../../assets/noah.png';
+import Aviel from '../../assets/aviel.png';
+
 function LandingSection() {
   return (
     <section className='landing'>
       <div>
-        <p>
-          Elit eiusmod elit ut id esse velit veniam ut consectetur esse occaecat quis sunt. Duis cupidatat qui sint ipsum amet exercitation enim et ipsum proident nostrud proident dolor. Incididunt
-          officia voluptate aute commodo sit anim non et cupidatat cillum elit veniam. Irure anim aliquip enim officia anim voluptate minim mollit Lorem cillum. Consectetur est in magna labore nulla
-          adipisicing ex aute Lorem. Cupidatat ipsum sit ut consequat minim aliquip consequat.
+        <p dir='rtl'>
+          <h2>SmartScript</h2> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning the
+          image given to it by the user. Additionally, the system will allow the user to save previous uploads for easy tracking.
         </p>
       </div>
     </section>
@@ -86,7 +89,7 @@ function ScanSection({ isLoggedIn }) {
       <div className='scan-container'>
         {isLoggedIn ? (
           <form className='scan-btn-holder' onSubmit={handleImageChange}>
-            <h3>Scan Image</h3>
+            <h3>Upload and Predict</h3>
             <Upload
               action='http://localhost:8008/api/images/upload'
               headers={{ Authorization: 'Bearer ' + getAccessToken() }}
@@ -100,8 +103,9 @@ function ScanSection({ isLoggedIn }) {
               </Button>
             </Upload>
             <Button className='scan-btn' onClick={handlePredict} loading={isLoading}>
-              Predict selected image
+              Predict
             </Button>
+
             <ResultTextView result={result} />
           </form>
         ) : (
@@ -120,20 +124,23 @@ function ScanSection({ isLoggedIn }) {
 function AboutSection() {
   return (
     <section className='about'>
-      <div className='about-text-holder'>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-          nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-      </div>
-      <div className='image-rotate-holder'>
-        <img className='rotating-image' alt='something' src={cursive}></img>
+      <h3>About the project</h3>
+
+      <div className='about-content'>
+        <div className='about-text-holder'>
+          <p>
+            By uploading an image and pressing the scan button the system will scan the image and return a predicted value for that given image. The system does it by spliting the image into 2 single
+            paged images if the image contains 2 pages followed by dividing the image into small resolutions patches.
+          </p>
+          <p>
+            Then it applies binarization on these patches so it can filter unnecessary areas from the original image. These areas might contain noisy data (salt and pepper) or just plain colored areas
+            without text based on the ratio between the black and the white pixels.
+          </p>
+          <p>After the filtering is done the corresponding orignal patches are saved in grayscale and used to predict the origin and the shape of the script.</p>
+        </div>
+        <div className='image-rotate-holder'>
+          <img className='rotating-image' alt='something' src={cursive}></img>
+        </div>
       </div>
     </section>
   );
@@ -142,9 +149,12 @@ function AboutSection() {
 function WWASection() {
   return (
     <section className='wwa'>
-      <Card />
-      <Card />
-      <Card />
+      <h3>Who we are</h3>
+      <div className='cards-holder'>
+        <Card name={'Noah Solomon'} image={Noah} />
+        <Card name={'Emilia Zorin'} image={Emilia} />
+        <Card name={'Aviel Cohen'} image={Aviel} />
+      </div>
     </section>
   );
 }
