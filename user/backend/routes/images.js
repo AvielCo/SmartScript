@@ -92,6 +92,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
 
           await insertNewHistory(userHistory, message, imageName);
 
+          child.kill('SIGINT');
           return res.status(200).send(message);
         } catch (err) {
           console.log(err);
@@ -109,10 +110,12 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     });
 
     child.stderr.once('data', (data) => {
+      child.kill('SIGINT');
       console.log(data);
     });
 
     child.once('error', function (err) {
+      child.kill('SIGINT');
       throw next(createError.InternalServerError());
     });
   } catch (err) {
