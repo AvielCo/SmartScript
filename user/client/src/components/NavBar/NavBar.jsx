@@ -4,6 +4,7 @@ import logo from '../../assets/smartscript-logo.png';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
+import { Link as ScrollLink } from 'react-scroll';
 
 function NavBar({ isLoggedIn }) {
   const [slide, setSlide] = useState(0);
@@ -16,9 +17,15 @@ function NavBar({ isLoggedIn }) {
       </Link>
       <div className={slide ? 'navbar-holder active' : 'navbar-holder'} slide={slide}>
         {/* <div className="btnGroup"> */}
-        <NavButton className="nav-button" btnText="Scan" />
-        <NavButton className="nav-button" btnText="About" />
-        <NavButton className="nav-button" btnText="Who we are" />
+        <ScrollLink to="scan" style={{ textDecoration: 'none' }}>
+          <NavButton className="nav-button" btnText="Scan" />
+        </ScrollLink>
+        <ScrollLink to="about" style={{ textDecoration: 'none' }}>
+          <NavButton className="nav-button" btnText="About" />
+        </ScrollLink>
+        <ScrollLink to="wwa" style={{ textDecoration: 'none' }}>
+          <NavButton className="nav-button" btnText="Who we are" />
+        </ScrollLink>
         {!isLoggedIn && (
           <Link to="/login" style={{ textDecoration: 'none' }}>
             <NavButton className="nav-button" btnText="Login" />

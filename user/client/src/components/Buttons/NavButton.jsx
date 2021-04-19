@@ -5,7 +5,7 @@ import './NavButton.css';
 function NavButton({ btnText, Link, path }) {
   return (
     <div>
-      <Button component={Link} to={path}>
+      <Button component={Link} href={path}>
         {btnText}
       </Button>
     </div>

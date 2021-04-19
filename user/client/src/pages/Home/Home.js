@@ -15,6 +15,8 @@ import Emilia from '../../assets/emilia.jpg';
 import Noah from '../../assets/noah.png';
 import Aviel from '../../assets/aviel.png';
 
+import App from '../../App';
+
 import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
 
@@ -96,7 +98,7 @@ function ScanSection({ isLoggedIn }) {
   };
 
   return (
-    <section className="scan">
+    <section className="scan" id="scan">
       <div className="scan-container">
         {isLoggedIn ? (
           <form className="scan-btn-holder" onSubmit={handleImageChange}>
@@ -107,7 +109,8 @@ function ScanSection({ isLoggedIn }) {
               onChange={handleImageChange}
               accept="image/*"
               maxCount={1}
-              showUploadList={false}>
+              showUploadList={false}
+            >
               <Button className="scan-btn" component="span" type="submit" name={'Upload'} disabled={isLoading}></Button>
             </Upload>
             <Button className="scan-btn" onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
@@ -133,7 +136,7 @@ function ScanSection({ isLoggedIn }) {
 
 function AboutSection() {
   return (
-    <section className="about">
+    <section className="about" id="about">
       <h3>About the project</h3>
 
       <div className="about-content">
@@ -158,7 +161,7 @@ function AboutSection() {
 
 function WWASection() {
   return (
-    <section className="wwa">
+    <section className="wwa" id="wwa">
       <h3>Who we are</h3>
       <p>
         We are 4th year Software Engineering students at SCE Sami Shamoon. We decided to join Dr. Irina Rabaev and with her guidance tackle this challenge. During summer time and the first semester we
@@ -181,7 +184,6 @@ function WWASection() {
 function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const history = useHistory();
-
   useEffect(() => {
     if (isLoggedIn) return;
     const cfg = {
@@ -211,7 +213,7 @@ function Home() {
   return (
     <>
       <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="home">
+      <div className="home" id="home">
         <NavBar isLoggedIn={isLoggedIn} />
         <LandingSection />
         <ScanSection isLoggedIn={isLoggedIn} />
