@@ -9,6 +9,7 @@ const path = require('path');
 const uploadFile = require('../../../helpers/upload');
 const fs = require('fs');
 const sharp = require('sharp');
+const { genRandomString } = require('../../../helpers/helpers');
 
 const insertNewHistory = async (userHistory, newHistory, imageName) => {
   let { predictedResult } = userHistory;
@@ -20,15 +21,6 @@ const insertNewHistory = async (userHistory, newHistory, imageName) => {
   predictedResult.dates.push(new Date());
   predictedResult.images.push(imageName);
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
-};
-
-const genRandomString = (length) => {
-  let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-  }
-  return result;
 };
 
 router.post('/upload', verifyAccessToken, async (req, res, next) => {
@@ -67,7 +59,10 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
-          const imagePath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
+          const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
+          const uploadedImage = fs.readdirSync(imageFolderPath)[0];
+          const imagePath = path.join(imageFolderPath, uploadedImage);
+
           const userHistory = await History.findById({ _id: user.historyId });
           // path to save the resized image to view later in the user profile
           const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
@@ -79,7 +74,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
           // generate unique hash for image name
           const imageName = genRandomString(40);
 
-          await sharp(imagePath) // resize the image to width: 250px (height is auto scale)
+          sharp(imagePath) // resize the image to width: 250px (height is auto scale)
             .resize(250)
             .toFile(path.join(savePath, `${imageName}.jpg`))
             .catch((err) => {
