@@ -43,7 +43,6 @@ router.post('/register', async (req, res, next) => {
     //* User is not exists with the same email or username
     const newUser = await new User(newUserDetails).save();
     const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
-
     await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
 
     await signAccessToken(newUser._id);
@@ -82,9 +81,13 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.get('/user', verifyAccessToken, (req, res, next) => {
-  const userId = req.payload['aud'];
-  return res.status(200).json('OK');
+router.get('/user', verifyAccessToken, async (req, res, next) => {
+  try {
+    const userId = req.payload['aud'];
+    return res.status(200).json('OK');
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

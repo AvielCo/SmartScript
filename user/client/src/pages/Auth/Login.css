@@ -23,11 +23,12 @@
   );
   min-height: 100vh;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 h3 {
   text-align: center;
-  padding-top: 150px;
   font-family: "Lobster", sans-serif;
   font-size: 3rem;
 }
@@ -35,6 +36,7 @@ h3 {
 .login-container {
   margin: 0 auto;
   width: 45%;
+  padding-top: 10vh;
 }
 
 .login-holder {

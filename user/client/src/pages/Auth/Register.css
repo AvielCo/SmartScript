@@ -25,11 +25,14 @@
   );
   min-height: 100vh;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .register-form {
   margin: 0 auto;
   width: 45%;
+  padding-top: 10vh;
 }
 
 .register-inputfields {
