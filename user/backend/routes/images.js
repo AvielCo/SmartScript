@@ -79,7 +79,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
               if (err) throw createError.InternalServerError();
             });
 
-          await insertNewHistory(userHistory, message, imageName);
+          await insertNewHistory(userHistory, message, imagePath.split('.')[0]);
 
           return res.status(200).send(message);
         } catch (err) {
