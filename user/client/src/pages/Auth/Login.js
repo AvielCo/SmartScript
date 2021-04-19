@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import './Login.css';
@@ -7,6 +7,7 @@ import { Checkbox, Form } from 'antd';
 import { InputButton, InputField, NavBar } from '../../components';
 import { encryptStrings } from '../../helpers';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { getAccessToken } from '../../helpers';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './Login.css';
@@ -57,6 +58,8 @@ function Login() {
             history.replace('/404');
           } else if (status === 401) {
             toast.error(message);
+          } else if (status === 403) {
+            history.replace('/ban');
           } else toast.error('Internal Server Error.');
           setIsLoading(false);
         }
@@ -65,31 +68,37 @@ function Login() {
   //garachia kartoshta
   return (
     <React.Fragment>
-      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <NavBar />
-      <form onSubmit={handleSubmit} className="login">
-        <div className="login-container">
-          <h3>Login</h3>
-          <div className="login-holder">
-            <Form.Item
-              name="username"
-              label="Username"
-              rules={[
-                { required: true, message: 'Please enter your username.' },
-                { type: 'text', message: 'Please enter a valid username.' },
-              ]}>
-              <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
-            </Form.Item>
-            <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please input your Password!' }]}>
-              <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
-            </Form.Item>
-            <Checkbox className="check-box" checked={checked} onChange={(e) => setChecked(e.target.checked)}>
-              Remember me
-            </Checkbox>
-            <InputButton name="Login" type="submit"></InputButton>
-          </div>
-        </div>
-      </form>
+      {getAccessToken() ? (
+        <Redirect to="/home" />
+      ) : (
+        <>
+          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <NavBar />
+          <form onSubmit={handleSubmit} className="login">
+            <div className="login-container">
+              <h3>Login</h3>
+              <div className="login-holder">
+                <Form.Item
+                  name="username"
+                  label="Username"
+                  rules={[
+                    { required: true, message: 'Please enter your username.' },
+                    { type: 'text', message: 'Please enter a valid username.' },
+                  ]}>
+                  <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
+                </Form.Item>
+                <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please input your Password!' }]}>
+                  <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
+                </Form.Item>
+                <Checkbox className="check-box" checked={checked} onChange={(e) => setChecked(e.target.checked)}>
+                  Remember me
+                </Checkbox>
+                <InputButton name="Login" type="submit"></InputButton>
+              </div>
+            </div>
+          </form>
+        </>
+      )}
     </React.Fragment>
   );
 }
