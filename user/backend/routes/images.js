@@ -14,7 +14,7 @@ const { genRandomString } = require('../../../helpers/helpers');
 const insertNewHistory = async (userHistory, newHistory, imageName) => {
   let { predictedResult } = userHistory;
   if (!predictedResult) {
-    predictedResult = { classes: [], probabilities: [], dates: [] };
+    predictedResult = { classes: [], probabilities: [], dates: [], images: [] };
   }
   predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
@@ -44,6 +44,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
     const condaCommand = `conda run -n ${envName}`;
+
     const child = exec(`${condaCommand} ${pythonScriptCommand}`);
 
     child.stdout.once('data', async (data) => {
@@ -59,6 +60,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
+
           const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
           const uploadedImage = fs.readdirSync(imageFolderPath)[0];
           const imagePath = path.join(imageFolderPath, uploadedImage);
@@ -81,6 +83,9 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
               if (err) throw createError.InternalServerError();
             });
 
+          imagePath = '';
+          savePath = '';
+
           await insertNewHistory(userHistory, message, imageName);
 
           return res.status(200).send(message);
@@ -100,12 +105,10 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     });
 
     child.stderr.once('data', (data) => {
-      child.kill('SIGINT');
       console.log(data);
     });
 
     child.once('error', function (err) {
-      child.kill('SIGINT');
       throw next(createError.InternalServerError());
     });
   } catch (err) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavBar, List, Searchbar } from '../../components';
 import { ToastContainer, toast } from 'react-toastify';
+import { Redirect } from 'react-router';
 import axios from 'axios';
 import { Skeleton } from 'antd';
 import { getAccessToken } from '../../helpers';
@@ -11,9 +12,9 @@ import './Profile.css';
 function Profile() {
   const [userData, setUserData] = useState({
     details: {
-      email: "",
-      username: "",
-      name: "",
+      email: '',
+      username: '',
+      name: '',
     },
     history: [],
   });
@@ -23,9 +24,9 @@ function Profile() {
 
   const TextFieldsHolder = () => {
     const textFields = [
-      { label: "Email", value: userData.details.email },
-      { label: "Username", value: userData.details.username },
-      { label: "Name", value: userData.details.name },
+      { label: 'Email', value: userData.details.email },
+      { label: 'Username', value: userData.details.username },
+      { label: 'Name', value: userData.details.name },
     ];
     return (
       <div className="profile-textfields">
@@ -69,7 +70,7 @@ function Profile() {
 
     const cfg = {
       headers: {
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       },
     };
     axios
@@ -102,21 +103,27 @@ function Profile() {
   }, [isDataChanged]);
 
   return (
-    <>
-      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="profile-page">
-        <NavBar />
-        <div className="profile-form">
-          <TextFieldsHolder />
-        </div>
-        <div className="history-container">
-          <Searchbar setQuery={setQuery} />
-          <Skeleton loading={loadingData} active round>
-            <List data={userData.history} query={query} removeItem={removeItemFromHistory} />
-          </Skeleton>
-        </div>
-      </div>
-    </>
+    <React.Fragment>
+      {!getAccessToken() ? (
+        <Redirect to="/home" />
+      ) : (
+        <>
+          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <div className="profile-page">
+            <NavBar />
+            <div className="profile-form">
+              <TextFieldsHolder />
+            </div>
+            <div className="history-container">
+              <Searchbar setQuery={setQuery} />
+              <Skeleton loading={loadingData} active round>
+                <List data={userData.history} query={query} removeItem={removeItemFromHistory} />
+              </Skeleton>
+            </div>
+          </div>
+        </>
+      )}
+    </React.Fragment>
   );
 }
 

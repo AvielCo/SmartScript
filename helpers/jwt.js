@@ -1,6 +1,15 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
+const User = require('../models/User');
 require('dotenv').config();
+
+const checkIfUserIsBanned = async (userId) => {
+  const user = await User.findById(userId);
+  if (user.banned) {
+    return true;
+  }
+  return false;
+};
 
 const signAccessToken = (userId) => {
   return new Promise((resolve, reject) => {
@@ -12,6 +21,7 @@ const signAccessToken = (userId) => {
     };
     JWT.sign(payload, secret, options, (err, token) => {
       if (err) {
+        console.log(err);
         reject(createError.InternalServerError());
       }
       resolve(token);
@@ -31,8 +41,14 @@ const verifyAccessToken = (req, res, next) => {
       const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
       return next(createError.Unauthorized(message));
     }
-    req.payload = payload;
-    next();
+    const userId = payload['aud'];
+    checkIfUserIsBanned(userId).then((banned) => {
+      if (banned) {
+        return next(createError.Forbidden());
+      }
+      req.payload = payload;
+      next();
+    });
   });
 };
 
