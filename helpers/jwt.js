@@ -12,7 +12,7 @@ const checkIfUserIsBanned = async (userId) => {
 };
 
 const signAccessToken = (userId) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const payload = {};
     const secret = process.env.JWT_SECRET;
     const options = {
@@ -21,6 +21,7 @@ const signAccessToken = (userId) => {
     };
     JWT.sign(payload, secret, options, (err, token) => {
       if (err) {
+        console.log(err);
         reject(createError.InternalServerError());
       }
       resolve(token);

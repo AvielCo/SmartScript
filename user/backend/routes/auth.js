@@ -45,13 +45,14 @@ router.post('/register', async (req, res, next) => {
     const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
     await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
 
-    await signAccessToken(newUser._id);
+    await signAccessToken(newUser._id.toString());
 
     res.status(200).send('Registered user successfully.');
   } catch (err) {
     if (err.isJoi) {
       err.status = 422;
     }
+    console.log(err);
     next(err);
   }
 });
