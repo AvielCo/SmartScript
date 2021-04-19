@@ -1,20 +1,20 @@
-import './App.css'
-import React, { useEffect, useState } from 'react'
-import { Home, Login, Register, Profile, Error, Logout } from './pages'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { getAccessToken } from './helpers'
-import 'antd/dist/antd.css'
+import './App.css';
+import React, { useEffect, useState } from 'react';
+import { Home, Login, Register, Profile, Error, Logout } from './pages';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { getAccessToken } from './helpers';
+import 'antd/dist/antd.css';
 
 function App() {
-  const [token, setToken] = useState(getAccessToken())
+  const [token, setToken] = useState(getAccessToken());
   useEffect(() => {
     window.addEventListener('storage', (ev) => {
-      setToken(getAccessToken())
-    })
+      setToken(getAccessToken());
+    });
     return () => {
-      window.removeEventListener('storage', (ev) => {})
-    }
-  }, [])
+      window.removeEventListener('storage', (ev) => {});
+    };
+  }, []);
 
   return (
     <Router>
@@ -28,6 +28,6 @@ function App() {
         <Route component={Error} />
       </Switch>
     </Router>
-  )
+  );
 }
-export default App
+export default App;
