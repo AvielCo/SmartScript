@@ -54,7 +54,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const condaCommand = `conda run -n ${envName}`;
     const child = exec(`${condaCommand} ${pythonScriptCommand}`);
 
-    child.stdout.on('data', async (data) => {
+    child.stdout.once('data', async (data) => {
       // message is the response from python script
       const message = JSON.parse(data);
       if (message.success) {
@@ -108,11 +108,11 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
       return next(createError.BadRequest());
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.once('data', (data) => {
       console.log(data);
     });
 
-    child.on('error', function (err) {
+    child.once('error', function (err) {
       throw next(createError.InternalServerError());
     });
   } catch (err) {
