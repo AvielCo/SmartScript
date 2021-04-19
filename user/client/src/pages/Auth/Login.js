@@ -37,7 +37,10 @@ function Login() {
 
   const loginUser = (username, password) => {
     axios
-      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/login`, { username, password })
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/login`, {
+        username,
+        password,
+      })
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
