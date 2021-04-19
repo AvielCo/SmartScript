@@ -13,7 +13,7 @@ const sharp = require('sharp');
 const insertNewHistory = async (userHistory, newHistory, imageName) => {
   let { predictedResult } = userHistory;
   if (!predictedResult) {
-    predictedResult = { classes: [], probabilities: [], dates: [] };
+    predictedResult = { classes: [], probabilities: [], dates: [], images: [] };
   }
   predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
@@ -52,9 +52,10 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
     const condaCommand = `conda run -n ${envName}`;
+
     const child = exec(`${condaCommand} ${pythonScriptCommand}`);
 
-    child.stdout.on('data', async (data) => {
+    child.stdout.once('data', async (data) => {
       // message is the response from python script
       const message = JSON.parse(data);
       if (message.success) {
@@ -67,15 +68,11 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
-          let totalImages = 0; // total images that the user has seen predicted
-          const imagePath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
+          let imagePath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
           const userHistory = await History.findById({ _id: user.historyId });
-          if (userHistory.predictedResult.classes.length > 0) {
-            // get the amount of the images that the user has predicted so far.
-            totalImages = userHistory.predictedResult.classes.length;
-          }
           // path to save the resized image to view later in the user profile
-          const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+          let savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+
           fs.mkdir(savePath, { recursive: true }, (err) => {
             if (err) throw createError.InternalServerError();
           });
@@ -89,6 +86,9 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
             .catch((err) => {
               if (err) throw createError.InternalServerError();
             });
+
+          imagePath = '';
+          savePath = '';
 
           await insertNewHistory(userHistory, message, imageName);
 
@@ -108,11 +108,11 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
       return next(createError.BadRequest());
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.once('data', (data) => {
       console.log(data);
     });
 
-    child.on('error', function (err) {
+    child.once('error', function (err) {
       throw next(createError.InternalServerError());
     });
   } catch (err) {
