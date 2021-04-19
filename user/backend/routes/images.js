@@ -67,15 +67,11 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
-          let totalImages = 0; // total images that the user has seen predicted
           const imagePath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
           const userHistory = await History.findById({ _id: user.historyId });
-          if (userHistory.predictedResult.classes.length > 0) {
-            // get the amount of the images that the user has predicted so far.
-            totalImages = userHistory.predictedResult.classes.length;
-          }
           // path to save the resized image to view later in the user profile
           const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+
           fs.mkdir(savePath, { recursive: true }, (err) => {
             if (err) throw createError.InternalServerError();
           });
@@ -83,7 +79,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
           // generate unique hash for image name
           const imageName = genRandomString(40);
 
-          sharp(imagePath) // resize the image to width: 250px (height is auto scale)
+          await sharp(imagePath) // resize the image to width: 250px (height is auto scale)
             .resize(250)
             .toFile(path.join(savePath, `${imageName}.jpg`))
             .catch((err) => {
@@ -92,7 +88,6 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
 
           await insertNewHistory(userHistory, message, imageName);
 
-          child.kill('SIGINT');
           return res.status(200).send(message);
         } catch (err) {
           console.log(err);
