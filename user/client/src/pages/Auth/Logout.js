@@ -8,7 +8,7 @@ function Logout() {
     const accessToken = getAccessToken();
 
     if (!accessToken) {
-      history.replace('/404');
+      history.replace('/');
       return;
     }
     window.localStorage.removeItem('accessToken');
