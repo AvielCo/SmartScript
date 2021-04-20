@@ -22,9 +22,9 @@ import './Home.css';
 
 function LandingSection() {
   return (
-    <section className="landing">
+    <section className='landing'>
       <div>
-        <p dir="rtl">
+        <p dir='rtl'>
           <h2>SmartScript</h2> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning the
           image given to it by the user. Additionally, the system will allow the user to save previous uploads for easy tracking.
         </p>
@@ -101,21 +101,21 @@ function ScanSection({ isLoggedIn }) {
     <section className="scan" id="scan">
       <div className="scan-container">
         {isLoggedIn ? (
-          <form className="scan-btn-holder" onSubmit={handleImageChange}>
+          <form className='scan-btn-holder' onSubmit={handleImageChange}>
             <h3>Upload and Predict</h3>
             <Upload
               action={`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/upload`}
               headers={{ Authorization: 'Bearer ' + getAccessToken() }}
               onChange={handleImageChange}
-              accept="image/*"
+              accept='image/*'
               maxCount={1}
               showUploadList={false}
             >
-              <Button className="scan-btn" component="span" type="submit" name={'Upload'} disabled={isLoading}></Button>
+              <Button className="scan-btn" component="span" type="submit" name={'Upload'} disabled={isLoading}/>
             </Upload>
-            <Button className="scan-btn" onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
+            <Button className='scan-btn' onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
 
-            <div className="scan-btn"></div>
+            <div className='scan-btn'></div>
 
             <ResultTextView result={result} />
           </form>
@@ -125,7 +125,7 @@ function ScanSection({ isLoggedIn }) {
           </h3>
         )}
         {imageUri && (
-          <div className="scan-img-holder">
+          <div className='scan-img-holder'>
             <img alt={pic} src={imageUri}></img>
           </div>
         )}
@@ -138,9 +138,8 @@ function AboutSection() {
   return (
     <section className="about" id="about">
       <h3>About the project</h3>
-
-      <div className="about-content">
-        <div className="about-text-holder">
+      <div className='about-content'>
+        <div className='about-text-holder'>
           <p>
             By uploading an image and pressing the scan button the system will scan the image and return a predicted value for that given image. The system does it by spliting the image into 2 single
             paged images if the image contains 2 pages followed by dividing the image into small resolutions patches.
@@ -151,8 +150,8 @@ function AboutSection() {
           </p>
           <p>After the filtering is done the corresponding orignal patches are saved in grayscale and used to predict the origin and the shape of the script.</p>
         </div>
-        <div className="image-rotate-holder">
-          <img className="rotating-image" alt="something" src={cursive}></img>
+        <div className='image-rotate-holder'>
+          <img className='rotating-image' alt='something' src={cursive}></img>
         </div>
       </div>
     </section>
@@ -172,7 +171,7 @@ function WWASection() {
         front to back. Combining RESTapi to handle requests and JWT we developed a secure login and registration. Additionally, we made sure that our website will be functional and responsive on
         different devices and resolutions
       </p>
-      <div className="cards-holder">
+      <div className='cards-holder'>
         <Card name={'Noah Solomon'} image={Noah} />
         <Card name={'Emilia Zorin'} image={Emilia} />
         <Card name={'Aviel Cohen'} image={Aviel} />
@@ -212,9 +211,9 @@ function Home() {
 
   return (
     <>
-      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="home" id="home">
-        <NavBar isLoggedIn={isLoggedIn} />
+      <ToastContainer position='top-left' autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <div className='home' id="home">
+        <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <LandingSection />
         <ScanSection isLoggedIn={isLoggedIn} />
         <AboutSection />

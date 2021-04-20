@@ -53,9 +53,7 @@ function Register() {
       .then(function (response) {
         setIsLoading(false);
         if (response.status === 200) {
-          window.sessionStorage.setItem('accessToken', response.data.accessToken);
-          history.replace('/');
-          window.dispatchEvent(new Event('storage'));
+          history.replace('/login');
           return;
         }
       })
@@ -75,42 +73,43 @@ function Register() {
   return (
     <React.Fragment>
       {getAccessToken() ? (
-        <Redirect to="/home" />
+        <Redirect to='/home' />
       ) : (
         <>
-          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <ToastContainer position='top-left' autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
           <NavBar />
-          <form onSubmit={handleSubmit} className="register-page">
-            <div className="register-form">
+          <form onSubmit={handleSubmit} className='register-page'>
+            <div className='register-form'>
               <h3>Register</h3>
-              <div className="register-inputfields">
+              <div className='register-inputfields'>
                 <Row>
-                  <Form.Item name="email" label="email" rules={[{ required: true, message: 'Please enter your email.' }]}>
-                    <InputField type="text" value="email" name="email" setProperty={setEmail} prefix={<MailOutlined />} />
+                  <Form.Item name='email' label='email' rules={[{ required: true, message: 'Please enter your email.' }]}>
+                    <InputField type='text' value='email' name='email' setProperty={setEmail} prefix={<MailOutlined />} />
                   </Form.Item>
                 </Row>
                 <Row>
-                  <Form.Item name="username" label="username" rules={[{ required: true, message: 'Please enter a valid username.' }]}>
-                    <InputField type="text" value="username" name="username" setProperty={setUsername} prefix={<LockOutlined />} />
+                  <Form.Item name='username' label='username' rules={[{ required: true, message: 'Please enter a valid username.' }]}>
+                    <InputField type='text' value='username' name='username' setProperty={setUsername} prefix={<LockOutlined />} />
                   </Form.Item>
                 </Row>
                 <Row>
                   <Form.Item
-                    name="password"
-                    label="password"
+                    name='password'
+                    label='password'
                     rules={[
                       { required: true, message: 'Please enter a valid password.' },
                       { type: 'email', message: 'The input is not valid E-mail!' },
-                    ]}>
-                    <InputField type="password" value="password" name="password" setProperty={setPassword} prefix={<KeyOutlined />} />
+                    ]}
+                  >
+                    <InputField type='password' value='password' name='password' setProperty={setPassword} prefix={<KeyOutlined />} />
                   </Form.Item>
                 </Row>
                 <Row>
-                  <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter a valid name.' }]}>
-                    <InputField type="text" value="name" name="name" setProperty={setName} prefix={<UserOutlined />} />
+                  <Form.Item name='name' label='Name' rules={[{ required: true, message: 'Please enter a valid name.' }]}>
+                    <InputField type='text' value='name' name='name' setProperty={setName} prefix={<UserOutlined />} />
                   </Form.Item>
                 </Row>
-                <InputButton name="Register" type="submit" />
+                <InputButton name='Register' type='submit' />
               </div>
             </div>
           </form>

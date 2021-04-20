@@ -9,26 +9,18 @@ const path = require('path');
 const uploadFile = require('../../../helpers/upload');
 const fs = require('fs');
 const sharp = require('sharp');
+const { genRandomString } = require('../../../helpers/helpers');
 
 const insertNewHistory = async (userHistory, newHistory, imageName) => {
   let { predictedResult } = userHistory;
   if (!predictedResult) {
-    predictedResult = { classes: [], probabilities: [], dates: [] };
+    predictedResult = { classes: [], probabilities: [], dates: [], images: [] };
   }
   predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
   predictedResult.dates.push(new Date());
   predictedResult.images.push(imageName);
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
-};
-
-const genRandomString = (length) => {
-  let randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-  }
-  return result;
 };
 
 router.post('/upload', verifyAccessToken, async (req, res, next) => {
@@ -52,9 +44,10 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
     const condaCommand = `conda run -n ${envName}`;
+
     const child = exec(`${condaCommand} ${pythonScriptCommand}`);
 
-    child.stdout.on('data', async (data) => {
+    child.stdout.once('data', async (data) => {
       // message is the response from python script
       const message = JSON.parse(data);
       if (message.success) {
@@ -67,15 +60,14 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
-          let totalImages = 0; // total images that the user has seen predicted
-          const imagePath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
+          const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
+          const uploadedImage = fs.readdirSync(imageFolderPath)[0];
+          const imagePath = path.join(imageFolderPath, uploadedImage);
+
           const userHistory = await History.findById({ _id: user.historyId });
-          if (userHistory.predictedResult.classes.length > 0) {
-            // get the amount of the images that the user has predicted so far.
-            totalImages = userHistory.predictedResult.classes.length;
-          }
           // path to save the resized image to view later in the user profile
           const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+
           fs.mkdir(savePath, { recursive: true }, (err) => {
             if (err) throw createError.InternalServerError();
           });
@@ -108,11 +100,11 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
       return next(createError.BadRequest());
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.once('data', (data) => {
       console.log(data);
     });
 
-    child.on('error', function (err) {
+    child.once('error', function (err) {
       throw next(createError.InternalServerError());
     });
   } catch (err) {
