@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const authSchema = require('../validations/auth');
 const { decryptStrings } = require('../../../helpers/crypto');
 const { signAccessToken, verifyAccessToken } = require('../../../helpers/jwt');
+const redis = require('../../../helpers/redis');
 require('dotenv').config();
 
 router.post('/register', async (req, res, next) => {
@@ -85,11 +86,24 @@ router.post('/login', async (req, res, next) => {
 router.get('/user', verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload['aud'];
-    return res.status(200).json('OK');
+    return res.sendStatus(200);
   } catch (err) {
     console.log(err);
     next(err);
   }
 });
 
+router.delete('/logout', verifyAccessToken, async (req, res, next) => {
+  try {
+    const userId = req.payload['aud'];
+    redis.DEL(userId, (error, reply) => {
+      if (error) {
+        throw createError.InternalServerError();
+      }
+      res.sendStatus(204);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
