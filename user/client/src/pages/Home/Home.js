@@ -20,7 +20,7 @@ import './Home.css';
 
 function LandingSection() {
   return (
-    <section className="landing" id="landing">
+    <section className="landing">
       <div>
         <p dir="rtl">
           <h2>SmartScript</h2> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning the
@@ -109,7 +109,7 @@ function ScanSection({ isLoggedIn }) {
               maxCount={1}
               showUploadList={false}
             >
-              <Button className="scan-btn" component="span" type="submit" name={'Upload'} disabled={isLoading}></Button>
+              <Button className="scan-btn" component="span" type="submit" name={'Upload'} disabled={isLoading} />
             </Upload>
             <Button className="scan-btn" onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
 
@@ -136,7 +136,6 @@ function AboutSection() {
   return (
     <section className="about" id="about">
       <h3>About the project</h3>
-
       <div className="about-content">
         <div className="about-text-holder">
           <p>
@@ -211,8 +210,8 @@ function Home() {
   return (
     <>
       <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="home">
-        <NavBar isLoggedIn={isLoggedIn} />
+      <div className="home" id="home">
+        <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <LandingSection />
         <ScanSection isLoggedIn={isLoggedIn} />
         <AboutSection />
