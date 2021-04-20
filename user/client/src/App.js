@@ -1,10 +1,11 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import { Home, Login, Register, Profile, Error, Logout, Banned } from './pages';
-import { Switch, Route, useHistory, Redirect } from 'react-router-dom';
+import { Switch, Route, useHistory, Redirect, Link } from 'react-router-dom';
 import { getAccessToken } from './helpers';
 import axios from 'axios';
 import 'antd/dist/antd.css';
+import { HashLink } from 'react-router-hash-link';
 
 function App() {
   const [token, setToken] = useState(getAccessToken());

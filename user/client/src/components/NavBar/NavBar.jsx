@@ -4,7 +4,7 @@ import logo from '../../assets/smartscript-logo.png';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
-import { Link as ScrollLink } from 'react-scroll';
+import { HashLink as HashLink } from 'react-router-hash-link';
 
 function NavBar({ isLoggedIn }) {
   const [slide, setSlide] = useState(0);
@@ -17,15 +17,17 @@ function NavBar({ isLoggedIn }) {
       </Link>
       <div className={slide ? 'navbar-holder active' : 'navbar-holder'} slide={slide}>
         {/* <div className="btnGroup"> */}
-        <ScrollLink to="scan" style={{ textDecoration: 'none' }}>
+
+        <HashLink to="home#scan" style={{ textDecoration: 'none' }} smooth>
           <NavButton className="nav-button" btnText="Scan" />
-        </ScrollLink>
-        <ScrollLink to="about" style={{ textDecoration: 'none' }}>
+        </HashLink>
+        <HashLink to="home#about" style={{ textDecoration: 'none' }} smooth>
           <NavButton className="nav-button" btnText="About" />
-        </ScrollLink>
-        <ScrollLink to="wwa" style={{ textDecoration: 'none' }}>
+        </HashLink>
+        <HashLink to="home#wwa" style={{ textDecoration: 'none' }} smooth>
           <NavButton className="nav-button" btnText="Who we are" />
-        </ScrollLink>
+        </HashLink>
+
         {!isLoggedIn && (
           <Link to="/login" style={{ textDecoration: 'none' }}>
             <NavButton className="nav-button" btnText="Login" />

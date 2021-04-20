@@ -15,14 +15,12 @@ import Emilia from '../../assets/emilia.jpg';
 import Noah from '../../assets/noah.png';
 import Aviel from '../../assets/aviel.png';
 
-import App from '../../App';
-
 import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
 
 function LandingSection() {
   return (
-    <section className="landing">
+    <section className="landing" id="landing">
       <div>
         <p dir="rtl">
           <h2>SmartScript</h2> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning the
@@ -213,7 +211,7 @@ function Home() {
   return (
     <>
       <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="home" id="home">
+      <div className="home">
         <NavBar isLoggedIn={isLoggedIn} />
         <LandingSection />
         <ScanSection isLoggedIn={isLoggedIn} />
