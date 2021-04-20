@@ -1,13 +1,11 @@
 import React from 'react';
 import NavButton from '../Buttons/NavButton';
-
 import logo from '../../assets/smartscript-logo.png';
 import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
 import { HashLink as HashLink } from 'react-router-hash-link';
-
 import { getAccessToken } from '../../helpers';
 import { useHistory } from 'react-router-dom';
 
@@ -57,8 +55,6 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         <img alt='SmartScript-logo' src={logo} />
       </Link>
       <div className={slide ? 'navbar-holder active' : 'navbar-holder'} slide={slide}>
-        {/* <div className="btnGroup"> */}
-
         <HashLink to="home#scan" style={{ textDecoration: 'none' }} smooth>
           <NavButton className="nav-button" btnText="Scan" />
         </HashLink>
@@ -68,7 +64,6 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         <HashLink to="home#wwa" style={{ textDecoration: 'none' }} smooth>
           <NavButton className="nav-button" btnText="Who we are" />
         </HashLink>
-
         {!isLoggedIn && (
           <Link to='/login' style={{ textDecoration: 'none' }}>
             <NavButton className='nav-button' btnText='Login' />

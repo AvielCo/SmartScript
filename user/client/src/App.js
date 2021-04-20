@@ -57,7 +57,7 @@ function App() {
       <Route exact path="/register" component={Register} />
       <Route exact path="/" component={Home} />
       <Route component={Error} />
-      {userIsBanned && <Redirect to="/ban" />}
+      {userIsBanned && <Redirect to='/ban' />}
     </Switch>
   );
 }
