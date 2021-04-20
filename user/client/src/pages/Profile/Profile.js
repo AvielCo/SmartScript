@@ -29,10 +29,10 @@ function Profile() {
       { label: 'Name', value: userData.details.name },
     ];
     return (
-      <div className="profile-textfields">
+      <div className='profile-textfields'>
         {textFields.map((textField) => {
           return (
-            <div className="textfield">
+            <div className='textfield'>
               <label>
                 <u>{textField.label}</u>
               </label>
@@ -105,16 +105,16 @@ function Profile() {
   return (
     <React.Fragment>
       {!getAccessToken() ? (
-        <Redirect to="/home" />
+        <Redirect to='/home' />
       ) : (
         <>
-          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-          <div className="profile-page">
-            <NavBar />
-            <div className="profile-form">
+          <ToastContainer position='top-left' autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <div className='profile-page'>
+            <NavBar isLoggedIn />
+            <div className='profile-form'>
               <TextFieldsHolder />
             </div>
-            <div className="history-container">
+            <div className='history-container'>
               <Searchbar setQuery={setQuery} />
               <Skeleton loading={loadingData} active round>
                 <List data={userData.history} query={query} removeItem={removeItemFromHistory} />
