@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavBar, List, Searchbar } from '../../components';
+import { ToastContainer, toast } from 'react-toastify';
+import { Redirect } from 'react-router';
 import axios from 'axios';
 import { Skeleton } from 'antd';
 import { getAccessToken } from '../../helpers';
 
+import 'react-toastify/dist/ReactToastify.css';
 import './Profile.css';
 
 function Profile() {
@@ -16,11 +19,10 @@ function Profile() {
     history: [],
   });
   const [loadingData, setLoadingData] = useState(true);
+  const [isDataChanged, setIsDataChanged] = useState(true);
   const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
 
   const TextFieldsHolder = () => {
-    //* example on how the data foramt should look like
-
     const textFields = [
       { label: 'Email', value: userData.details.email },
       { label: 'Username', value: userData.details.username },
@@ -42,7 +44,28 @@ function Profile() {
     );
   };
 
+  const removeItemFromHistory = (indexToDelete) => {
+    if (indexToDelete < 0) {
+      return;
+    }
+    setLoadingData(true);
+    const cfg = {
+      headers: {
+        Authorization: 'Bearer ' + getAccessToken(),
+      },
+    };
+    axios
+      .delete(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/profile/delete-event/${indexToDelete}`, cfg)
+      .then((res) => {
+        if (res.status === 200) {
+          setIsDataChanged(true);
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
+    if (!isDataChanged) return;
     let accessToken = getAccessToken();
 
     const cfg = {
@@ -51,7 +74,7 @@ function Profile() {
       },
     };
     axios
-      .get('http://localhost:8008/api/profile', cfg)
+      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/profile`, cfg)
       .then((res) => {
         if (res.status === 200) {
           let { details, history } = res.data;
@@ -63,7 +86,6 @@ function Profile() {
               byteNumbers[i] = byteCharacters.charCodeAt(i);
             }
             const byteArray = new Uint8Array(byteNumbers);
-
             const imageBlob = new Blob([byteArray], { type: 'image/jpeg' });
             const image = URL.createObjectURL(imageBlob);
             event.image = image;
@@ -71,26 +93,37 @@ function Profile() {
           });
           setLoadingData(false);
           setUserData({ details, history });
+          setIsDataChanged(false);
         }
       })
       .catch((err) => {
-        console.log(err);
+        setLoadingData(false);
+        toast('Internal Server Error.');
       });
-  }, []);
+  }, [isDataChanged]);
 
   return (
-    <div className="profile-page">
-      <NavBar />
-      <div className="profile-form">
-        <TextFieldsHolder />
-      </div>
-      <div className="history-container">
-        <Searchbar setQuery={setQuery} />
-        <Skeleton loading={loadingData} active round>
-          <List data={userData.history} query={query} />
-        </Skeleton>
-      </div>
-    </div>
+    <React.Fragment>
+      {!getAccessToken() ? (
+        <Redirect to="/home" />
+      ) : (
+        <>
+          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <div className="profile-page">
+            <NavBar />
+            <div className="profile-form">
+              <TextFieldsHolder />
+            </div>
+            <div className="history-container">
+              <Searchbar setQuery={setQuery} />
+              <Skeleton loading={loadingData} active round>
+                <List data={userData.history} query={query} removeItem={removeItemFromHistory} />
+              </Skeleton>
+            </div>
+          </div>
+        </>
+      )}
+    </React.Fragment>
   );
 }
 

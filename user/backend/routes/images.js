@@ -9,15 +9,17 @@ const path = require('path');
 const uploadFile = require('../../../helpers/upload');
 const fs = require('fs');
 const sharp = require('sharp');
+const { genRandomString } = require('../../../helpers/helpers');
 
-const insertNewHistory = async (userHistory, newHistory) => {
+const insertNewHistory = async (userHistory, newHistory, imageName) => {
   let { predictedResult } = userHistory;
   if (!predictedResult) {
-    predictedResult = { classes: [], probabilities: [], dates: [] };
+    predictedResult = { classes: [], probabilities: [], dates: [], images: [] };
   }
   predictedResult.classes.push(`${newHistory.origin} ${newHistory.shape}`);
   predictedResult.probabilities.push(newHistory.probability);
-  predictedResult.dates.push(new Date().toLocaleDateString('he'));
+  predictedResult.dates.push(new Date());
+  predictedResult.images.push(imageName);
   await History.findByIdAndUpdate({ _id: userHistory._id }, { predictedResult });
 };
 
@@ -38,18 +40,19 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const user = await User.findOne({ _id: req.payload.aud });
 
     const pythonScript = 'predict.py';
-    const pythonScriptPath = path.join(process.cwd(), 'py-files', pythonScript);
+    const pythonScriptPath = path.join(__dirname, '..', 'py-files', pythonScript);
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
-    const condaCommand = `conda activate ${envName}`;
-    const child = exec(`${condaCommand} && ${pythonScriptCommand}`);
+    const condaCommand = `conda run -n ${envName}`;
 
-    child.stdout.on('data', async (data) => {
+    const child = exec(`${condaCommand} ${pythonScriptCommand}`);
+
+    child.stdout.once('data', async (data) => {
       // message is the response from python script
       const message = JSON.parse(data);
       if (message.success) {
         /**
-         * massage: {
+         * message: {
          *  success: True,
          *  origin: One of the following: "ashkenazi", "bizantine" .....
          *  shape: One of the following: "cursive", "square", "semi-square"
@@ -57,26 +60,33 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
-          let totalImages = 0; // total images that the user has seen predicted
-          const imagePath = path.join(process.cwd(), 'python-folders', 'predict-files', 'predict_images', `${user._id}`, 'imageToUpload.jpg');
+
+          const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
+          const uploadedImage = fs.readdirSync(imageFolderPath)[0];
+          const imagePath = path.join(imageFolderPath, uploadedImage);
+
           const userHistory = await History.findById({ _id: user.historyId });
-          if (userHistory.predictedResult) {
-            // get the amount of the images that the user has predicted so far.
-            totalImages = userHistory.predictedResult.classes.length;
-          }
           // path to save the resized image to view later in the user profile
-          const savePath = path.join(process.cwd(), 'users-histories', `${user._id}`);
+          const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+
           fs.mkdir(savePath, { recursive: true }, (err) => {
-            if (err) return next(createError.InternalServerError());
+            if (err) throw createError.InternalServerError();
           });
-          sharp(imagePath) // resize the image to width: 400px (height is auto scale)
+
+          // generate unique hash for image name
+          const imageName = genRandomString(40);
+
+          sharp(imagePath) // resize the image to width: 250px (height is auto scale)
             .resize(250)
-            .toFile(path.join(savePath, `${totalImages}.jpg`))
+            .toFile(path.join(savePath, `${imageName}.jpg`))
             .catch((err) => {
-              return next(createError.InternalServerError());
+              if (err) throw createError.InternalServerError();
             });
 
-          await insertNewHistory(userHistory, message);
+          imagePath = '';
+          savePath = '';
+
+          await insertNewHistory(userHistory, message, imageName);
 
           return res.status(200).send(message);
         } catch (err) {
@@ -85,19 +95,20 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
         }
       }
       /**
-       * massage: {
+       * message: {
        *  success: False,
        * `reason: Reason that the script failed
        * }
        */
-      return next(createError.BadRequest(message.reason));
+      console.log(message.reason);
+      return next(createError.BadRequest());
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.once('data', (data) => {
       console.log(data);
     });
 
-    child.on('error', function (err) {
+    child.once('error', function (err) {
       throw next(createError.InternalServerError());
     });
   } catch (err) {

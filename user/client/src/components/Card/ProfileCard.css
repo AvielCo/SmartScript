@@ -6,6 +6,7 @@
   box-shadow: 0px 2px 10px 2px black;
   margin: 10px 10px;
   transition: transform 0.3s ease;
+  margin-top: 50px;
 }
 
 .profile-container:hover {

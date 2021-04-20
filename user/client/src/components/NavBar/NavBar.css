@@ -62,12 +62,12 @@
     right: 0px;
     height: 50vh;
     top: 8vh;
-    background-color: #d3ad60;
+    background-color: #093263;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 60%;
-    transform: translateX(110%);
+    transform: translateX(130%);
     transition: transform 0.4s ease-in;
     border-top: 1px solid #046364;
     border-bottom-left-radius: 10px;
@@ -80,6 +80,18 @@
     display: block;
     right: 30px;
     top: 5px;
+  }
+}
+
+@media screen and (max-width: 1350px) {
+  .navbar-holder {
+    width: 35%;
+  }
+}
+
+@media screen and (max-width: 1140px) {
+  .navbar-holder {
+    width: 40%;
   }
 }
 
