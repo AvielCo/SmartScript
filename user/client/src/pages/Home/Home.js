@@ -184,6 +184,7 @@ function Home() {
 
   useEffect(() => {
     if (isLoggedIn) return;
+    console.log(getAccessToken());
     const cfg = {
       headers: {
         Authorization: 'Bearer ' + getAccessToken(),

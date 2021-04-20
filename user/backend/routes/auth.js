@@ -87,6 +87,7 @@ router.get('/user', verifyAccessToken, async (req, res, next) => {
     const userId = req.payload['aud'];
     return res.status(200).json('OK');
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });
