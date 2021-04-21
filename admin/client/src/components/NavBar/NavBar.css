@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
 * {
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
@@ -5,21 +7,16 @@
 }
 
 .navbar {
-  background: #d3ad60;
+  background: #093263;
   position: fixed;
+  top: 0;
   display: flex;
-  height: 8vh;
+  min-height: 8vh;
   justify-content: space-around;
   align-items: center;
   width: 100%;
   z-index: 1;
   box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.75);
-}
-
-.navbar-holder {
-  display: flex;
-  justify-content: space-around;
-  width: 40%;
 }
 
 .logo {
@@ -31,6 +28,15 @@
 .logo img {
   width: 100%;
   max-height: 100%;
+}
+
+nav h3 {
+  text-align: center;
+  font-family: 'Lobster', sans-serif;
+  font-size: 1.5rem;
+  color: whitesmoke;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .active {
@@ -51,7 +57,7 @@
   transition: all 0.3s ease;
 }
 
-@media screen and (max-width: 985px) {
+@media screen and (max-width: 690px) {
   body {
     overflow-x: hidden;
   }
@@ -59,14 +65,14 @@
   .navbar-holder {
     position: absolute;
     right: 0px;
-    height: 50vh;
+    height: 20vh;
     top: 8vh;
-    background-color: #d3ad60;
+    background-color: #093263;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 60%;
-    transform: translateX(110%);
+    width: 40%;
+    transform: translateX(130%);
     transition: transform 0.4s ease-in;
     border-top: 1px solid #046364;
     border-bottom-left-radius: 10px;
@@ -82,31 +88,26 @@
   }
 }
 
-@media screen and (max-height: 650px), (max-width: 420px) {
+@media screen and (max-height: 650px), (max-width: 500px) {
   .burger {
     display: block;
     right: 30px;
     top: 3px;
   }
   .logo {
-    width: 100px;
+    width: 150px;
   }
-}
-
-@media (max-height: 1024px), (max-width: 1300px) {
-  .navbar-holder {
-    align-items: center;
-  }
-  .logo {
-    width: 300px;
-    height: 90%;
-    align-items: center;
+  nav h3 {
+    font-size: 1.2rem;
   }
 }
 
 @media screen and (max-width: 385px) {
   .logo {
-    width: 150px;
+    width: 100px;
+  }
+  nav h3 {
+    font-size: 1rem;
   }
 }
 
@@ -132,21 +133,21 @@
   }
   .navbar-holder {
     top: 15vh;
-    height: 60vh;
+    height: 30vh;
   }
 }
 
 @media screen and (max-height: 320px) {
   .navbar-holder {
-    height: 70vh;
+    height: 40vh;
   }
 }
 
 @media screen and (max-height: 280px) {
   .navbar-holder {
-    height: 80vh;
+    height: 50vh;
   }
   .logo {
-    width: 200px;
+    width: 120px;
   }
 }
