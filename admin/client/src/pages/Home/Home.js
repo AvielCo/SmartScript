@@ -86,7 +86,9 @@ function Home() {
 
   const getCurrentTime = () => {
     const today = new Date();
-    const currTime = today.getHours() + ':' + today.getMinutes();
+    const minutes = today.getMinutes() >= 10 ? today.getMinutes() : '0' + today.getMinutes();
+    const hours = today.getHours() >= 10 ? today.getHours() : '0' + today.getHours();
+    const currTime = hours + ':' + minutes;
     if (time !== currTime) {
       setTime(currTime);
       getGreetingMsg(today.getHours());
