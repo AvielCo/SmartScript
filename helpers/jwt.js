@@ -6,7 +6,10 @@ require('dotenv').config();
 
 const EXP_TIME = 5184000; //60 days
 
-const checkIfUserIsBanned = async (userId) => {
+const checkIfUserIsBanned = async (userId, isAdmin) => {
+  if (isAdmin) {
+    return false;
+  }
   const user = await User.findById(userId);
   if (user.banned) {
     return true;
@@ -59,7 +62,8 @@ const verifyAccessToken = (req, res, next) => {
       if (!reply || token !== reply) {
         return next(createError.Unauthorized()); //401
       }
-      checkIfUserIsBanned(userId).then((banned) => {
+      const isAdmin = req.headers['isadmin'] === 'true' ? true : false;
+      checkIfUserIsBanned(userId, isAdmin).then((banned) => {
         if (banned) {
           return next(createError.Forbidden()); //403
         }

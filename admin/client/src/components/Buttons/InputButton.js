@@ -1,12 +1,18 @@
-import React from 'react';
-import './InputButton.css';
-import { Button } from '@material-ui/core';
+import React from "react";
+import "./InputButton.css";
+import { Button, CircularProgress } from "@material-ui/core";
 
-function InputButton({ name, type, component, onClick }) {
+function InputButton(props) {
   return (
     <div>
-      <Button variant="contained" type={type} component={component} onClick={onClick}>
-        {name}
+      <Button
+        variant="contained"
+        type={props.type}
+        component={props.component}
+        onClick={props.onClick}
+      >
+        {props.name}
+        {props.disabled && <CircularProgress className="loader" />}
       </Button>
     </div>
   );

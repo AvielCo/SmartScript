@@ -16,11 +16,7 @@
 }
 
 .login {
-  background: linear-gradient(
-    to bottom,
-    var(--clr-login-background-dark),
-    var(--clr-login-background-light)
-  );
+  background: linear-gradient(to bottom, var(--clr-login-background-dark), var(--clr-login-background-light));
   min-height: 100vh;
   padding-bottom: 20px;
   display: flex;
@@ -29,7 +25,7 @@
 
 h3 {
   text-align: center;
-  font-family: "Lobster", sans-serif;
+  font-family: 'Lobster', sans-serif;
   font-size: 3rem;
 }
 

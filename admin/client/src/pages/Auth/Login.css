@@ -1,11 +1,11 @@
 :root {
   /*page vars*/
-  --clr-background-dark: rgba(206, 168, 104, 1);
-  --clr-background-light: rgba(206, 168, 104, 0.4);
+  --clr-login-background-dark: #046364;
+  --clr-login-background-light: #0aeef2;
 
   --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
   --inputfields-bg: rgba(255, 255, 255, 0.15);
-  --gap: 3em;
+  --input-gap: 1.5em;
 }
 
 * {
@@ -16,19 +16,20 @@
 }
 
 .login {
-  background: linear-gradient(to bottom, var(--clr-background-dark), var(--clr-background-light));
+  background: linear-gradient(to bottom, var(--clr-login-background-dark), var(--clr-login-background-light));
   height: 100vh;
 }
 
-h3 {
+.login h3 {
   text-align: center;
-  padding: 50px;
+  font-family: 'Lobster', sans-serif;
+  font-size: 3rem;
 }
 
 .login-container {
-  justify-content: center;
-  align-items: center;
-  display: grid;
+  margin: 0 auto;
+  width: 45%;
+  padding-top: 10vh;
 }
 
 .login-holder {
@@ -41,10 +42,13 @@ h3 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--gap);
+  gap: var(--input-gap);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 540px) {
+  .login-container {
+    width: 90%;
+  }
   .login-holder {
     padding: 20px 50px;
   }
