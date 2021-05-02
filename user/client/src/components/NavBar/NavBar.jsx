@@ -1,13 +1,14 @@
-import React from "react";
-import NavButton from "../Buttons/NavButton";
-import logo from "../../assets/smartscript-logo.png";
-import axios from "axios";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import "./NavBar.css";
-import { HashLink as HashLink } from "react-router-hash-link";
-import { getAccessToken } from "../../helpers";
-import { useHistory } from "react-router-dom";
+
+import React from 'react';
+import NavButton from '../Buttons/NavButton';
+import logo from '../../assets/smartscript-logo.png';
+import axios from 'axios';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './NavBar.css';
+import { HashLink as HashLink } from 'react-router-hash-link';
+import { getAccessToken } from '../../helpers';
+import { useHistory } from 'react-router-dom';
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [slide, setSlide] = useState(0);
@@ -18,16 +19,16 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     const accessToken = getAccessToken();
 
     if (!accessToken) {
-      history.replace("/");
+      history.replace('/');
       return;
     }
 
-    window.localStorage.removeItem("accessToken");
-    window.sessionStorage.removeItem("accessToken");
-    window.dispatchEvent(new Event("storage"));
+    window.localStorage.removeItem('accessToken');
+    window.sessionStorage.removeItem('accessToken');
+    window.dispatchEvent(new Event('storage'));
     const cfg = {
       headers: {
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       },
     };
 
@@ -36,14 +37,14 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
       .then((res) => {
         if (res.status === 204) {
           setIsLoggedIn(false);
-          history.replace("/");
+          history.replace('/');
         }
       })
       .catch((err) => {
         if (err.response) {
           const { status, message } = err.response.data.error;
           if (status === 404) {
-            history.replace("/404");
+            history.replace('/404');
             return;
           }
         }
@@ -51,10 +52,11 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    <nav className="navbar" position="sticky">
-      <Link className="logo" to="/home">
-        <img alt="SmartScript-logo" src={logo} />
+    <nav className='navbar' position='sticky'>
+      <Link className='logo' to='/home'>
+        <img alt='SmartScript-logo' src={logo} />
       </Link>
+
       <div className={slide ? "navbar-holder active" : "navbar-holder"} slide={slide}>
         <HashLink to="home#scan" style={{ textDecoration: "none" }} smooth>
           <NavButton className="nav-button" btnText="Scan" />

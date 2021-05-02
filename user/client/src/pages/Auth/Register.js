@@ -39,7 +39,12 @@ function Register() {
       { encryptedName: inputName }
     );
 
-    registerUser(encryptedEmail, encryptedUsername, encryptedPassword, encryptedName);
+    registerUser(
+      encryptedEmail,
+      encryptedUsername,
+      encryptedPassword,
+      encryptedName
+    );
   };
 
   const registerUser = (email, username, password, name) => {
