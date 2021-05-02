@@ -1,10 +1,11 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
-import { Home, Login, Register, Profile, Error, Logout, Banned } from './pages';
+import { Home, Login, Register, Profile, Error, Banned } from './pages';
 import { Switch, Route, useHistory, Redirect } from 'react-router-dom';
 import { getAccessToken } from './helpers';
 import axios from 'axios';
 import 'antd/dist/antd.css';
+import { HashLink } from 'react-router-hash-link';
 
 function App() {
   const [token, setToken] = useState(getAccessToken());
@@ -52,12 +53,11 @@ function App() {
       <Route exact path="/ban" component={Banned} />
       <Route exact path="/home" component={Home} />
       <Route exact path="/login" component={Login} />
-      <Route exact path="/logout" component={Logout} />
       <Route exact path="/profile" component={Profile} />
       <Route exact path="/register" component={Register} />
       <Route exact path="/" component={Home} />
       <Route component={Error} />
-      {userIsBanned && <Redirect to="/ban" />}
+      {userIsBanned && <Redirect to='/ban' />}
     </Switch>
   );
 }

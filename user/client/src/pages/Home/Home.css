@@ -1,5 +1,5 @@
 .home {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
 }
 
@@ -115,6 +115,7 @@ p > h2 {
   gap: 15px;
   flex: 1;
   transition: all 500ms linear;
+  padding-bottom: 5em;
 }
 
 .scan-btn-holder {
@@ -126,8 +127,8 @@ p > h2 {
 }
 
 .scan-img-holder {
-  width: auto;
-  height: 300px;
+  width: 200px;
+  height: auto;
   margin-left: 150px;
   background-color: rgba(219, 219, 219, 255);
   border: 2px solid #a7a7a7;

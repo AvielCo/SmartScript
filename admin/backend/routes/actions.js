@@ -5,7 +5,7 @@ const History = require('../../../models/History');
 const createError = require('http-errors');
 const { verifyAccessToken } = require('../../../helpers/jwt');
 
-router.get('/get-all-users', async (req, res, next) => {
+router.get('/get-all-users', verifyAccessToken, async (req, res, next) => {
   try {
     let users = await User.find();
     if (users.length <= 0) {
@@ -19,10 +19,8 @@ router.get('/get-all-users', async (req, res, next) => {
         predictedResult: { classes, probabilities, dates },
       } = await History.findById({ _id: user.historyId });
       if (classes && classes.length > 0) {
-
         const h = [];
         for (let i = 0; i < classes.length; i++) {
-          console.log(`user: ${user.name} history: ${i}`);
           h.push({ class: classes[i], probability: probabilities[i], date: dates[i] });
         }
         userHistory.history = h;
@@ -36,7 +34,7 @@ router.get('/get-all-users', async (req, res, next) => {
   }
 });
 
-router.post('/edit-ban', async (req, res, next) => {
+router.post('/edit-ban', verifyAccessToken, async (req, res, next) => {
   try {
     const { userId, ban } = req.body;
     if (!userId) {

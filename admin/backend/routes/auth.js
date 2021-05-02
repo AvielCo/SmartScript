@@ -3,7 +3,8 @@ const router = express.Router();
 const Admin = require('../../../models/Admin');
 const createError = require('http-errors');
 const { decryptStrings } = require('../../../helpers/crypto');
-const { signAccessToken, signRefreshToken, verifyRefreshToken, verifyAccessToken } = require('../../../helpers/jwt');
+const redis = require('../../../helpers/redis');
+const { signAccessToken, verifyAccessToken } = require('../../../helpers/jwt');
 require('dotenv').config();
 
 router.post('/login', async (req, res, next) => {
@@ -16,9 +17,9 @@ router.post('/login', async (req, res, next) => {
       throw createError.Unauthorized('Username or password are incorrect.');
     }
 
-    await signAccessToken(admin.id);
+    const accessToken = await signAccessToken(admin.id);
 
-    res.status(200);
+    res.status(200).json({ accessToken });
   } catch (err) {
     if (err.isJoi) {
       return next(createError.BadRequest('Invalid username or password.'));
@@ -28,21 +29,22 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.get('/user', verifyAccessToken, (req, res, next) => {
-  const userId = req.payload['aud'];
-  return res.status(200).json('OK');
+  try {
+    return res.sendStatus(200);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.post('/refresh-token', async (req, res, next) => {
+router.delete('/logout', verifyAccessToken, (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
-    if (!refreshToken) {
-      throw createError.BadRequest();
-    }
-    const userId = await verifyRefreshToken(refreshToken);
-
-    await signAccessToken(userId);
-
-    res.status(200).send('New access and refresh tokens has been generated.');
+    const userId = req.payload['aud'];
+    redis.DEL(userId, (error, reply) => {
+      if (error) {
+        throw createError.InternalServerError();
+      }
+      res.sendStatus(204);
+    });
   } catch (err) {
     next(err);
   }
