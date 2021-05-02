@@ -1,3 +1,4 @@
+
 import React from 'react';
 import NavButton from '../Buttons/NavButton';
 import logo from '../../assets/smartscript-logo.png';
@@ -13,6 +14,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [slide, setSlide] = useState(0);
   const showSidebar = () => setSlide(!slide);
   const history = useHistory();
+
   const logout = () => {
     const accessToken = getAccessToken();
 
@@ -54,42 +56,43 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
       <Link className='logo' to='/home'>
         <img alt='SmartScript-logo' src={logo} />
       </Link>
-      <div className={slide ? 'navbar-holder active' : 'navbar-holder'} slide={slide}>
-        <HashLink to="home#scan" style={{ textDecoration: 'none' }} smooth>
+
+      <div className={slide ? "navbar-holder active" : "navbar-holder"} slide={slide}>
+        <HashLink to="home#scan" style={{ textDecoration: "none" }} smooth>
           <NavButton className="nav-button" btnText="Scan" />
         </HashLink>
-        <HashLink to="home#about" style={{ textDecoration: 'none' }} smooth>
+        <HashLink to="home#about" style={{ textDecoration: "none" }} smooth>
           <NavButton className="nav-button" btnText="About" />
         </HashLink>
-        <HashLink to="home#wwa" style={{ textDecoration: 'none' }} smooth>
+        <HashLink to="home#wwa" style={{ textDecoration: "none" }} smooth>
           <NavButton className="nav-button" btnText="Who we are" />
         </HashLink>
         {!isLoggedIn && (
-          <Link to='/login' style={{ textDecoration: 'none' }}>
-            <NavButton className='nav-button' btnText='Login' />
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            <NavButton className="nav-button" btnText="Login" />
           </Link>
         )}
         {!isLoggedIn && (
-          <Link to='/register' style={{ textDecoration: 'none' }}>
-            <NavButton className='nav-button' btnText='Register' />
+          <Link to="/register" style={{ textDecoration: "none" }}>
+            <NavButton className="nav-button" btnText="Register" />
           </Link>
         )}
         {isLoggedIn && (
-          <Link to='/profile' style={{ textDecoration: 'none' }}>
-            <NavButton className='nav-button' btnText='Profile' />
+          <Link to="/profile" style={{ textDecoration: "none" }}>
+            <NavButton className="nav-button" btnText="Profile" />
           </Link>
         )}
 
         {isLoggedIn && (
-          <Link to='/home' style={{ textDecoration: 'none' }}>
-            <NavButton className='nav-button' btnText='Logout' onClick={() => logout()} />{' '}
+          <Link to="/home" style={{ textDecoration: "none" }}>
+            <NavButton className="nav-button" btnText="Logout" onClick={() => logout()} />{" "}
           </Link>
         )}
       </div>
-      <div onClick={showSidebar} className={slide ? 'burger cross' : 'burger'} id='burger'>
-        <div className='line-1'></div>
-        <div className='line-2'></div>
-        <div className='line-3'></div>
+      <div onClick={showSidebar} className={slide ? "burger cross" : "burger"} id="burger">
+        <div className="line-1"></div>
+        <div className="line-2"></div>
+        <div className="line-3"></div>
       </div>
     </nav>
   );

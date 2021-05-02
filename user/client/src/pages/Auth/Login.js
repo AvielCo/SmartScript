@@ -51,7 +51,6 @@ function Login() {
           window.dispatchEvent("storage");
           return;
         }
-        return;
       })
       .catch((err) => {
         if (err.response) {
@@ -61,7 +60,8 @@ function Login() {
           } else if (status === 401) {
             toast.error(message);
           } else if (status === 403) {
-            history.replace("/ban");
+            toast.error("You are banned.");
+            toast.error("Contact an admin to submit ban appeal.");
           } else toast.error("Internal Server Error.");
           setIsLoading(false);
         }

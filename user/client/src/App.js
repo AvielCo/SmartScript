@@ -8,54 +8,55 @@ import 'antd/dist/antd.css';
 import { HashLink } from 'react-router-hash-link';
 
 function App() {
-  const [token, setToken] = useState(getAccessToken());
-  const [userIsBanned, setuserIsBanned] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userIsBanned, setUserIsBanned] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
     isBanned();
-    window.addEventListener('storage', (ev) => {
-      isBanned();
-    });
-    return () => {
-      window.removeEventListener('storage', (ev) => {});
-    };
-  }, []);
+  }, [isLoggedIn]);
 
   const isBanned = () => {
-    const accessToken = getAccessToken();
-
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + getAccessToken(),
       },
     };
+
     axios
       .get(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/user`, cfg)
       .then((res) => {
-        setuserIsBanned(false);
-        setToken(accessToken);
+        if (res.status === 200) {
+          setUserIsBanned(false);
+          setIsLoggedIn(true);
+        }
       })
       .catch((err) => {
         if (err.response) {
           const { status } = err.response;
           if (status === 403) {
-            setuserIsBanned(true);
-            history.replace('/ban');
+            setUserIsBanned(true);
+            setIsLoggedIn(false);
+            history.replace("/ban");
             return;
           }
         }
       });
   };
-
   return (
     <Switch>
       <Route exact path="/ban" component={Banned} />
-      <Route exact path="/home" component={Home} />
-      <Route exact path="/login" component={Login} />
+      <Route exact path="/home">
+        <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      </Route>
+      <Route exact path="/login">
+        <Login setIsLoggedIn={setIsLoggedIn} />
+      </Route>
       <Route exact path="/profile" component={Profile} />
       <Route exact path="/register" component={Register} />
-      <Route exact path="/" component={Home} />
+      <Route exact path="/">
+        <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      </Route>
       <Route component={Error} />
       {userIsBanned && <Redirect to='/ban' />}
     </Switch>

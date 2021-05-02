@@ -44,92 +44,66 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
     const condaCommand = `conda run -n ${envName}`;
-    const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
-    const message = {
-      success: true,
-      origin: 'yemenite',
-      shape: 'square',
-      probability: 98.22,
-    };
-    const uploadedImage = fs.readdirSync(imageFolderPath)[0];
-    const imagePath = path.join(imageFolderPath, uploadedImage);
+    
+    const child = exec(`${condaCommand} ${pythonScriptCommand}`);
 
-    const userHistory = await History.findById({ _id: user.historyId });
-    // path to save the resized image to view later in the user profile
-    const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+    child.stdout.once('data', async (data) => {
+      // message is the response from python script
+      const message = JSON.parse(data);
+      if (message.success) {
+        /**
+         * message: {
+         *  success: True,
+         *  origin: One of the following: "ashkenazi", "bizantine" .....
+         *  shape: One of the following: "cursive", "square", "semi-square"
+         *  probability: the probability of the prediction
+         * }
+         */
+        try {
+          const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
+          const uploadedImage = fs.readdirSync(imageFolderPath)[0];
+          const imagePath = path.join(imageFolderPath, uploadedImage);
 
-    fs.mkdir(savePath, { recursive: true }, (err) => {
-      if (err) throw createError.InternalServerError();
+          const userHistory = await History.findById({ _id: user.historyId });
+          // path to save the resized image to view later in the user profile
+          const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
+
+          fs.mkdir(savePath, { recursive: true }, (err) => {
+            if (err) throw createError.InternalServerError();
+          });
+
+          sharp(imagePath) // resize the image to width: 250px (height is auto scale)
+            .resize(250)
+            .toFile(path.join(savePath, uploadedImage))
+            .catch((err) => {
+              if (err) throw createError.InternalServerError();
+            });
+
+          await insertNewHistory(userHistory, message, uploadedImage.split('.')[0]);
+
+          return res.status(200).send(message);
+        } catch (err) {
+          console.log(err);
+          return next(createError.InternalServerError());
+        }
+      }
+      /**
+       * message: {
+       *  success: False,
+       * `reason: Reason that the script failed
+       * }
+       */
+      console.log(message.reason);
+      return next(createError.BadRequest());
     });
 
-    sharp(imagePath) // resize the image to width: 250px (height is auto scale)
-      .resize(250)
-      .toFile(path.join(savePath, uploadedImage))
-      .catch((err) => {
-        if (err) throw createError.InternalServerError();
-      });
+    child.stderr.once('data', (data) => {
+      console.log(data);
+    });
 
-    await insertNewHistory(userHistory, message, uploadedImage.split('.')[0]);
-    return res.status(200).send(message);
-    // const child = exec(`${condaCommand} ${pythonScriptCommand}`);
-
-    // child.stdout.once('data', async (data) => {
-    //   // message is the response from python script
-    //   const message = JSON.parse(data);
-    //   if (message.success) {
-    //     /**
-    //      * message: {
-    //      *  success: True,
-    //      *  origin: One of the following: "ashkenazi", "bizantine" .....
-    //      *  shape: One of the following: "cursive", "square", "semi-square"
-    //      *  probability: the probability of the prediction
-    //      * }
-    //      */
-    //     try {
-    //       const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
-    //       const uploadedImage = fs.readdirSync(imageFolderPath)[0];
-    //       const imagePath = path.join(imageFolderPath, uploadedImage);
-
-    //       const userHistory = await History.findById({ _id: user.historyId });
-    //       // path to save the resized image to view later in the user profile
-    //       const savePath = path.join(__dirname, '..', 'users-histories', `${user._id}`);
-
-    //       fs.mkdir(savePath, { recursive: true }, (err) => {
-    //         if (err) throw createError.InternalServerError();
-    //       });
-
-    //       sharp(imagePath) // resize the image to width: 250px (height is auto scale)
-    //         .resize(250)
-    //         .toFile(path.join(savePath, uploadedImage))
-    //         .catch((err) => {
-    //           if (err) throw createError.InternalServerError();
-    //         });
-
-    //       await insertNewHistory(userHistory, message, uploadedImage.split('.')[0]);
-
-    //       return res.status(200).send(message);
-    //     } catch (err) {
-    //       console.log(err);
-    //       return next(createError.InternalServerError());
-    //     }
-    //   }
-    //   /**
-    //    * message: {
-    //    *  success: False,
-    //    * `reason: Reason that the script failed
-    //    * }
-    //    */
-    //   console.log(message.reason);
-    //   return next(createError.BadRequest());
-    // });
-
-    // child.stderr.once('data', (data) => {
-    //   console.log(data);
-    // });
-
-    // child.once('error', function (err) {
-    //   throw next(createError.InternalServerError());
-    // });
+    child.once('error', function (err) {
+      throw next(createError.InternalServerError());
+    });
   } catch (err) {
     console.log(err);
     next(err);

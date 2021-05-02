@@ -46,9 +46,9 @@ router.post("/register", async (req, res, next) => {
     const newUser = await new User(newUserDetails).save();
     const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
     await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
-
+    
     sendCredentialEmail(name, username, password, email);
-
+    
     res.sendStatus(200);
   } catch (err) {
     if (err.isJoi) {
