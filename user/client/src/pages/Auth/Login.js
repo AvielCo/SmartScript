@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useHistory, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "./Login.css";
 import { Checkbox, Form } from "antd";
 import { InputButton, InputField, NavBar } from "../../components";
 import { encryptStrings } from "../../helpers";
@@ -10,9 +9,9 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { getAccessToken } from "../../helpers";
 
 import "react-toastify/dist/ReactToastify.css";
-import "./Login.css";
+import "./Auth.css";
 
-function Login({ setIsLoggedIn }) {
+function Login() {
   const [inputUsername, setUsername] = useState("");
   const [inputPassword, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -48,9 +47,9 @@ function Login({ setIsLoggedIn }) {
           if (checked) {
             window.localStorage.setItem("accessToken", response.data.accessToken);
           }
-          setIsLoggedIn(true);
           history.replace("/");
           window.dispatchEvent("storage");
+          return;
         }
       })
       .catch((err) => {
@@ -77,10 +76,10 @@ function Login({ setIsLoggedIn }) {
         <>
           <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
           <NavBar />
-          <form onSubmit={handleSubmit} className="login">
-            <div className="login-container">
+          <form onSubmit={handleSubmit} className="auth">
+            <div className="form">
               <h3>Login</h3>
-              <div className="login-holder">
+              <div className="inputfields">
                 <Form.Item
                   name="username"
                   label="Username"
