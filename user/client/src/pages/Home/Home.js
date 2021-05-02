@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { NavBar, ResultTextView } from '../../components';
-import pic from '../../assets/landing-bg.jpg';
-import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import { getAccessToken } from '../../helpers';
-import { Upload } from 'antd';
-import Card from '../../components/Card/ProfileCard';
-import Button from '../../components/Buttons/InputButton';
+import React, { useState, useEffect } from "react";
+import { NavBar, ResultTextView } from "../../components";
+import pic from "../../assets/landing-bg.jpg";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import { getAccessToken } from "../../helpers";
+import { Upload } from "antd";
+import Card from "../../components/Card/ProfileCard";
+import Button from "../../components/Buttons/InputButton";
 
-import cursive from '../../assets/cursive_trans.png';
+import cursive from "../../assets/cursive_trans.png";
 
-import Emilia from '../../assets/emilia.jpg';
-import Noah from '../../assets/noah.png';
-import Aviel from '../../assets/aviel.png';
+import Emilia from "../../assets/emilia.jpg";
+import Noah from "../../assets/noah.png";
+import Aviel from "../../assets/aviel.png";
 
-import 'react-toastify/dist/ReactToastify.css';
-import './Home.css';
+import "react-toastify/dist/ReactToastify.css";
+import "./Home.css";
 
 function LandingSection() {
   return (
-    <section className='landing'>
+    <section className="landing">
       <div>
-        <p dir='rtl'>
+        <p dir="rtl">
           <h2>SmartScript</h2> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning the
           image given to it by the user. Additionally, the system will allow the user to save previous uploads for easy tracking.
         </p>
@@ -36,21 +36,21 @@ function ScanSection({ isLoggedIn }) {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState({
     success: false,
-    origin: '',
-    shape: '',
-    probability: '',
+    origin: "",
+    shape: "",
+    probability: "",
   });
 
   const handleImageChange = async (info) => {
     switch (info.file.status) {
-      case 'uploading':
+      case "uploading":
         setIsLoading(true);
         break;
-      case 'done':
+      case "done":
         setIsLoading(false);
         setImageUri(URL.createObjectURL(info.file.originFileObj));
         break;
-      case 'error':
+      case "error":
         setIsLoading(false);
         break;
       default:
@@ -60,21 +60,21 @@ function ScanSection({ isLoggedIn }) {
 
   const handlePredict = () => {
     if (!imageUri) {
-      toast.error('Upload an image before predict.');
+      toast.error("Upload an image before predict.");
       return;
     }
     if (isLoading) {
-      toast.info('Please wait, another predict process is running.');
+      toast.info("Please wait, another predict process is running.");
       return;
     }
-    toast.info('Predicting image, please wait.');
+    toast.info("Predicting image, please wait.");
     setIsLoading(true);
 
     let accessToken = getAccessToken();
 
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
     };
 
@@ -84,12 +84,12 @@ function ScanSection({ isLoggedIn }) {
         if (res.status === 200) {
           setResult(res.data);
           setIsLoading(false);
-          toast.success('Predicting image done, see the result in your profile page.');
+          toast.success("Predicting image done, see the result in your profile page.");
         }
       })
       .catch((err) => {
         if (err) {
-          toast.error('An error has been encountered while trying to predict.');
+          toast.error("An error has been encountered while trying to predict.");
           setIsLoading(false);
         }
       });
@@ -99,21 +99,20 @@ function ScanSection({ isLoggedIn }) {
     <section className="scan" id="scan">
       <div className="scan-container">
         {isLoggedIn ? (
-          <form className='scan-btn-holder' onSubmit={handleImageChange}>
+          <form className="scan-btn-holder" onSubmit={handleImageChange}>
             <h3>Upload and Predict</h3>
             <Upload
               action={`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/upload`}
-              headers={{ Authorization: 'Bearer ' + getAccessToken() }}
+              headers={{ Authorization: "Bearer " + getAccessToken() }}
               onChange={handleImageChange}
-              accept='image/*'
+              accept="image/*"
               maxCount={1}
-              showUploadList={false}
-            >
-              <Button className="scan-btn" component="span" type="submit" name={'Upload'} disabled={isLoading} />
+              showUploadList={false}>
+              <Button className="scan-btn" component="span" type="submit" name={"Upload"} disabled={isLoading} />
             </Upload>
-            <Button className='scan-btn' onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
+            <Button className="scan-btn" onClick={handlePredict} name={"Predict"} disabled={isLoading}></Button>
 
-            <div className='scan-btn'></div>
+            <div className="scan-btn"></div>
 
             <ResultTextView result={result} />
           </form>
@@ -123,7 +122,7 @@ function ScanSection({ isLoggedIn }) {
           </h3>
         )}
         {imageUri && (
-          <div className='scan-img-holder'>
+          <div className="scan-img-holder">
             <img alt={pic} src={imageUri}></img>
           </div>
         )}
@@ -148,8 +147,8 @@ function AboutSection() {
           </p>
           <p>After the filtering is done the corresponding orignal patches are saved in grayscale and used to predict the origin and the shape of the script.</p>
         </div>
-        <div className='image-rotate-holder'>
-          <img className='rotating-image' alt='something' src={cursive}></img>
+        <div className="image-rotate-holder">
+          <img className="rotating-image" alt="something" src={cursive}></img>
         </div>
       </div>
     </section>
@@ -169,44 +168,16 @@ function WWASection() {
         front to back. Combining RESTapi to handle requests and JWT we developed a secure login and registration. Additionally, we made sure that our website will be functional and responsive on
         different devices and resolutions
       </p>
-      <div className='cards-holder'>
-        <Card name={'Noah Solomon'} image={Noah} />
-        <Card name={'Emilia Zorin'} image={Emilia} />
-        <Card name={'Aviel Cohen'} image={Aviel} />
+      <div className="cards-holder">
+        <Card name={"Noah Solomon"} image={Noah} />
+        <Card name={"Emilia Zorin"} image={Emilia} />
+        <Card name={"Aviel Cohen"} image={Aviel} />
       </div>
     </section>
   );
 }
 
-function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const history = useHistory();
-  useEffect(() => {
-    if (isLoggedIn) return;
-    const cfg = {
-      headers: {
-        Authorization: 'Bearer ' + getAccessToken(),
-      },
-    };
-    axios
-      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/user`, cfg)
-      .then((res) => {
-        if (res.status === 200) {
-          setIsLoggedIn(true);
-        }
-      })
-      .catch((err) => {
-        if (err.response) {
-          const { status, message } = err.response.data.error;
-          if (status === 404) {
-            history.replace('/404');
-            return;
-          }
-          toast.info('Please log in to upload and predict an image.');
-        }
-      });
-  }, [isLoggedIn]);
-
+function Home({ isLoggedIn, setIsLoggedIn }) {
   return (
     <>
       <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
