@@ -1,4 +1,4 @@
-import { Typography, Space } from 'antd';
+import { Typography } from 'antd';
 import React from 'react';
 import './ResultTextView.css';
 
@@ -9,13 +9,8 @@ const ResultTextView = ({ result }) => {
       <div className='results'>
         {result.success ? (
           <div className='results-text-view'>
-            <Paragraph>
-              <Text type='success' ellipsis strong>
-                {`${result.origin}-${result.shape} `}
-              </Text>
-              <Text type='success' ellipsis strong>
-                {result.probability}
-              </Text>
+            <Paragraph className='results-text'>
+              {`${result.origin}-${result.shape} `} {result.probability}%
             </Paragraph>
           </div>
         ) : (
@@ -24,11 +19,7 @@ const ResultTextView = ({ result }) => {
           </Text>
         )}
       </div>
-      {result.success && (
-        <Paragraph type='success' strong>
-          Added to your history, check your profile.
-        </Paragraph>
-      )}
+      {result.success && <Paragraph strong>Added to your history, check your profile.</Paragraph>}
     </div>
   );
 };
