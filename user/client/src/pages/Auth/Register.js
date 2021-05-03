@@ -39,17 +39,12 @@ function Register() {
       { encryptedName: inputName }
     );
 
-    registerUser(
-      encryptedEmail,
-      encryptedUsername,
-      encryptedPassword,
-      encryptedName
-    );
+    registerUser(encryptedEmail, encryptedUsername, encryptedPassword, encryptedName);
   };
 
   const registerUser = (email, username, password, name) => {
     axios
-      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/register`, {
+      .post(`${process.env.REACT_APP_API_ADDRESS}/api/auth/register`, {
         email,
         username,
         password,
