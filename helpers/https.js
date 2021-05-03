@@ -25,6 +25,7 @@ const createKeyCert = () => {
     passphrase: "password",
   };
 };
+
 const createServer = (app) => {
   const options = createKeyCert();
   const tlsServer = tls.createServer(options, (socket) => {
