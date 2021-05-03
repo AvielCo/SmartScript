@@ -3,7 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const createError = require("http-errors");
 const history = require("connect-history-api-fallback");
-const https = require("../../helpers/https");
+const { createServer } = require("../../helpers/https");
 require("dotenv").config();
 require("../../helpers/mongodb");
 
@@ -44,4 +44,4 @@ app.use((err, req, res, next) => {
 });
 
 //* Nodejs listen to PORT
-https(app).listen(PORT, () => console.log(`Running on ${PORT}`));
+createServer(app).listen(PORT, () => console.log(`Running on ${PORT}`));
