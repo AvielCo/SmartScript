@@ -8,6 +8,9 @@ require("dotenv").config();
 require("../../helpers/mongodb");
 
 const PORT = process.env.PORT || 8008;
+const privateKey = fs.readFileSync("key.pem");
+const certificate = fs.readFileSync("cert.pem");
+const CRED = { privateKey, certificate };
 
 //* Middlewares
 const app = express();
@@ -43,5 +46,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-//* Nodejs listen to PORT
 https(app).listen(PORT, () => console.log(`Running on ${PORT}`));
