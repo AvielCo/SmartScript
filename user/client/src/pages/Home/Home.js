@@ -79,7 +79,7 @@ function ScanSection({ isLoggedIn }) {
     };
 
     axios
-      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/scan`, null, cfg)
+      .post(`${process.env.REACT_APP_API_ADDRESS}/api/images/scan`, null, cfg)
       .then((res) => {
         if (res.status === 200) {
           setResult(res.data);
@@ -102,7 +102,7 @@ function ScanSection({ isLoggedIn }) {
           <form className="scan-btn-holder" onSubmit={handleImageChange}>
             <h3>Upload and Predict</h3>
             <Upload
-              action={`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/upload`}
+              action={`${process.env.REACT_APP_API_ADDRESS}/api/images/upload`}
               headers={{ Authorization: "Bearer " + getAccessToken() }}
               onChange={handleImageChange}
               accept="image/*"

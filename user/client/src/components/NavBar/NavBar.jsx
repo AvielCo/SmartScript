@@ -32,7 +32,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     };
 
     axios
-      .delete(`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/auth/logout`, cfg)
+      .delete(`${process.env.REACT_APP_API_ADDRESS}/api/auth/logout`, cfg)
       .then((res) => {
         if (res.status === 204) {
           setIsLoggedIn(false);
