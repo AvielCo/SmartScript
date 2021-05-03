@@ -16,7 +16,8 @@
     "a-prod": "pm2 start admin/backend/server.js",
     "u-prod": "pm2 start user/backend/server.js",
     "prod": "pm2 delete all || : && npm run a-prod && npm run u-prod",
-    "deploy": "cd user/client && firebase deploy"
+    "deploy": "cd user/client && firebase deploy",
+    "build-deploy": "npm run u-build && npm run deploy"
   },
   "repository": {
     "type": "git",
