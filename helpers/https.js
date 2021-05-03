@@ -26,7 +26,7 @@ const createKeyCert = () => {
   };
 };
 
-module.exports = (app) => {
+const createServer = (app) => {
   const options = createKeyCert();
   const tlsServer = tls.createServer(options, (socket) => {
     console.log("[TLS] Connected ", socket.authorized ? "authorized" : "unauthorized");
@@ -36,3 +36,5 @@ module.exports = (app) => {
 
   return https.createServer(tlsServer, app);
 };
+
+module.exports = { createServer };
