@@ -4,10 +4,15 @@ const morgan = require("morgan");
 const path = require("path");
 const createError = require("http-errors");
 const history = require("connect-history-api-fallback");
+const https = require("https");
+const fs = require("fs");
 require("dotenv").config();
 require("../../helpers/mongodb");
 
 const PORT = process.env.PORT || 8008;
+const privateKey = fs.readFileSync("key.pem");
+const certificate = fs.readFileSync("cert.pem");
+const CRED = { privateKey, certificate };
 
 //* Middlewares
 const app = express();
@@ -45,4 +50,4 @@ app.use((err, req, res, next) => {
 });
 
 //* Nodejs listen to PORT
-app.listen(PORT, () => console.log(`[node.js] Server running on port ${PORT}`));
+https.createServer(CRED, app).listen(PORT, () => console.log(`Running on ${PORT}`));
