@@ -20,9 +20,9 @@ import "./Home.css";
 
 function LandingSection() {
   return (
-    <section className='landing'>
+    <section className="landing">
       <div>
-        <p dir='rtl'>
+        <p dir="rtl">
           <h2>SmartScript</h2> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning the
           image given to it by the user. Additionally, the system will allow the user to save previous uploads for easy tracking.
         </p>
@@ -99,19 +99,19 @@ function ScanSection({ isLoggedIn }) {
     <section className="scan" id="scan">
       <div className="scan-container">
         {isLoggedIn ? (
-          <form className='scan-btn-holder' onSubmit={handleImageChange}>
+          <form className="scan-btn-holder" onSubmit={handleImageChange}>
             <h3>Upload and Predict</h3>
             <Upload
               action={`http://${process.env.REACT_APP_API_ADDRESS}:8008/api/images/upload`}
               headers={{ Authorization: "Bearer " + getAccessToken() }}
               onChange={handleImageChange}
-              accept='image/*'
+              accept="image/*"
               maxCount={1}
               showUploadList={false}>
               <Button className="scan-btn" component="span" type="submit" name={"Upload"} disabled={isLoading} />
             </Upload>
             <Button className="scan-btn" onClick={handlePredict} name={"Predict"} disabled={isLoading}></Button>
-            <div className='scan-btn'></div>
+            <div className="scan-btn"></div>
             <ResultTextView result={result} />
           </form>
         ) : (
@@ -120,7 +120,7 @@ function ScanSection({ isLoggedIn }) {
           </h3>
         )}
         {imageUri && (
-          <div className='scan-img-holder'>
+          <div className="scan-img-holder">
             <img alt={pic} src={imageUri}></img>
           </div>
         )}
@@ -145,8 +145,8 @@ function AboutSection() {
           </p>
           <p>After the filtering is done the corresponding orignal patches are saved in grayscale and used to predict the origin and the shape of the script.</p>
         </div>
-        <div className='image-rotate-holder'>
-          <img className='rotating-image' alt='something' src={cursive}></img>
+        <div className="image-rotate-holder">
+          <img className="rotating-image" alt="something" src={cursive}></img>
         </div>
       </div>
     </section>
