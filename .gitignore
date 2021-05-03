@@ -23,6 +23,8 @@ user/backend/python-folders
 user/backend/users-histories
 user/backend/py-files/input
 user/backend/py-files/python-folders
+user/backend/key.pem
+user/backend/cert.pem
 package-lock.json
 */node_modules/
 node_modules

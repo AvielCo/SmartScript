@@ -8,10 +8,12 @@ import greenCircle from '../../assets/green-circle.svg';
 import redCircle from '../../assets/red-circle.svg';
 import sun from '../../assets/icon-sun.png';
 import moon from '../../assets/icon-moon.png';
-import { useWindowDimensions } from '../../helpers';
+import { getAccessToken, useWindowDimensions } from '../../helpers';
 import { Doughnut } from 'react-chartjs-2';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { Redirect } from 'react-router';
+import { NavBar } from '../../components';
 
 function Home() {
   const [data, setData] = useState([{}]);
@@ -25,22 +27,40 @@ function Home() {
   const { width } = useWindowDimensions();
   const title = 'Welcome To SmartScript`s Admin Panel';
 
+  const deleteTokenFromStorage = () => {
+    window.sessionStorage.removeItem('accessToken');
+    window.localStorage.removeItem('accessToken');
+  };
+
   const editBanUser = (userId, isBanned, event) => {
     if (loading) return;
     setLoading(true);
     event.preventDefault();
-    axios
-      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/edit-ban`, { userId, ban: !isBanned })
 
+    const cfg = {
+      headers: {
+        Authorization: 'Bearer ' + getAccessToken(),
+        IsAdmin: true,
+      },
+    };
+
+    axios
+      .post(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/edit-ban`, { userId, ban: !isBanned }, cfg)
       .then((res) => {
         if (res.status === 200) {
           setUpdatedField(true);
-          setLoading(false);
           toast.info(!isBanned ? 'Banned Successfully!' : 'Unbanned Successfully!');
         }
       })
       .catch((err) => {
-        alert(err.message);
+        if (err.response) {
+          const { status, message } = err.response.data.error;
+          if (status === 401) {
+            deleteTokenFromStorage();
+          } else toast.error(message);
+        }
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -54,7 +74,7 @@ function Home() {
 
     if (hour >= 6 && hour < 12) {
       setGreetingMsg(greetings.morningMsg);
-      setWeather(<img src={sun} alt="sun" />);
+      setWeather(<img className="weather-icon" src={sun} alt="sun" />);
     } else if (hour >= 12 && hour < 19) {
       setGreetingMsg(greetings.noonMsg);
       setWeather(<img className="weather-icon" src={sun} alt="sun" />);
@@ -66,7 +86,9 @@ function Home() {
 
   const getCurrentTime = () => {
     const today = new Date();
-    const currTime = today.getHours() + ':' + today.getMinutes();
+    const minutes = today.getMinutes() >= 10 ? today.getMinutes() : '0' + today.getMinutes();
+    const hours = today.getHours() >= 10 ? today.getHours() : '0' + today.getHours();
+    const currTime = hours + ':' + minutes;
     if (time !== currTime) {
       setTime(currTime);
       getGreetingMsg(today.getHours());
@@ -78,18 +100,36 @@ function Home() {
       return;
     }
     setLoading(true);
+
+    const cfg = {
+      headers: {
+        Authorization: 'Bearer ' + getAccessToken(),
+        IsAdmin: true,
+      },
+    };
+
     axios
-      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/get-all-users`)
+      .get(`http://${process.env.REACT_APP_API_ADDRESS}:8080/api/actions/get-all-users`, cfg)
       .then((res) => {
-        setData(res.data);
-        setTotalUsers(res.data.length);
-        let sum = 0;
-        res.data.map((d) => d.banned && sum++);
-        setBlockedUsers(sum);
-        setLoading(false);
+        if (res.status === 200) {
+          setData(res.data);
+          setTotalUsers(res.data.length);
+          let sum = 0;
+          res.data.map((d) => d.banned && sum++);
+          setBlockedUsers(sum);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response) {
+          const { status, message } = err.response.data.error;
+          if (status === 401) {
+            deleteTokenFromStorage();
+            toast.error('Please log in to watch all users.');
+          }
+          toast.error(message);
+        }
+      })
+      .finally(() => {
         setLoading(false);
       });
     setUpdatedField(false);
@@ -162,42 +202,49 @@ function Home() {
   };
 
   return (
-    <>
-      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="home-holder">
-        <div className="home-title">
-          <div className="weather-time">
-            {weather}
-            <h5>{time}</h5>
-          </div>
-          <div className="greeting">
-            <h2>{title}</h2>
-            <h3>{greetingMsg}</h3>
-          </div>
-        </div>
-        <div className="info">
-          <div className="users-table-container">
-            <Table
-              pagination={false}
-              rowKey={(record) => record._id}
-              scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
-              loading={loading}
-              columns={usersColumns}
-              dataSource={data}
-              expandable={{
-                expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
-                rowExpandable: (record) => record.history,
-              }}
-            />
-          </div>
-          {data.length > 0 && (
-            <div className="chart-container">
-              <Doughnut data={chartData} options={chartOptions} />
+    <React.Fragment>
+      {!getAccessToken() ? (
+        <Redirect to="/login" />
+      ) : (
+        <>
+          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <NavBar />
+          <div className="home-holder">
+            <div className="home-title">
+              <div className="weather-time">
+                {weather}
+                <h5>{time}</h5>
+              </div>
+              <div className="greeting">
+                <h2>{title}</h2>
+                <h3>{greetingMsg}</h3>
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-    </>
+            <div className="info">
+              <div className="users-table-container">
+                <Table
+                  pagination={false}
+                  rowKey={(record) => record._id}
+                  scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
+                  loading={loading}
+                  columns={usersColumns}
+                  dataSource={data}
+                  expandable={{
+                    expandedRowRender: (record) => <Table columns={historyColumns} dataSource={record.history} pagination={false} />,
+                    rowExpandable: (record) => record.history,
+                  }}
+                />
+              </div>
+              {data.length > 0 && (
+                <div className="chart-container">
+                  <Doughnut data={chartData} options={chartOptions} />
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </React.Fragment>
   );
 }
 

@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { useHistory, Redirect } from 'react-router-dom';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import './Login.css';
-import { Checkbox, Form } from 'antd';
-import { InputButton, InputField, NavBar } from '../../components';
-import { encryptStrings } from '../../helpers';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { getAccessToken } from '../../helpers';
+import React, { useState } from "react";
+import { useHistory, Redirect } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { Checkbox, Form } from "antd";
+import { InputButton, InputField, NavBar } from "../../components";
+import { encryptStrings } from "../../helpers";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { getAccessToken } from "../../helpers";
 
-import 'react-toastify/dist/ReactToastify.css';
-import './Login.css';
+import "react-toastify/dist/ReactToastify.css";
+import "./Auth.css";
 
 function Login() {
-  const [inputUsername, setUsername] = useState('');
-  const [inputPassword, setPassword] = useState('');
+  const [inputUsername, setUsername] = useState("");
+  const [inputPassword, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
   const [checked, setChecked] = useState(false);
@@ -22,11 +21,11 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isLoading) {
-      toast.info('Please wait.');
+      toast.info("Please wait.");
       return;
     }
     if (!inputUsername || !inputPassword) {
-      toast.info('Username and password are required.');
+      toast.info("Username and password are required.");
       return;
     }
     setIsLoading(true);
@@ -44,26 +43,26 @@ function Login() {
       .then((response) => {
         setIsLoading(false);
         if (response.status === 200) {
-          window.sessionStorage.setItem('accessToken', response.data.accessToken);
+          window.sessionStorage.setItem("accessToken", response.data.accessToken);
           if (checked) {
-            window.localStorage.setItem('accessToken', response.data.accessToken);
+            window.localStorage.setItem("accessToken", response.data.accessToken);
           }
-          history.replace('/');
-          window.dispatchEvent('storage');
+          history.replace("/");
+          window.dispatchEvent("storage");
           return;
         }
-        return;
       })
       .catch((err) => {
         if (err.response) {
           const { status, message } = err.response.data.error;
           if (status === 404) {
-            history.replace('/404');
+            history.replace("/404");
           } else if (status === 401) {
             toast.error(message);
           } else if (status === 403) {
-            history.replace('/ban');
-          } else toast.error('Internal Server Error.');
+            toast.error("You are banned.");
+            toast.error("Contact an admin to submit ban appeal.");
+          } else toast.error("Internal Server Error.");
           setIsLoading(false);
         }
       });
@@ -77,20 +76,20 @@ function Login() {
         <>
           <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
           <NavBar />
-          <form onSubmit={handleSubmit} className="login">
-            <div className="login-container">
+          <form onSubmit={handleSubmit} className="auth">
+            <div className="form">
               <h3>Login</h3>
-              <div className="login-holder">
+              <div className="inputfields">
                 <Form.Item
                   name="username"
                   label="Username"
                   rules={[
-                    { required: true, message: 'Please enter your username.' },
-                    { type: 'text', message: 'Please enter a valid username.' },
+                    { required: true, message: "Please enter your username." },
+                    { type: "text", message: "Please enter a valid username." },
                   ]}>
                   <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
                 </Form.Item>
-                <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please input your Password!' }]}>
+                <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please input your Password!" }]}>
                   <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
                 </Form.Item>
                 <Checkbox className="check-box" checked={checked} onChange={(e) => setChecked(e.target.checked)}>
