@@ -2,10 +2,15 @@ span.MuiButton-contained,
 button.MuiButton-contained {
   width: 200px;
   height: 50px;
-  background-color: #d3ad60;
+  background-color: #093263;
   border-radius: 50px;
-  color: #233237;
+  color: #f2f2f2;
   text-transform: capitalize;
   text-align: center;
   font-weight: 700;
+  outline: none;
+}
+
+.loader {
+  margin-left: 20px;
 }

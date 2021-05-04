@@ -8,3 +8,7 @@
   justify-content: center;
   align-content: center;
 }
+.results-text {
+  font-size: 1.5em;
+  font-family: 'Roboto', sans-serif;
+}

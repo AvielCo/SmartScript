@@ -1,7 +1,7 @@
 :root {
   /*page vars*/
-  --clr-login-background-dark: #046364;
-  --clr-login-background-light: #0aeef2;
+  --clr-auth-background-dark: #046364;
+  --clr-auth-background-light: #0aeef2;
 
   --box-shadow: 15px 15px 10px 0 rgba(0, 0, 0, 0.4);
   --inputfields-bg: rgba(255, 255, 255, 0.15);
@@ -15,12 +15,8 @@
   display: none;
 }
 
-.login {
-  background: linear-gradient(
-    to bottom,
-    var(--clr-login-background-dark),
-    var(--clr-login-background-light)
-  );
+.auth {
+  background: linear-gradient(to bottom, var(--clr-auth-background-dark), var(--clr-auth-background-light));
   min-height: 100vh;
   padding-bottom: 20px;
   display: flex;
@@ -33,13 +29,13 @@ h3 {
   font-size: 3rem;
 }
 
-.login-container {
+.form {
   margin: 0 auto;
   width: 45%;
   padding-top: 10vh;
 }
 
-.login-holder {
+.inputfields {
   padding: 30px 70px;
   box-shadow: var(--box-shadow);
   border-radius: 20px;
@@ -52,9 +48,25 @@ h3 {
   gap: var(--input-gap);
 }
 
+.anticon {
+  transform: scale(1.5);
+}
+
+div.ant-form-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  align-items: flex-start;
+  width: 65%;
+}
+
+div.ant-form-item-control {
+  width: 100%;
+}
+
 /* Vertical responsiveness */
 @media (max-width: 540px) {
-  .login-container {
+  .form {
     width: 90%;
   }
   h3 {
@@ -87,7 +99,7 @@ h3 {
 }
 
 @media (min-width: 750px) and (min-height: 1024px) {
-  .login-container {
+  .form {
     width: 90%;
   }
 }
@@ -104,10 +116,10 @@ h3 {
     padding-top: 80px;
     font-size: 1.5em;
   }
-  .login-container {
+  .form {
     width: 90%;
   }
-  .login-holder {
+  .inputfields {
     padding-top: 15px;
   }
 }
@@ -116,7 +128,7 @@ h3 {
   h3 {
     padding-top: 80px;
   }
-  .login-container {
+  .form {
     width: 90%;
   }
 }

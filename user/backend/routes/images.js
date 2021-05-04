@@ -44,7 +44,7 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
     const pythonScriptCommand = `python ${pythonScriptPath}  ${user._id}`;
     const envName = 'py36';
     const condaCommand = `conda run -n ${envName}`;
-
+    
     const child = exec(`${condaCommand} ${pythonScriptCommand}`);
 
     child.stdout.once('data', async (data) => {
@@ -60,7 +60,6 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
          * }
          */
         try {
-
           const imageFolderPath = path.join(__dirname, '..', 'python-folders', 'predict-files', 'predict_images', `${user._id}`);
           const uploadedImage = fs.readdirSync(imageFolderPath)[0];
           const imagePath = path.join(imageFolderPath, uploadedImage);
@@ -73,20 +72,14 @@ router.post('/scan', verifyAccessToken, async (req, res, next) => {
             if (err) throw createError.InternalServerError();
           });
 
-          // generate unique hash for image name
-          const imageName = genRandomString(40);
-
           sharp(imagePath) // resize the image to width: 250px (height is auto scale)
             .resize(250)
-            .toFile(path.join(savePath, `${imageName}.jpg`))
+            .toFile(path.join(savePath, uploadedImage))
             .catch((err) => {
               if (err) throw createError.InternalServerError();
             });
 
-          imagePath = '';
-          savePath = '';
-
-          await insertNewHistory(userHistory, message, imageName);
+          await insertNewHistory(userHistory, message, uploadedImage.split('.')[0]);
 
           return res.status(200).send(message);
         } catch (err) {

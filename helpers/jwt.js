@@ -1,9 +1,15 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
 const User = require('../models/User');
+const redis = require('./redis');
 require('dotenv').config();
 
-const checkIfUserIsBanned = async (userId) => {
+const EXP_TIME = 5184000; //60 days
+
+const checkIfUserIsBanned = async (userId, isAdmin) => {
+  if (isAdmin) {
+    return false;
+  }
   const user = await User.findById(userId);
   if (user.banned) {
     return true;
@@ -16,7 +22,7 @@ const signAccessToken = (userId) => {
     const payload = {};
     const secret = process.env.JWT_SECRET;
     const options = {
-      expiresIn: '1y',
+      expiresIn: '60d',
       audience: userId,
     };
     JWT.sign(payload, secret, options, (err, token) => {
@@ -24,7 +30,13 @@ const signAccessToken = (userId) => {
         console.log(err);
         reject(createError.InternalServerError());
       }
-      resolve(token);
+      redis.SET(userId, token, 'EX', EXP_TIME, (error, reply) => {
+        if (error) {
+          console.log(error);
+          return reject(createError.InternalServerError());
+        }
+        resolve(token);
+      });
     });
   });
 };
@@ -42,12 +54,22 @@ const verifyAccessToken = (req, res, next) => {
       return next(createError.Unauthorized(message));
     }
     const userId = payload['aud'];
-    checkIfUserIsBanned(userId).then((banned) => {
-      if (banned) {
-        return next(createError.Forbidden());
+    redis.GET(userId, (error, reply) => {
+      if (error) {
+        console.log(error);
+        return next(createError.InternalServerError()); //500
       }
-      req.payload = payload;
-      next();
+      if (!reply || token !== reply) {
+        return next(createError.Unauthorized()); //401
+      }
+      const isAdmin = req.headers['isadmin'] === 'true' ? true : false;
+      checkIfUserIsBanned(userId, isAdmin).then((banned) => {
+        if (banned) {
+          return next(createError.Forbidden()); //403
+        }
+        req.payload = payload;
+        next();
+      });
     });
   });
 };
