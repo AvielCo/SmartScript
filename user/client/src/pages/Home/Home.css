@@ -117,9 +117,10 @@ p {
   margin: 0 auto;
 }
 
-/* .scan h3 {
-  padding-top: 10vh;
-} */
+.scan h3 {
+  font-weight: 700;
+  font-size: 5rem;
+}
 
 .scan p {
   font-size: 1.5rem;

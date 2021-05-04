@@ -9,8 +9,6 @@ import { Upload } from 'antd';
 import Button from '../../components/Buttons/InputButton';
 import { HashLink as HashLink } from 'react-router-hash-link';
 
-
-
 import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
 
@@ -98,9 +96,7 @@ function ScanSection({ isLoggedIn }) {
     <section className='scan' id='scan'>
       <div className='scan-container'>
         <form className='scan-btn-holder' onSubmit={handleImageChange}>
-          <h3>
-            <bold>Upload and Predict</bold>
-          </h3>
+          <h3>Upload and Predict</h3>
           <p>Upload an image and click on predict to see results!</p>
           <Upload
             action={`${process.env.REACT_APP_API_ADDRESS}/api/images/upload`}
@@ -127,7 +123,6 @@ function ScanSection({ isLoggedIn }) {
   );
 }
 
-
 function Home({ isLoggedIn, setIsLoggedIn }) {
   return (
     <>
@@ -136,7 +131,6 @@ function Home({ isLoggedIn, setIsLoggedIn }) {
         <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <LandingSection />
         <ScanSection isLoggedIn={isLoggedIn} />
-        
       </div>
     </>
   );
