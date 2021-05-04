@@ -1,7 +1,7 @@
 span.MuiButton-contained,
 button.MuiButton-contained {
-  width: 250px;
-  height: 50px;
+  width: 400px;
+  height: 3.5rem;
   background-color: #093263;
   border-radius: 50px;
   color: #f2f2f2;
@@ -11,6 +11,9 @@ button.MuiButton-contained {
   outline: none;
 }
 
+span.MuiButton-label {
+  font-size: 20px;
+}
 .loader {
   margin-left: 20px;
 }
