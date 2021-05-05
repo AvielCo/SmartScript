@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const createError = require('http-errors');
 const history = require('connect-history-api-fallback');
 const { createServer } = require('../../helpers/https');
+const path = require("path");
 require('dotenv').config();
 require('../../helpers/mongodb');
 
@@ -18,6 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //* Routes
+app.get("/.well-known/pki-validation/FEE6D8CBA78F8BD2D35CDAAF9D93C836.txt", (req, res, next) => {
+  res.sendFile(path.join(__dirname, ".well-known", "pki-validation", "FEE6D8CBA78F8BD2D35CDAAF9D93C836.txt"));
+});
 
 //* Upload image routes
 app.use('/api/images', require('./routes/images'));
