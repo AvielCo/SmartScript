@@ -27,6 +27,7 @@ user/backend/key.pem
 user/backend/cert.pem
 user/backend/.well-known
 user/client/public
+helpers/certificate
 package-lock.json
 */node_modules/
 node_modules
