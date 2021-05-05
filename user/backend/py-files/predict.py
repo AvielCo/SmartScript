@@ -4,12 +4,17 @@ import cv2
 import numpy as np
 import sys
 import json
+import random
+import string
 from dual_print import dual_print
 
 from tensorflow.keras.models import load_model
 from consts import *
 from crop import process_image
 from general import maintain_aspect_ratio_resize
+
+def id_generator(size=40, chars=string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
 # Get data after the PreProcessing
@@ -42,14 +47,13 @@ def build_prediction_dataset():
     Returns: dataset contains patches of the same image
 
     """
-    user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images")
-    user_predict_patches_path = os.path.join(PREDICT_DIR, "predict_patches", user_id)
-    try:
-        image = os.listdir(os.path.join(user_predict_image_path, user_id))[0]
-    except IndexError:
-        raise IndexError("Image to predict not found.")
-
-    process_image(path=user_predict_image_path, folder_name=user_id, image_name=image)
+    input_folder_name = "guests"
+    output_folder_name = random_id
+    images_to_predict_path = os.path.join(PREDICT_DIR, "predict-images")
+    if user_id:
+        input_folder_name = output_folder_name = user_id
+    
+    process_image(images_to_predict_path, input_folder_name, output_folder_name, image_name)
 
     dataset = load_patches_from_path(user_predict_patches_path)
     return dataset
@@ -124,7 +128,7 @@ def predict_on_shape():
         os.makedirs(MODELS_DIR)
     except FileExistsError:
         pass
-    model = load_model(os.path.join(MODELS_DIR, "main.h5"))
+    # model = load_model(os.path.join(MODELS_DIR, "main.h5"))
     try:
         dataset = build_prediction_dataset()
     except Exception as e:
@@ -134,7 +138,10 @@ def predict_on_shape():
             pass
         finally:
             raise Exception(e)
+    shutil.rmtree(user_predict_patches_path)
 
+    print(json.dumps({"success":True, "origin": "predicted_origin", "shape": "predicted_shape", "probability": "probability"}))
+    exit(0)
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
     dual_print("Predicting {} patches...".format(len(dataset)))
@@ -143,14 +150,14 @@ def predict_on_shape():
     dual_print(f"Done!\n{predicted_shape}: {probability}%")
     predict_on_origin(predicted_shape, dataset)
 
-user_id = sys.argv[1]
-user_predict_image_path = os.path.join(PREDICT_DIR, "predict_images", user_id)
-user_predict_patches_path = os.path.join(PREDICT_DIR, "predict_patches", user_id)
+image_name = sys.argv[1]
+user_id = False
+random_id = id_generator()
 try:
-    os.makedirs(user_predict_image_path)
-    del(user_predict_image_path)
-except FileExistsError:
-    pass
+    user_id = sys.argv[2]
+    user_predict_patches_path = os.path.join(PREDICT_DIR, "predict-patches", user_id)
+except IndexError:
+    user_predict_patches_path = os.path.join(PREDICT_DIR, "predict-patches", random_id)
 try:
     shutil.rmtree(user_predict_patches_path)
 except FileNotFoundError:

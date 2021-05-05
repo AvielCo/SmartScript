@@ -7,7 +7,7 @@ const { createServer } = require('../../helpers/https');
 require('dotenv').config();
 require('../../helpers/mongodb');
 
-const PORT = process.env.PORT || 8008;
+const PORT = process.env.PORT || 8080;
 
 //* Middlewares
 const app = express();
@@ -28,7 +28,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profile'));
 
 //! 404 Error handling
-app.use(async (req, res, next) => {
+app.use((req, res, next) => {
   next(createError.NotFound());
 });
 

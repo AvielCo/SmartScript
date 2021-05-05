@@ -1,29 +1,29 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const morgan = require('morgan');
-const createError = require('http-errors');
-const history = require('connect-history-api-fallback');
-require('dotenv').config();
-require('../../helpers/mongodb');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const morgan = require("morgan");
+const createError = require("http-errors");
+const history = require("connect-history-api-fallback");
+require("dotenv").config();
+require("../../helpers/mongodb");
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8008;
 
 //* Middlewares
 const app = express();
 app.use(cors());
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(history());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/', express.static(path.join(__dirname, 'build')));
+app.use("/", express.static(path.join(__dirname, "build")));
 
 //* Routes
 
 //* Authentication routes
-app.use('/api/auth', require('./routes/auth'));
+app.use("/api/auth", require("./routes/auth"));
 
-app.use('/api/actions', require('./routes/actions'));
+app.use("/api/actions", require("./routes/actions"));
 
 //! 404 Error handling
 app.use(async (req, res, next) => {

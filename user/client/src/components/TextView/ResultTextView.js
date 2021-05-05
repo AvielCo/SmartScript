@@ -1,8 +1,8 @@
-import { Typography } from 'antd';
-import React from 'react';
-import './ResultTextView.css';
+import { Typography } from "antd";
+import React from "react";
+import "./ResultTextView.css";
 
-const ResultTextView = ({ result }) => {
+const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
   const { Text, Paragraph } = Typography;
   return (
     <div>
@@ -15,7 +15,7 @@ const ResultTextView = ({ result }) => {
           </div>
         )}
       </div>
-      {result.success && <Paragraph strong>Added to your history, check your profile.</Paragraph>}
+      {result.success && saved ? <Paragraph strong>Added to your history, check your profile.</Paragraph> : result.success && <Paragraph strong>{reason}</Paragraph>}
     </div>
   );
 };

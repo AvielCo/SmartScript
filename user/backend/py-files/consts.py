@@ -17,7 +17,7 @@ ORIENTAL = "oriental"
 YEMENITE = "yemenite"
 MAIN_MODEL = "main"
 
-PROJECT_DIR = os.path.join(os.getcwd(), "user", "backend", "python-folders")
+PROJECT_DIR = os.path.join(os.getcwd(), "python-folders")
 PREDICT_DIR = os.path.join(PROJECT_DIR, "predict-files")
 
 INPUT_PATH = os.path.join(PROJECT_DIR, INPUT)

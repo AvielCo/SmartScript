@@ -3,7 +3,6 @@ import { NavBar, ResultTextView } from '../../components';
 import pic from '../../assets/landing-bg.jpg';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
-
 import { getAccessToken } from '../../helpers';
 import { Upload } from 'antd';
 import Button from '../../components/Buttons/InputButton';
@@ -31,6 +30,16 @@ function LandingSection() {
 function ScanSection({ isLoggedIn }) {
   const [imageUri, setImageUri] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState();
+  const [imageDetails, setImageDetails] = useState({
+    fileName: "",
+    filePath: "",
+  });
+  const [savedToHistory, setSavedToHistory] = useState({
+    saved: true,
+    reason: "",
+  });
+
   const [result, setResult] = useState({
     success: false,
     origin: '',
@@ -38,26 +47,18 @@ function ScanSection({ isLoggedIn }) {
     probability: '',
   });
 
-  const handleImageChange = async (info) => {
-    switch (info.file.status) {
-      case 'uploading':
-        setIsLoading(true);
-        break;
-      case 'done':
-        setIsLoading(false);
-        setImageUri(URL.createObjectURL(info.file.originFileObj));
-        break;
-      case 'error':
-        setIsLoading(false);
-        break;
-      default:
-        break;
+  const handleImageChange = async (event) => {
+    event.preventDefault();
+    if (event.target.files && event.target.files[0]) {
+      setSelectedImage(event.target.files[0]);
+      setImageUri(URL.createObjectURL(event.target.files[0]));
     }
   };
 
-  const handlePredict = () => {
-    if (!imageUri) {
-      toast.error('Upload an image before predict.');
+  const handlePredict = (event) => {
+    event.preventDefault();
+    if (!imageUri && !imageDetails && !selectedImage) {
+      toast.error("Upload an image before predict.");
       return;
     }
     if (isLoading) {
@@ -67,21 +68,27 @@ function ScanSection({ isLoggedIn }) {
     toast.info('Predicting image, please wait.');
     setIsLoading(true);
 
-    let accessToken = getAccessToken();
-
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + accessToken,
+        Authorization: "Bearer " + getAccessToken(),
+        "content-type": "multipart/form-data",
       },
     };
 
+    const fd = new FormData();
+    fd.append("file", selectedImage, selectedImage.name);
+
     axios
-      .post(`${process.env.REACT_APP_API_ADDRESS}/api/images/scan`, null, cfg)
+      .post(`${process.env.REACT_APP_API_ADDRESS}/api/images/predict`, fd, getAccessToken() ? cfg : { headers: { "content-type": "multipart/form-data" } })
       .then((res) => {
         if (res.status === 200) {
+          const { savedToHistory: saved, reason } = res.data;
+          if (!saved) {
+            setSavedToHistory({ saved, reason });
+          }
+          toast.success("Predicting image done.");
           setResult(res.data);
           setIsLoading(false);
-          toast.success('Predicting image done, see the result in your profile page.');
         }
       })
       .catch((err) => {
@@ -93,24 +100,17 @@ function ScanSection({ isLoggedIn }) {
   };
 
   return (
-    <section className='scan' id='scan'>
-      <div className='scan-container'>
-        <form className='scan-btn-holder' onSubmit={handleImageChange}>
+    <section className="scan" id="scan">
+      <div className="scan-container">
+        <form className="scan-btn-holder" onSubmit={handlePredict}>
           <h3>Upload and Predict</h3>
-          <p>Upload an image and click on predict to see results!</p>
-          <Upload
-            action={`${process.env.REACT_APP_API_ADDRESS}/api/images/upload`}
-            headers={{ Authorization: 'Bearer ' + getAccessToken() }}
-            onChange={handleImageChange}
-            accept='image/*'
-            maxCount={1}
-            showUploadList={false}
-          >
-            <Button className='scan-btn' component='span' type='submit' name={'Upload'} disabled={isLoading} />
-          </Upload>
-          <Button className='scan-btn' onClick={handlePredict} name={'Predict'} disabled={isLoading}></Button>
-          <div className='scan-btn'></div>
-          <ResultTextView result={result} />
+          <input accept="image/*" onChange={handleImageChange} id="upload-button" type="file" style={{ display: "none" }} />
+          <label htmlFor="upload-button">
+            <Button className="scan-btn" component="span" name={"Upload"} disabled={isLoading} />
+          </label>
+          <Button className="scan-btn" type="submit" name={"Predict"} disabled={isLoading}></Button>
+          <div className="scan-btn"></div>
+          <ResultTextView result={result} savedToHistory={savedToHistory} />
         </form>
 
         {imageUri && (
