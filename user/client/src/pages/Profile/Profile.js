@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { NavBar, List, Searchbar } from "../../components";
-import { ToastContainer, toast } from "react-toastify";
-import { Redirect } from "react-router";
-import axios from "axios";
-import { Skeleton } from "antd";
-import { getAccessToken } from "../../helpers";
+import React, { useState, useEffect } from 'react';
+import { NavBar, List, Searchbar } from '../../components';
+import { ToastContainer, toast } from 'react-toastify';
+import { Redirect } from 'react-router';
+import axios from 'axios';
+import { Skeleton } from 'antd';
+import { getAccessToken } from '../../helpers';
 
-import "react-toastify/dist/ReactToastify.css";
-import "./Profile.css";
+import 'react-toastify/dist/ReactToastify.css';
+import './Profile.css';
 
 function Profile() {
   const [userData, setUserData] = useState({
     details: {
-      email: "",
-      username: "",
-      name: "",
+      email: '',
+      username: '',
+      name: '',
     },
     history: [],
   });
   const [loadingData, setLoadingData] = useState(true);
   const [isDataChanged, setIsDataChanged] = useState(true);
-  const [query, setQuery] = useState({ searchBy: [], searchType: "none" });
+  const [query, setQuery] = useState({ searchBy: [], searchType: 'none' });
 
   const TextFieldsHolder = () => {
     const textFields = [
-      { label: "Email", value: userData.details.email },
-      { label: "Username", value: userData.details.username },
-      { label: "Name", value: userData.details.name },
+      { label: 'Email', value: userData.details.email },
+      { label: 'Username', value: userData.details.username },
+      { label: 'Name', value: userData.details.name },
     ];
     return (
-      <div className="profile-textfields">
+      <div className='profile-textfields'>
         {textFields.map((textField) => {
           return (
-            <div className="textfield">
+            <div className='textfield'>
               <label>
                 <u>{textField.label}</u>
               </label>
@@ -51,7 +51,7 @@ function Profile() {
     setLoadingData(true);
     const cfg = {
       headers: {
-        Authorization: "Bearer " + getAccessToken(),
+        Authorization: 'Bearer ' + getAccessToken(),
       },
     };
     axios
@@ -70,7 +70,7 @@ function Profile() {
 
     const cfg = {
       headers: {
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       },
     };
     axios
@@ -86,7 +86,7 @@ function Profile() {
               byteNumbers[i] = byteCharacters.charCodeAt(i);
             }
             const byteArray = new Uint8Array(byteNumbers);
-            const imageBlob = new Blob([byteArray], { type: "image/jpeg" });
+            const imageBlob = new Blob([byteArray], { type: 'image/jpeg' });
             const image = URL.createObjectURL(imageBlob);
             event.image = image;
             return event;
@@ -98,23 +98,23 @@ function Profile() {
       })
       .catch((err) => {
         setLoadingData(false);
-        toast("Internal Server Error.");
+        toast('Internal Server Error.');
       });
   }, [isDataChanged]);
 
   return (
     <React.Fragment>
       {!getAccessToken() ? (
-        <Redirect to="/home" />
+        <Redirect to='/home' />
       ) : (
         <>
-          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-          <div className="profile-page">
+          <ToastContainer position='top-left' autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+          <div className='profile-page'>
             <NavBar isLoggedIn />
-            <div className="profile-form">
+            <div className='profile-form'>
               <TextFieldsHolder />
             </div>
-            <div className="history-container">
+            <div className='history-container'>
               <Searchbar setQuery={setQuery} />
               <Skeleton loading={loadingData} active round>
                 <List data={userData.history} query={query} removeItem={removeItemFromHistory} />

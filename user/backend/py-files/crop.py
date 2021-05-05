@@ -1,6 +1,6 @@
 import inspect
 from datetime import datetime
-
+import shutil
 import cv2
 import numpy as np
 from PIL import Image
@@ -88,7 +88,7 @@ def crop_image_to_patches(bw_img, grayscale_img, image_width, image_height, imag
 
             else:
                 save_location = os.path.join(PREDICT_DIR,
-                                             "predict_patches",
+                                             "predict-patches",
                                              folder_name,
                                              image_name + "_" + str(i) + ".jpg")
 
@@ -117,16 +117,16 @@ def binarization(img):
     return img
 
 
-def crop_image_edges(image_path, folder_name):
+def crop_image_edges(image_path, folder_name, buffer_path):
     try:
-        os.makedirs(os.path.join(BUFFER_PATH, folder_name))
+        os.makedirs(buffer_path)
     except FileExistsError:
         pass
-    img_path = os.path.join(BUFFER_PATH, folder_name, "buffer_img.jpg")
+    img_path = os.path.join(buffer_path, "buffer_img.jpg")
     if os.path.exists(img_path):
         os.remove(img_path)
-    img_path_left = os.path.join(BUFFER_PATH, folder_name, "buffer_img_1.jpg")
-    img_path_right = os.path.join(BUFFER_PATH, folder_name, "buffer_img_2.jpg")
+    img_path_left = os.path.join(buffer_path, "buffer_img_1.jpg")
+    img_path_right = os.path.join(buffer_path, "buffer_img_2.jpg")
     try:
         os.remove(img_path_left)
     except FileNotFoundError:
@@ -174,7 +174,7 @@ def crop_image_edges(image_path, folder_name):
             raise Exception("Unknown error, please try again.")
 
 
-def process_image(path, folder_name, image_name, shape_type=None):
+def process_image(path, input_folder_name, output_folder_name, image_name, shape_type=None):
     """
     This function process an image
         1. remove the edges of the image
@@ -185,17 +185,19 @@ def process_image(path, folder_name, image_name, shape_type=None):
     imageName (str): The name of the scanned image.
     folderName (str): The name of the folder that the scan is saved in.
     """
-    full_img_path = os.path.join(path, folder_name, image_name)
+    full_img_path = os.path.join(path, input_folder_name, image_name)
+    full_buffer_path = os.path.join(BUFFER_PATH, output_folder_name)
+    
     try:
-        crop_image_edges(full_img_path, folder_name)
+        crop_image_edges(full_img_path, input_folder_name, full_buffer_path)
     except Exception as e:
         os.remove(full_img_path)
         raise e
-    FULL_BUFFER_PATH = os.path.join(BUFFER_PATH, folder_name)
-    for _, _, files in os.walk(FULL_BUFFER_PATH):
+    
+    for _, _, files in os.walk(full_buffer_path):
         i = 0
         for file in files:
-            file_path = os.path.join(FULL_BUFFER_PATH, file)
+            file_path = os.path.join(full_buffer_path, file)
             grayscale_img = cv2.imread(file_path, 0)  # Read the image from the folder with grayscale mode
             image_name_no_extension = os.path.splitext(image_name)[0]  # For the log
             if i == 0:
@@ -207,17 +209,15 @@ def process_image(path, folder_name, image_name, shape_type=None):
             bw_img = binarization(grayscale_img)  # Open pic in BW
 
             try:
-                to_continue = crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, folder_name, shape_type)
+                to_continue = crop_image_to_patches(bw_img, grayscale_img, w, h, image_name_no_extension, output_folder_name, shape_type)
                 if to_continue is False:
                     return False
             except Exception as e:
                 raise e
-            i += 1
-            
+            i += 1    
             dual_print(f"[{inspect.stack()[0][3]}] - Image {image_name_no_extension} Cropped successfully.")
         if(shape_type):
             os.remove(full_img_path)
-
 
 def crop_files(images_input, folder_name: str, path: str):
     """
