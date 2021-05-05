@@ -43,5 +43,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-//* Nodejs listen to PORT
-app.listen(PORT, () => console.log(`Running on ${PORT}`));
+createServer(app).listen(PORT, () => console.log(`Running on ${PORT}`));
