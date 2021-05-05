@@ -25,6 +25,7 @@ user/backend/py-files/input
 user/backend/py-files/python-folders
 user/backend/key.pem
 user/backend/cert.pem
+user/backend/.well-known
 user/client/public
 package-lock.json
 */node_modules/
