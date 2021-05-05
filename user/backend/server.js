@@ -8,13 +8,14 @@ const path = require("path");
 require("dotenv").config();
 require("../../helpers/mongodb");
 
+
 const PORT = process.env.PORT || 8080;
 
 //* Middlewares
 const app = express();
 app.use(cors());
 app.use(history());
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -24,12 +25,12 @@ app.get("/.well-known/pki-validation/FEE6D8CBA78F8BD2D35CDAAF9D93C836.txt", (req
 });
 
 //* Upload image routes
-app.use("/api/images", require("./routes/images"));
+app.use('/api/images', require('./routes/images'));
 
 //* Authentication routes
-app.use("/api/auth", require("./routes/auth"));
+app.use('/api/auth', require('./routes/auth'));
 
-app.use("/api/profile", require("./routes/profile"));
+app.use('/api/profile', require('./routes/profile'));
 
 //! 404 Error handling
 app.use((req, res, next) => {
@@ -46,7 +47,8 @@ app.use((err, req, res, next) => {
     },
   });
 });
-if (process.env.PRODUCTION) {
+
+if (process.env.PRODUCTION === "true") {
   createServer(app).listen(PORT, () => console.log(`Running on ${PORT}`));
 } else {
   app.listen(PORT, () => console.log(`Running on ${PORT}`));
