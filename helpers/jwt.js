@@ -1,8 +1,8 @@
-const JWT = require('jsonwebtoken');
-const createError = require('http-errors');
-const User = require('../models/User');
-const redis = require('./redis');
-require('dotenv').config();
+const JWT = require("jsonwebtoken");
+const createError = require("http-errors");
+const User = require("../models/User");
+const redis = require("./redis");
+require("dotenv").config();
 
 const EXP_TIME = 5184000; //60 days
 
@@ -22,7 +22,7 @@ const signAccessToken = (userId) => {
     const payload = {};
     const secret = process.env.JWT_SECRET;
     const options = {
-      expiresIn: '60d',
+      expiresIn: "60d",
       audience: userId,
     };
     JWT.sign(payload, secret, options, (err, token) => {
@@ -30,7 +30,7 @@ const signAccessToken = (userId) => {
         console.log(err);
         reject(createError.InternalServerError());
       }
-      redis.SET(userId, token, 'EX', EXP_TIME, (error, reply) => {
+      redis.SET(userId, token, "EX", EXP_TIME, (error, reply) => {
         if (error) {
           console.log(error);
           return reject(createError.InternalServerError());
@@ -41,19 +41,22 @@ const signAccessToken = (userId) => {
   });
 };
 
-const verifyAccessToken = (req, res, next) => {
-  if (!req.headers['authorization']) {
+const verifyAccessToken = async (req, res, next) => {
+  const { originalUrl } = req;
+  if (!req.headers["authorization"] && originalUrl === "/api/images/predict") {
+    return next();
+  } else if (!req.headers["authorization"]) {
     return next(createError.Unauthorized());
   }
-  const authHeader = req.headers['authorization'];
-  const bearerToken = authHeader.split(' ');
+  const authHeader = req.headers["authorization"];
+  const bearerToken = authHeader.split(" ");
   const token = bearerToken[1];
   JWT.verify(token, process.env.JWT_SECRET, (err, payload) => {
     if (err) {
-      const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+      const message = err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
       return next(createError.Unauthorized(message));
     }
-    const userId = payload['aud'];
+    const userId = payload["aud"];
     redis.GET(userId, (error, reply) => {
       if (error) {
         console.log(error);
@@ -62,7 +65,7 @@ const verifyAccessToken = (req, res, next) => {
       if (!reply || token !== reply) {
         return next(createError.Unauthorized()); //401
       }
-      const isAdmin = req.headers['isadmin'] === 'true' ? true : false;
+      const isAdmin = req.headers["isadmin"] === "true" ? true : false;
       checkIfUserIsBanned(userId, isAdmin).then((banned) => {
         if (banned) {
           return next(createError.Forbidden()); //403

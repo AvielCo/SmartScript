@@ -1,23 +1,34 @@
-.home {
-  font-family: 'Roboto', sans-serif;
-  font-size: 1rem;
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+:root {
+  --clr-auth-background-dark: #046364;
+  --clr-auth-background-light: #0aeef2;
+
+  --font-family: 'Roboto', sans-serif;
+}
+* > h2 h3 p,
+p > bold,
+form > h3 {
+  font-family: var(--font-family);
 }
 
 h3,
 h2 {
   padding-top: 50px;
-  font-family: 'Lobster', sans-serif;
 }
-
+* > bold {
+  font-weight: 500;
+  font-size: 5rem;
+  margin: 0;
+  padding-top: 0;
+}
+/* 
 p {
   font-family: Rubik;
-}
+} */
 /* ---------------------LANDING------------------------ */
 .landing {
   min-height: 100vh;
-  background: url('../../assets/landing-bg.jpg') no-repeat center fixed;
-  background-size: cover;
-  opacity: 0.5;
+  background: linear-gradient(to bottom, var(--clr-auth-background-dark), var(--clr-auth-background-light));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,20 +47,22 @@ p {
   color: #f2f2f2;
   margin: 0 auto;
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 400;
   border-radius: 15px;
   line-height: 2.5em;
+  margin-bottom: 2em;
 }
 
-p > h2 {
-  color: #f2f2f2;
-  font-weight: 500;
-  font-size: 4rem;
-  margin: 0;
-  padding-top: 0;
+.landing-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+.move-to-scan {
+  width: 400px;
+}
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
   .landing p {
     -webkit-backdrop-filter: blur(10px);
@@ -99,15 +112,19 @@ p > h2 {
 } */
 /* ---------------------SCAN------------------------ */
 .scan {
-  background: #cac0b4;
-  min-height: 50vh;
+  background: linear-gradient(to bottom, var(--clr-auth-background-light) 75%, var(--clr-auth-background-dark));
+  min-height: 70vh;
   margin: 0 auto;
 }
 
 .scan h3 {
-  padding-top: 10vh;
+  font-weight: 700;
+  font-size: 5rem;
 }
 
+.scan p {
+  font-size: 1.5rem;
+}
 .scan-container {
   display: flex;
   justify-content: center;
@@ -171,66 +188,4 @@ p > h2 {
     width: 90%;
     margin-top: 20px;
   }
-}
-
-/* ---------------------ABOUT------------------------ */
-
-.about {
-  background: #9c420b;
-  min-height: 100vh;
-}
-
-.about-content {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  gap: 10px;
-}
-.about-text-holder {
-  display: flex;
-  flex-direction: column;
-  width: 40%;
-  padding: 5px 20px;
-  gap: 30px;
-}
-
-.about-text-holder p {
-  color: rgb(230, 224, 224);
-  font-weight: 400;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-.image-rotate-holder {
-  width: 40%;
-}
-
-.rotating-image {
-  width: 90%;
-  height: 90%;
-}
-
-/* ---------------------WWA------------------------ */
-.wwa {
-  background: #046364;
-  min-height: 100vh;
-}
-
-.wwa > * {
-  text-align: center;
-  color: #f2f2f2;
-}
-
-.wwa p {
-  font-size: 1.5rem;
-  width: 80%;
-  margin: 0 auto;
-  padding-bottom: 15px;
-}
-.cards-holder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 50px;
-  padding-bottom: 15px;
 }
