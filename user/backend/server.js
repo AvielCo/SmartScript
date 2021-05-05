@@ -1,12 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const createError = require('http-errors');
-const history = require('connect-history-api-fallback');
-const { createServer } = require('../../helpers/https');
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const createError = require("http-errors");
+const history = require("connect-history-api-fallback");
+const { createServer } = require("../../helpers/https");
 const path = require("path");
-require('dotenv').config();
-require('../../helpers/mongodb');
+require("dotenv").config();
+require("../../helpers/mongodb");
+
 
 const PORT = process.env.PORT || 8080;
 
@@ -47,4 +48,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-createServer(app).listen(PORT, () => console.log(`Running on ${PORT}`));
+if (process.env.PRODUCTION === "true") {
+  createServer(app).listen(PORT, () => console.log(`Running on ${PORT}`));
+} else {
+  app.listen(PORT, () => console.log(`Running on ${PORT}`));
+}
