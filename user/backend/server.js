@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
     },
   });
 });
-if (process.env.PRODUCTION) {
+if (process.env.PRODUCTION === "true") {
   createServer(app).listen(PORT, () => console.log(`Running on ${PORT}`));
 } else {
   app.listen(PORT, () => console.log(`Running on ${PORT}`));
