@@ -138,10 +138,7 @@ def predict_on_shape():
             pass
         finally:
             raise Exception(e)
-    shutil.rmtree(user_predict_patches_path)
-
-    print(json.dumps({"success":True, "origin": "predicted_origin", "shape": "predicted_shape", "probability": "probability"}))
-    exit(0)
+            
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
     dual_print("Predicting {} patches...".format(len(dataset)))
@@ -168,5 +165,6 @@ finally:
 try:
     predict_on_shape()
 except Exception as e:
+    shutil.rmtree(user_predict_patches_path)
     print(json.dumps({"success": False, "reason": str(e)}))
     
