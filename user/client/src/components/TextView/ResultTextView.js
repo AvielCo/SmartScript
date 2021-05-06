@@ -3,19 +3,26 @@ import React from "react";
 import "./ResultTextView.css";
 
 const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
-  const { Text, Paragraph } = Typography;
+  const { Paragraph } = Typography;
   return (
     <div>
-      <div className='results'>
+      <div className="results">
         {result.success && (
-          <div className='results-text-view'>
-            <Paragraph className='results-text'>
-              {`${result.origin}-${result.shape} `} {result.probability}%
+          <>
+            <div className="results-text-view">
+              <Paragraph className="results-text" underline>
+                Results:
+              </Paragraph>
+              <Paragraph className="results-text result">
+                {`${result.origin}-${result.shape} `} {result.probability}%
+              </Paragraph>
+            </div>
+            <Paragraph strong underline>
+              {saved ? "Added to your history, check your profile." : reson}
             </Paragraph>
-          </div>
+          </>
         )}
       </div>
-      {result.success && saved ? <Paragraph strong>Added to your history, check your profile.</Paragraph> : result.success && <Paragraph strong>{reason}</Paragraph>}
     </div>
   );
 };

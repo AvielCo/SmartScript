@@ -12,18 +12,15 @@ const getCertificate = () => {
     key: fs.readFileSync(key),
     cert: fs.readFileSync(certificate),
     ca: fs.readFileSync(ca),
+    hostname: "smartscript.sce-fpm.com",
+    rejectUnauthorized: false,
+    requestCert: true,
   };
 };
 
 const createServer = (app) => {
   const certificate = getCertificate();
-  const tlsServer = tls.createServer(certificate, (socket) => {
-    console.log("[TLS] Connected ", socket.authorized ? "authorized" : "unauthorized");
-    socket.setEncoding("utf8");
-    socket.pipe(socket);
-  });
-
-  return https.createServer(tlsServer, app);
+  return https.createServer(certificate, app);
 };
 
 module.exports = { createServer };
