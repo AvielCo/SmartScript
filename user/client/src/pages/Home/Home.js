@@ -16,8 +16,11 @@ function LandingSection() {
     <section className="landing">
       <div className="landing-div">
         <p>
-          <bold>SmartScript</bold> was developed to solve the problem in categorizing hebrew ancient scripts. This website will identify the origin and the shape of the script given to it by scanning
-          the image given to it by the user. Additionally, the system will allow the user to save previous uploads for easy tracking.
+          <bold>SmartScript</bold>
+          <br />
+          This webpage was developed to recognize types and sub-types of medieval Hebrew scripts.
+          <br />
+          Please upload your manuscript page.
         </p>
         <HashLink to="home#scan" smooth>
           <Button className="move-to-scan" name={"Proceed to predict an image"}></Button>
@@ -100,6 +103,11 @@ function ScanSection({ isLoggedIn }) {
       <div className="scan-container">
         <form className="scan-btn-holder" onSubmit={handlePredict}>
           <h3>Upload and Predict</h3>
+          {!getAccessToken() && (
+            <p>
+              Please consider signing up to save previous uploads for future use. <br /> This will take less than a minute.
+            </p>
+          )}
           <input accept="image/*" onChange={handleImageChange} id="upload-button" type="file" style={{ display: "none" }} />
           <label htmlFor="upload-button">
             <Button className="scan-btn" component="span" name={"Upload"} disabled={isLoading} />
