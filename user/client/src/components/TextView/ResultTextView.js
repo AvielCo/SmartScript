@@ -18,7 +18,7 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
               </Paragraph>
             </div>
             <Paragraph strong underline>
-              {saved ? "Added to your history, check your profile." : reson}
+              {saved ? "Added to your history, check your profile." : reason}
             </Paragraph>
           </>
         )}
