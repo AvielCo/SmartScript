@@ -27,6 +27,9 @@ user/backend/key.pem
 user/backend/cert.pem
 user/backend/.well-known
 user/client/public
+user/client/.firebase
+user/client/.firebaserc
+user/client/firebase.json
 helpers/certificate
 package-lock.json
 */node_modules/

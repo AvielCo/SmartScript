@@ -24,6 +24,10 @@ app.get("/.well-known/pki-validation/FEE6D8CBA78F8BD2D35CDAAF9D93C836.txt", (req
   res.sendFile(path.join(__dirname, ".well-known", "pki-validation", "FEE6D8CBA78F8BD2D35CDAAF9D93C836.txt"));
 });
 
+app.get("/google-site-verification=BpPbKAZznUKSfZSw8-m2vb8M8Sh0-PHBzxGx9uJ48z4.txt", (req, res, next) => {
+  res.sendFile(path.join(__dirname, ".well-known", "pki-validation", "google-site-verification=BpPbKAZznUKSfZSw8-m2vb8M8Sh0-PHBzxGx9uJ48z4.txt"));
+});
+
 //* Upload image routes
 app.use('/api/images', require('./routes/images'));
 
