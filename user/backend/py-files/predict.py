@@ -114,7 +114,7 @@ def predict_on_origin(predicted_shape, dataset):
     model = load_model(os.path.join(MODELS_DIR, f"{predicted_shape}.h5"))
     predicted_origin, probability = extract_max_prediction(model, predicted_shape, dataset)
     shutil.rmtree(user_predict_patches_path)
-    print(json.dumps({"success": True, "origin": predicted_origin, "shape": predicted_shape, "probability": probability}))
+    print(json.dumps({"success": True, "origin": predicted_origin, "shape": predicted_shape, "probability": round(probability, 2)}))
     exit(0)
 
 
@@ -128,7 +128,7 @@ def predict_on_shape():
         os.makedirs(MODELS_DIR)
     except FileExistsError:
         pass
-    # model = load_model(os.path.join(MODELS_DIR, "main.h5"))
+    model = load_model(os.path.join(MODELS_DIR, "main.h5"))
     try:
         dataset = build_prediction_dataset()
     except Exception as e:

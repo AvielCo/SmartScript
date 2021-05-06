@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 :root {
   --clr-auth-background-dark: #046364;
   --clr-auth-background-light: #0aeef2;
 
-  --font-family: 'Roboto', sans-serif;
+  --font-family: "Roboto", sans-serif;
 }
 * > h2 h3 p,
 p > bold,
@@ -42,7 +42,7 @@ p {
 }
 .landing p {
   background-color: rgba(0, 0, 0, 0.3);
-  padding: 15px 30px;
+  padding: 15px 15px;
   width: 80%;
   color: #f2f2f2;
   margin: 0 auto;
@@ -51,7 +51,7 @@ p {
   font-weight: 400;
   border-radius: 15px;
   line-height: 2.5em;
-  margin-bottom: 2em;
+  margin: 90px, 0px, 0px, 0px;
 }
 
 .landing-div {
@@ -102,14 +102,7 @@ p {
     font-size: 0.9rem;
   }
 }
-/* @media screen and (max-width: 900px) and (max-height: 1024px) {
-  .landing p {
-    width: 80%;
-    font-size: 1.5rem;
-  }
-} */
-/* @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-} */
+
 /* ---------------------SCAN------------------------ */
 .scan {
   background: linear-gradient(to bottom, var(--clr-auth-background-light) 75%, var(--clr-auth-background-dark));
@@ -144,17 +137,12 @@ p {
 }
 
 .scan-img-holder {
-  width: 200px;
-  height: auto;
-  margin-left: 150px;
-  background-color: rgba(219, 219, 219, 255);
-  border: 2px solid #a7a7a7;
-  border-radius: 20px;
-  margin-top: 80px;
-  flex: 0.00001;
-  -webkit-animation: flexGrow 0.5s ease forwards;
-  -o-animation: flexGrow 0.5s ease forwards;
-  animation: flexGrow 0.5s ease forwards;
+  width: auto;
+  height: 400px;
+  margin-left: 10px;
+  -webkit-animation: flexGrow 0.2s ease forwards;
+  -o-animation: flexGrow 0.2s ease forwards;
+  animation: flexGrow 0.2s ease forwards;
 }
 
 /*image upload animation*/
@@ -175,7 +163,7 @@ p {
 }
 .scan-img-holder img {
   position: relative;
-  width: 100%;
+  width: auto;
   height: 100%;
   border-radius: 20px;
 }
