@@ -14,7 +14,7 @@
   font-family: "Roboto", sans-serif;
   font-weight: bolder;
 }
-
+.results-text > *,
 .results-text .result {
   font-weight: 900;
 }

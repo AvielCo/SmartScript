@@ -11,10 +11,10 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
           <>
             <div className="results-text-view">
               <Paragraph className="results-text" underline>
-                Results:
+                Results
               </Paragraph>
               <Paragraph className="results-text result">
-                {`${result.origin}-${result.shape} `} {result.probability}%
+                {`:   ${result.origin}-${result.shape} `} {result.probability}%
               </Paragraph>
             </div>
             <Paragraph strong underline>

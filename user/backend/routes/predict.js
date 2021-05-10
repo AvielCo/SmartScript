@@ -105,7 +105,7 @@ const predict = (data, req, res, next) => {
   });
 };
 
-router.post("/predict", verifyAccessToken, async (req, res, next) => {
+router.post("/", verifyAccessToken, async (req, res, next) => {
   try {
     await uploadFile(req, res)
       .then(async () => {

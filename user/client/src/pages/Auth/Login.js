@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useHistory, Redirect } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { Checkbox, Form } from "antd";
-import { InputButton, InputField, NavBar } from "../../components";
+import { InputButton, InputField } from "../../components";
 import { encryptStrings } from "../../helpers";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { getAccessToken } from "../../helpers";
@@ -11,7 +11,7 @@ import { getAccessToken } from "../../helpers";
 import "react-toastify/dist/ReactToastify.css";
 import "./Auth.css";
 
-function Login() {
+function Login({ setIsLoggedIn }) {
   const [inputUsername, setUsername] = useState("");
   const [inputPassword, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -47,8 +47,9 @@ function Login() {
           if (checked) {
             window.localStorage.setItem("accessToken", response.data.accessToken);
           }
+          setIsLoggedIn(true);
+          toast.success(`Logged in successfully!`);
           history.replace("/");
-          window.dispatchEvent("storage");
           return;
         }
       })
@@ -73,33 +74,29 @@ function Login() {
       {getAccessToken() ? (
         <Redirect to="/home" />
       ) : (
-        <>
-          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-          <NavBar />
-          <form onSubmit={handleSubmit} className="auth">
-            <div className="form">
-              <h3>Login</h3>
-              <div className="inputfields">
-                <Form.Item
-                  name="username"
-                  label="Username"
-                  rules={[
-                    { required: true, message: "Please enter your username." },
-                    { type: "text", message: "Please enter a valid username." },
-                  ]}>
-                  <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
-                </Form.Item>
-                <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please input your Password!" }]}>
-                  <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
-                </Form.Item>
-                <Checkbox className="check-box" checked={checked} onChange={(e) => setChecked(e.target.checked)}>
-                  Remember me
-                </Checkbox>
-                <InputButton name="Login" type="submit"></InputButton>
-              </div>
+        <form onSubmit={handleSubmit} className="auth">
+          <div className="form">
+            <h3>Login</h3>
+            <div className="inputfields">
+              <Form.Item
+                name="username"
+                label="Username"
+                rules={[
+                  { required: true, message: "Please enter your username." },
+                  { type: "text", message: "Please enter a valid username." },
+                ]}>
+                <InputField value="username" type="text" name="username" setProperty={setUsername} prefix={<UserOutlined />} />
+              </Form.Item>
+              <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please input your Password!" }]}>
+                <InputField value="password" type="password" name="password" setProperty={setPassword} prefix={<LockOutlined />} />
+              </Form.Item>
+              <Checkbox className="check-box" checked={checked} onChange={(e) => setChecked(e.target.checked)}>
+                Remember me
+              </Checkbox>
+              <InputButton name="Login" type="submit"></InputButton>
             </div>
-          </form>
-        </>
+          </div>
+        </form>
       )}
     </React.Fragment>
   );

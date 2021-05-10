@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useHistory, Redirect } from "react-router-dom";
-import { Form, Row } from "antd";
+import { Form } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined, KeyOutlined } from "@ant-design/icons";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import InputField from "../../components/InputField/InputField";
 import InputButton from "../../components/Buttons/InputButton";
-import NavBar from "../../components/NavBar/NavBar";
 import { encryptStrings, getAccessToken } from "../../helpers";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -39,12 +38,7 @@ function Register() {
       { encryptedName: inputName }
     );
 
-    registerUser(
-      encryptedEmail,
-      encryptedUsername,
-      encryptedPassword,
-      encryptedName
-    );
+    registerUser(encryptedEmail, encryptedUsername, encryptedPassword, encryptedName);
   };
 
   const registerUser = (email, username, password, name) => {
@@ -58,6 +52,8 @@ function Register() {
       .then(function (response) {
         setIsLoading(false);
         if (response.status === 200) {
+          toast.info(`Please log in with your username and password!`);
+          toast.info(`Welcome to SmartScript ${inputName}`);
           history.replace("/login");
           return;
         }
@@ -80,39 +76,35 @@ function Register() {
       {getAccessToken() ? (
         <Redirect to="/home" />
       ) : (
-        <>
-          <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-          <NavBar />
-          <form onSubmit={handleSubmit} className="auth">
-            <div className="form">
-              <h3>Register</h3>
-              <div className="inputfields">
-                <Form.Item name="email" label="Email" rules={[{ required: true, message: "Please enter your email." }]}>
-                  <InputField type="text" value="email" name="email" setProperty={setEmail} prefix={<MailOutlined />} />
-                </Form.Item>
+        <form onSubmit={handleSubmit} className="auth">
+          <div className="form">
+            <h3>Register</h3>
+            <div className="inputfields">
+              <Form.Item name="email" label="Email" rules={[{ required: true, message: "Please enter your email." }]}>
+                <InputField type="text" value="email" name="email" setProperty={setEmail} prefix={<MailOutlined />} />
+              </Form.Item>
 
-                <Form.Item name="username" label="Username" rules={[{ required: true, message: "Please enter a valid username." }]}>
-                  <InputField type="text" value="username" name="username" setProperty={setUsername} prefix={<LockOutlined />} />
-                </Form.Item>
+              <Form.Item name="username" label="Username" rules={[{ required: true, message: "Please enter a valid username." }]}>
+                <InputField type="text" value="username" name="username" setProperty={setUsername} prefix={<LockOutlined />} />
+              </Form.Item>
 
-                <Form.Item
-                  name="password"
-                  label="Password"
-                  rules={[
-                    { required: true, message: "Please enter a valid password." },
-                    { type: "email", message: "The input is not valid E-mail!" },
-                  ]}>
-                  <InputField type="password" value="password" name="password" setProperty={setPassword} prefix={<KeyOutlined />} />
-                </Form.Item>
+              <Form.Item
+                name="password"
+                label="Password"
+                rules={[
+                  { required: true, message: "Please enter a valid password." },
+                  { type: "email", message: "The input is not valid E-mail!" },
+                ]}>
+                <InputField type="password" value="password" name="password" setProperty={setPassword} prefix={<KeyOutlined />} />
+              </Form.Item>
 
-                <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please enter a valid name." }]}>
-                  <InputField type="text" value="name" name="name" setProperty={setName} prefix={<UserOutlined />} />
-                </Form.Item>
-                <InputButton name="Register" type="submit" />
-              </div>
+              <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please enter a valid name." }]}>
+                <InputField type="text" value="name" name="name" setProperty={setName} prefix={<UserOutlined />} />
+              </Form.Item>
+              <InputButton name="Register" type="submit" />
             </div>
-          </form>
-        </>
+          </div>
+        </form>
       )}
     </React.Fragment>
   );

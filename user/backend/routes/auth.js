@@ -46,9 +46,9 @@ router.post("/register", async (req, res, next) => {
     const newUser = await new User(newUserDetails).save();
     const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
     await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
-    
+
     sendCredentialEmail(name, username, password, email);
-    
+
     res.sendStatus(200);
   } catch (err) {
     if (err.isJoi) {
@@ -84,7 +84,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/user", verifyAccessToken, async (req, res, next) => {
+router.get("/", verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload["aud"];
     return res.sendStatus(200);
@@ -94,7 +94,7 @@ router.get("/user", verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.delete("/logout", verifyAccessToken, async (req, res, next) => {
+router.delete("/", verifyAccessToken, async (req, res, next) => {
   try {
     const userId = req.payload["aud"];
     redis.DEL(userId, (error, reply) => {

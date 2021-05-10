@@ -1,16 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../../../models/User');
-const History = require('../../../models/History');
-const createError = require('http-errors');
-const fs = require('fs');
-const path = require('path');
-const { verifyAccessToken } = require('../../../helpers/jwt');
-require('dotenv').config();
+const User = require("../../../models/User");
+const History = require("../../../models/History");
+const createError = require("http-errors");
+const fs = require("fs");
+const path = require("path");
+const { verifyAccessToken } = require("../../../helpers/jwt");
+require("dotenv").config();
 
-router.get('/', verifyAccessToken, async (req, res, next) => {
+router.get("/", verifyAccessToken, async (req, res, next) => {
   try {
-    const userId = req.payload['aud'];
+    const userId = req.payload["aud"];
     const user = await User.findById(userId);
 
     const userData = {
@@ -30,9 +30,9 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
       return res.send(userData);
     }
 
-    const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, "..", "users-histories", req.payload.aud);
     for (let i = 0; i < classes.length; i++) {
-      const imageContent = fs.readFileSync(path.join(imagesPath, `${images[i]}.jpg`), 'base64');
+      const imageContent = fs.readFileSync(path.join(imagesPath, `${images[i]}.jpg`), "base64");
       const history = {
         class: classes[i],
         probability: probabilities[i],
@@ -47,16 +47,16 @@ router.get('/', verifyAccessToken, async (req, res, next) => {
   }
 });
 
-router.delete('/delete-event/:index', verifyAccessToken, async (req, res, next) => {
+router.delete("/event/:index", verifyAccessToken, async (req, res, next) => {
   try {
     let { index } = req.params;
     index = parseInt(index);
 
     if (index < 0) {
-      throw createError.BadRequest('Index cannot be less than 0.');
+      throw createError.BadRequest("Index cannot be less than 0.");
     }
 
-    const userId = req.payload['aud'];
+    const userId = req.payload["aud"];
     const history = await History.findOne({ userId });
 
     const {
@@ -64,14 +64,14 @@ router.delete('/delete-event/:index', verifyAccessToken, async (req, res, next) 
     } = history;
 
     if (!classes || !probabilities || !dates || !images || classes.length - 1 < index) {
-      return res.status(200).send('OK');
+      return res.status(200).send("OK");
     }
 
     const predictedResult = { classes: [], probabilities: [], dates: [], images: [] };
-    let imageToDeletePath = '';
+    let imageToDeletePath = "";
     for (let i = 0; i < classes.length; i++) {
       if (i === index) {
-        imageToDeletePath = path.join(__dirname, '..', 'users-histories', req.payload.aud, `${images[i]}.jpg`);
+        imageToDeletePath = path.join(__dirname, "..", "users-histories", req.payload.aud, `${images[i]}.jpg`);
         continue;
       }
 
@@ -86,20 +86,20 @@ router.delete('/delete-event/:index', verifyAccessToken, async (req, res, next) 
     history.predictedResult = predictedResult;
     await history.save();
 
-    return res.status(200).send('OK');
+    return res.status(200).send("OK");
   } catch (err) {
     console.log(err);
     next(err);
   }
 });
 
-router.delete('/clear-history', verifyAccessToken, async (req, res, next) => {
+router.delete("/all-events", verifyAccessToken, async (req, res, next) => {
   try {
-    const userId = req.payload['aud'];
+    const userId = req.payload["aud"];
     await History.findOneAndUpdate({ userId }, { predictedResult: { classes: [], probabilities: [], dates: [], images: [] } });
-    const imagesPath = path.join(__dirname, '..', 'users-histories', req.payload.aud);
+    const imagesPath = path.join(__dirname, "..", "users-histories", req.payload.aud);
     fs.rmdirSync(imagesPath, { recursive: true });
-    return res.status(200).send('OK');
+    return res.status(200).send("OK");
   } catch (err) {
     next(err);
   }
