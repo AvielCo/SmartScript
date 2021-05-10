@@ -1,66 +1,87 @@
-import './App.css';
-import React, { useEffect, useState } from 'react';
-import { Home, Login, Register, Profile, Error, Banned, About } from './pages';
-import { Switch, Route, useHistory, Redirect } from 'react-router-dom';
-import { getAccessToken } from './helpers';
-import axios from 'axios';
-import 'antd/dist/antd.css';
-import { HashLink } from 'react-router-hash-link';
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { Home, Login, Register, Profile, Error, About } from "./pages";
+import { NavBar } from "./components";
+import { Switch, Route, useHistory } from "react-router-dom";
+import { getAccessToken, removeAccessToken } from "./helpers";
+import axios from "axios";
+import "antd/dist/antd.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userIsBanned, setUserIsBanned] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUserBanned, setUserIsBanned] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
-    isBanned();
-  }, [isLoggedIn]);
+    checkIfLoggedIn();
+    window.addEventListener("storage", (ev) => {
+      ev.preventDefault();
+      checkIfLoggedIn();
+    });
+    return () => {
+      window.removeEventListener("storage", (ev) => {
+        ev.preventDefault();
+        checkIfLoggedIn();
+      });
+    };
+  }, []);
 
-  const isBanned = () => {
+  const checkIfLoggedIn = () => {
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + getAccessToken(),
+        Authorization: "Bearer " + getAccessToken(),
       },
     };
 
     axios
-      .get(`${process.env.REACT_APP_API_ADDRESS}/api/auth/user`, cfg)
+      .get(`${process.env.REACT_APP_API_ADDRESS}/api/auth/`, cfg)
       .then((res) => {
         if (res.status === 200) {
           setUserIsBanned(false);
-          setIsLoggedIn(true);
+          setIsUserLoggedIn(true);
         }
       })
       .catch((err) => {
         if (err.response) {
           const { status } = err.response;
           if (status === 403) {
+            removeAccessToken();
             setUserIsBanned(true);
-            setIsLoggedIn(false);
-            history.replace('/ban');
+            setIsUserLoggedIn(false);
+            toast.error("Contact admin to submit ban appeal.");
+            toast.error("You are banned.");
+            history.replace("/ban");
             return;
           }
         }
       });
   };
+
   return (
-    <Switch>
-      <Route exact path='/ban' component={Banned} />
-      <Route exact path='/home'>
-        <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      </Route>
-      <Route exact path='/login'>
-        <Login setIsLoggedIn={setIsLoggedIn} />
-      </Route>
-      <Route exact path='/profile' component={Profile} />
-      <Route exact path='/about' component={About} />
-      <Route exact path='/register' component={Register} />
-      <Route exact path='/'>
-        <Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      </Route>
-      <Route component={Error} />
-      {userIsBanned && <Redirect to='/ban' />}
-    </Switch>
+    <>
+      <NavBar isLoggedIn={isUserLoggedIn} setIsLoggedIn={setIsUserLoggedIn} />
+      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <Switch>
+        <Route exact path="/home">
+          <Home isLoggedIn={isUserLoggedIn} />
+        </Route>
+        <Route exact path="/login">
+          <Login setIsLoggedIn={setIsUserLoggedIn} />
+        </Route>
+        <Route exact path="/profile">
+          <Profile isLoggedIn={isUserLoggedIn} />
+        </Route>
+        <Route exact path="/about">
+          <About />
+        </Route>
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/">
+          <Home isLoggedIn={isUserLoggedIn} />
+        </Route>
+        <Route component={Error} />
+      </Switch>
+    </>
   );
 }
 export default App;
