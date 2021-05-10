@@ -27,7 +27,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     removeAccessToken();
 
     axios
-      .delete(`${process.env.REACT_APP_API_ADDRESS}/api/auth/logout`, cfg)
+      .delete(`${process.env.REACT_APP_API_ADDRESS}/api/auth/`, cfg)
       .then((res) => {
         if (res.status === 204) {
           setIsLoggedIn(false);

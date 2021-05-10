@@ -43,7 +43,7 @@ const signAccessToken = (userId) => {
 
 const verifyAccessToken = async (req, res, next) => {
   const { originalUrl } = req;
-  if (!req.headers["authorization"] && originalUrl === "/api/images/predict") {
+  if (!req.headers["authorization"] && (originalUrl === "/api/predict/" || originalUrl === "/api/predict")) {
     return next();
   } else if (!req.headers["authorization"]) {
     return next(createError.Unauthorized());

@@ -55,7 +55,7 @@ function Profile({ isLoggedIn }) {
       },
     };
     axios
-      .delete(`${process.env.REACT_APP_API_ADDRESS}/api/profile/delete-event/${indexToDelete}`, cfg)
+      .delete(`${process.env.REACT_APP_API_ADDRESS}/api/profile/event/${indexToDelete}`, cfg)
       .then((res) => {
         if (res.status === 200) {
           setIsDataChanged(true);

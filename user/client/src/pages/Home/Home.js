@@ -77,7 +77,7 @@ function ScanSection({ isLoggedIn }) {
     fd.append("file", selectedImage, selectedImage.name);
 
     axios
-      .post(`${process.env.REACT_APP_API_ADDRESS}/api/images/predict`, fd, getAccessToken() ? cfg : { headers: { "content-type": "multipart/form-data" } })
+      .post(`${process.env.REACT_APP_API_ADDRESS}/api/predict`, fd, getAccessToken() ? cfg : { headers: { "content-type": "multipart/form-data" } })
       .then((res) => {
         if (res.status === 200) {
           const { savedToHistory: saved, reason } = res.data;

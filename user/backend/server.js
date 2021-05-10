@@ -28,7 +28,7 @@ app.get("/google-site-verification=BpPbKAZznUKSfZSw8-m2vb8M8Sh0-PHBzxGx9uJ48z4.t
 });
 
 //* Upload image routes
-app.use("/api/images", require("./routes/images"));
+app.use("/api/predict", require("./routes/predict"));
 
 //* Authentication routes
 app.use("/api/auth", require("./routes/auth"));

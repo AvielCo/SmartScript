@@ -35,7 +35,7 @@ function App() {
     };
 
     axios
-      .get(`${process.env.REACT_APP_API_ADDRESS}/api/auth/user`, cfg)
+      .get(`${process.env.REACT_APP_API_ADDRESS}/api/auth/`, cfg)
       .then((res) => {
         if (res.status === 200) {
           setUserIsBanned(false);
