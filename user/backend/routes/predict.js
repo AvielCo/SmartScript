@@ -30,7 +30,7 @@ const predict = (data, req, res, next) => {
   } = data;
   const pythonScript = "predict.py";
   const pythonScriptPath = path.join(__dirname, "..", "py-files", pythonScript);
-  const pythonScriptCommand = `python ${pythonScriptPath} ${fileName}`;
+  const pythonScriptCommand = `python ${pythonScriptPath} ${fileName}${isUser ? " " + user._id : ""}`;
   const envName = "py36";
   const condaCommand = `conda run -n ${envName}`;
   const child = exec(`${condaCommand} ${pythonScriptCommand}`);
@@ -92,6 +92,7 @@ const predict = (data, req, res, next) => {
      * `reason: Reason that the script failed
      * }
      */
+    console.log(message.reason);
     return next(createError.BadRequest());
   });
 
