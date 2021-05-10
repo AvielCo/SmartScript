@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { NavBar, ResultTextView } from "../../components";
+import { ResultTextView } from "../../components";
 import pic from "../../assets/landing-bg.jpg";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { getAccessToken } from "../../helpers";
-import { Upload } from "antd";
 import Button from "../../components/Buttons/InputButton";
 import { HashLink as HashLink } from "react-router-hash-link";
 
@@ -92,6 +91,7 @@ function ScanSection({ isLoggedIn }) {
       })
       .catch((err) => {
         if (err) {
+          toast.error("Please try again with different image.");
           toast.error("An error has been encountered while trying to predict.");
           setIsLoading(false);
         }
@@ -103,7 +103,7 @@ function ScanSection({ isLoggedIn }) {
       <div className="scan-container">
         <form className="scan-btn-holder" onSubmit={handlePredict}>
           <h3>Upload and Predict</h3>
-          {!getAccessToken() && (
+          {!isLoggedIn && (
             <p>
               Please consider signing up to save previous uploads for future use. <br /> This will take less than a minute.
             </p>
@@ -127,16 +127,12 @@ function ScanSection({ isLoggedIn }) {
   );
 }
 
-function Home({ isLoggedIn, setIsLoggedIn }) {
+function Home({ isLoggedIn }) {
   return (
-    <>
-      <ToastContainer position="top-left" autoClose={5000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="home" id="home">
-        <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        <LandingSection />
-        <ScanSection isLoggedIn={isLoggedIn} />
-      </div>
-    </>
+    <div className="home" id="home">
+      <LandingSection />
+      <ScanSection isLoggedIn={isLoggedIn} />
+    </div>
   );
 }
 export default Home;

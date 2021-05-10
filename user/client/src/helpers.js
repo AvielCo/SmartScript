@@ -1,4 +1,4 @@
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 export const encryptStrings = (...decryptedStrings) => {
   let encryptedStrings = {};
@@ -23,9 +23,14 @@ export const decryptStrings = (...encryptedStrings) => {
 };
 
 export const getAccessToken = () => {
-  let accessToken = window.sessionStorage.getItem('accessToken');
+  let accessToken = window.sessionStorage.getItem("accessToken");
   if (!accessToken) {
-    accessToken = window.localStorage.getItem('accessToken');
+    accessToken = window.localStorage.getItem("accessToken");
   }
   return accessToken;
+};
+
+export const removeAccessToken = () => {
+  window.sessionStorage.removeItem("accessToken");
+  window.localStorage.removeItem("accessToken");
 };

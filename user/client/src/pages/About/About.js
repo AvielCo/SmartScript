@@ -1,7 +1,6 @@
 import React from "react";
 import "./About.css";
 
-import { NavBar } from "../../components";
 import Emilia from "../../assets/emilia.jpg";
 import Noah from "../../assets/noah.png";
 import Aviel from "../../assets/aviel.png";
@@ -53,10 +52,9 @@ function WWASection() {
     </section>
   );
 }
-function About() {
+function About({ isLoggedIn, setIsLoggedIn }) {
   return (
     <React.Fragment>
-      <NavBar />
       <AboutSection />
       <WWASection />
     </React.Fragment>
