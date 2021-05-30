@@ -40,14 +40,20 @@ const predict = (data, req, res, next) => {
     let message = JSON.parse(data);
     message = { ...message, savedToHistory: true };
     if (message.success) {
+      console.log(message);
       /**
        * message: {
        *  success: True,
-       *  origin: One of the following: "ashkenazi", "bizantine" .....
-       *  shape: One of the following: "cursive", "square", "semi-square"
-       *  probability: the probability of the prediction
+       *  top_three_results_shape: array of top three shapes [(maxshape, maxprob), (midshape,midprob), (minshape, minprob)]
+       *  top_three_results_origin: array of top three origin with shape in index 0 [(maxorigin, maxorigin), (midshape,midorigin), (minshape, minorigin)]
        * }
        */
+      return res.status(200);
+      let top_prediction = {
+        shape: message.top_three_results_shape[0][0],
+        origin: message.top_three_results_origin[0],
+        probability: message.top_three_results_origin[0],
+      };
       try {
         const basePath = path.join(__dirname, "..", "python-folders", "predict-files", "predict-images");
         let filePath = "";
