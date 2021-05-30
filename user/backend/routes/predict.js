@@ -44,15 +44,14 @@ const predict = (data, req, res, next) => {
       /**
        * message: {
        *  success: True,
-       *  top_three_results_shape: array of top three shapes [(maxshape, maxprob), (midshape,midprob), (minshape, minprob)]
-       *  top_three_results_origin: array of top three origin with shape in index 0 [(maxorigin, maxorigin), (midshape,midorigin), (minshape, minorigin)]
+       *  top_results_shape: array of top shapes [(maxshape, maxprob), (midshape,midprob)]
+       *  top_results_origin: array of top origin with shape in index 0 [(maxorigin, maxorigin), (midshape,midorigin)]
        * }
        */
-      return res.status(200);
       let top_prediction = {
-        shape: message.top_three_results_shape[0][0],
-        origin: message.top_three_results_origin[0],
-        probability: message.top_three_results_origin[0],
+        shape: message.top_results_shape[0][0],
+        origin: message.top_results_origin[0][0],
+        probability: message.top_results_origin[0][1],
       };
       try {
         const basePath = path.join(__dirname, "..", "python-folders", "predict-files", "predict-images");
@@ -81,7 +80,7 @@ const predict = (data, req, res, next) => {
                 return res.status(200).send(message);
               }
             });
-          await insertNewHistory(userHistory, message, fileName.split(".")[0]);
+          await insertNewHistory(userHistory, top_prediction, fileName.split(".")[0]);
         } else {
           message = { ...message, savedToHistory: false, reason: "Log in to write the predictions to history." };
           filePath = path.join(basePath, "guests", `${fileName}`);

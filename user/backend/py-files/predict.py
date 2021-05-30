@@ -95,18 +95,18 @@ def extract_max_prediction(model, model_type, dataset):
         for i in range(len(prediction)):
             prediction_probs[i] += prediction[i]
     unsorted_probabilities = prediction_probs # save the original probabilities and the indexes
-    prediction_probs.sort()
-    top_three_results = []
+    prediction_probs.sort(reverse=True)
+    top_results = []
     for i in range(2):
-        # extracting index of the three top probabilities from unsorted array
+        # extracting index of the top probabilities from unsorted array
         index = unsorted_probabilities.index(prediction_probs[i])
         probability = (prediction_probs[i] * 100) / len(predictions)
         predicted_class = get_key_from_dict(CLASSES[model_type], index)
-        top_three_results.append((predicted_class, round(probability, 2)))
-    return top_three_results
+        top_results.append((predicted_class, round(probability, 2)))
+    return top_results
 
 
-def predict_on_origin(top_three_results_shape, dataset):
+def predict_on_origin(top_results_shape, dataset):
     """
         Loading the predicted model that classify between "ashkenazi", "byzantine", "yemenite", "oriental",
         "italian" and "sephardic"
@@ -117,11 +117,11 @@ def predict_on_origin(top_three_results_shape, dataset):
         dataset (type ndarray): patches of the image to predict on
 
     """
-    top_predicted_shape = top_three_results_shape[0][0]
+    top_predicted_shape = top_results_shape[0][0]
     model = load_model(os.path.join(MODELS_DIR, f"{top_predicted_shape}.h5"))
-    top_three_results_origin = extract_max_prediction(model, top_predicted_shape, dataset)
+    top_results_origin = extract_max_prediction(model, top_predicted_shape, dataset)
     shutil.rmtree(user_predict_patches_path)
-    print(json.dumps({"success": True, "top_three_results_shape": top_three_results_shape, "top_three_results_origin": top_three_results_origin}))
+    print(json.dumps({"success": True, "top_results_shape": top_results_shape, "top_results_origin": top_results_origin}))
     exit(0)
 
 
@@ -149,10 +149,10 @@ def predict_on_shape():
     dataset = np.asarray(dataset)
     dataset = dataset.reshape((dataset.shape[0], dataset.shape[1], dataset.shape[2], 1))
     dual_print("Predicting {} patches...".format(len(dataset)))
-    top_three_results = extract_max_prediction(model, "main", dataset)
+    top_results = extract_max_prediction(model, "main", dataset)
 
-    dual_print(f"Done!\n{predicted_shape}: {probability}%")
-    predict_on_origin(top_three_results, dataset)
+    # dual_print(f"Done!\n{predicted_shape}: {probability}%")
+    predict_on_origin(top_results, dataset)
 
 image_name = sys.argv[1]
 user_id = False
