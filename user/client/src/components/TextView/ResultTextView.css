@@ -4,12 +4,13 @@
 
 .results-text-view {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-content: center;
 }
 
-.results-text {
+.results-text,
+.result > u {
   font-size: 2rem;
   font-family: "Roboto", sans-serif;
   font-weight: bolder;
