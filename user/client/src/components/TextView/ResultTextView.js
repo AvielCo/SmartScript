@@ -5,33 +5,22 @@ import "./ResultTextView.css";
 const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
   const { Paragraph } = Typography;
 
-  const top_result = result.success
-    ? {
-        shape: result.top_results_shape[0][0],
-        origin: result.top_results_origin[0][0],
-        probability: result.top_results_origin[0][1],
-      }
-    : {
-        shape: "none",
-        origin: "none",
-        probability: "none",
-      };
-  const mid_result = result.success
-    ? {
-        shape: result.top_results_shape[0][0],
-        origin: result.top_results_origin[1][0],
-        probability: result.top_results_origin[1][1],
-      }
-    : {
-        shape: "none",
-        origin: "none",
-        probability: "none",
-      };
+  const top_result = result.success && {
+    shape: result.top_results_shape[0][0],
+    origin: result.top_results_origin[0][0],
+    probability: result.top_results_origin[0][1],
+  };
+
+  const mid_result = result.success && {
+    shape: result.top_results_shape[0][0],
+    origin: result.top_results_origin[1][0],
+    probability: result.top_results_origin[1][1],
+  };
 
   return (
     <div>
       <div className="results">
-        {!result.success && (
+        {result.success && (
           <>
             <div className="results-text-view">
               <Paragraph className="results-text result">
