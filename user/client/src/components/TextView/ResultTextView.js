@@ -16,7 +16,7 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
     origin: result.top_results_origin[1][0],
     probability: result.top_results_origin[1][1],
   };
-
+  
   return (
     <div>
       <div className="results">
