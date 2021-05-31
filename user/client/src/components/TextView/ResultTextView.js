@@ -10,11 +10,16 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
     origin: result.top_results_origin[0][0],
     probability: result.top_results_origin[0][1],
   };
-
-  const mid_result = result.success && {
+  
+  const second_result = result.success && {
     shape: result.top_results_shape[0][0],
     origin: result.top_results_origin[1][0],
     probability: result.top_results_origin[1][1],
+  };
+
+  const third_result = result.success && {
+    shape: result.top_results_shape[1][0],
+    probability: result.top_results_shape[1][1],
   };
   
   return (
@@ -29,7 +34,11 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
               </Paragraph>
               <Paragraph className="results-text result">
                 <u>Second result:</u>
-                {` ${mid_result.origin}-${mid_result.shape} `} {mid_result.probability}%
+                {` ${second_result.origin}-${second_result.shape} `} {second_result.probability}%
+              </Paragraph>
+              <Paragraph className="results-text result">
+                <u>Third result:</u>
+                {` ${third_result.shape} `} {third_result.probability}%
               </Paragraph>
             </div>
             <Paragraph strong underline>
