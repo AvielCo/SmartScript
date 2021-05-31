@@ -10,7 +10,7 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
     origin: result.top_results_origin[0][0],
     probability: result.top_results_origin[0][1],
   };
-
+  
   const second_result = result.success && {
     shape: result.top_results_shape[0][0],
     origin: result.top_results_origin[1][0],
@@ -21,7 +21,7 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
     shape: result.top_results_shape[1][0],
     probability: result.top_results_shape[1][1],
   };
-
+  
   return (
     <div>
       <div className="results">
