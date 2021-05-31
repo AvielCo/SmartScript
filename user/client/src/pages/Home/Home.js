@@ -21,9 +21,6 @@ function LandingSection() {
           <br />
           Please upload your manuscript page.
         </p>
-        <HashLink to="home#scan" smooth>
-          <Button className="move-to-scan" name={"Proceed to predict an image"}></Button>
-        </HashLink>
       </div>
     </section>
   );
@@ -40,9 +37,6 @@ function ScanSection({ isLoggedIn }) {
 
   const [result, setResult] = useState({
     success: false,
-    origin: "",
-    shape: "",
-    probability: "",
   });
 
   const handleImageChange = async (event) => {
@@ -50,6 +44,9 @@ function ScanSection({ isLoggedIn }) {
     if (event.target.files && event.target.files[0]) {
       setSelectedImage(event.target.files[0]);
       setImageUri(URL.createObjectURL(event.target.files[0]));
+      setResult({
+        success: false,
+      });
     }
   };
 
@@ -104,15 +101,15 @@ function ScanSection({ isLoggedIn }) {
         <form className="scan-btn-holder" onSubmit={handlePredict}>
           <h3>Upload and Predict</h3>
           {!isLoggedIn && (
-            <p>
+            <p className="consider-log-in">
               Please consider signing up to save previous uploads for future use. <br /> This will take less than a minute.
             </p>
           )}
-          <input accept="image/*" onChange={handleImageChange} id="upload-button" type="file" style={{ display: "none" }} />
+          <input accept="image/*" onChange={handleImageChange} id="upload-button" type="file" style={{ display: "none" }} disabled={isLoading} />
           <label htmlFor="upload-button">
             <Button className="scan-btn" component="span" name={"Upload"} disabled={isLoading} />
           </label>
-          <Button className="scan-btn" type="submit" name={"Predict"} disabled={isLoading}></Button>
+          <Button className="scan-btn" type="submit" name={"Predict"} disabled={isLoading || !selectedImage}></Button>
 
           <ResultTextView result={result} savedToHistory={savedToHistory} />
         </form>

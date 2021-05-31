@@ -28,22 +28,21 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
         {result.success && (
           <>
             <div className="results-text-view">
-              <Paragraph className="results-text result">
-                <u>Top result:</u>
-                {` ${top_result.origin}-${top_result.shape} `} {top_result.probability}%
-              </Paragraph>
-              <Paragraph className="results-text result">
-                <u>Second result:</u>
-                {` ${second_result.origin}-${second_result.shape} `} {second_result.probability}%
-              </Paragraph>
-              <Paragraph className="results-text result">
-                <u>Third result:</u>
-                {` ${third_result.shape} `} {third_result.probability}%
-              </Paragraph>
+              <ol>
+                <li>
+                  <p className="results-text result top">{`Top prediction result: ${top_result.origin}-${top_result.shape} ${top_result.probability}%`}</p>
+                </li>
+                <li>
+                  <p className="results-text result second">{`Possible second prediction: ${second_result.origin}-${second_result.shape} ${second_result.probability}%`}</p>
+                </li>
+                <li>
+                  <p className="results-text result third">{`Possible second shape type: ${third_result.shape} ${third_result.probability}%`}</p>
+                </li>
+              </ol>
             </div>
-            <Paragraph strong underline>
-              {saved ? "Added to your history, check your profile." : reason}
-            </Paragraph>
+            <p>
+              <u>{saved ? "Added to your history, check your profile." : reason}</u>
+            </p>
           </>
         )}
       </div>

@@ -2,20 +2,18 @@
   text-align: center;
 }
 
-.results-text-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
+li {
+  text-align: start;
 }
 
-.results-text,
-.result > u {
-  font-size: 2rem;
-  font-family: "Roboto", sans-serif;
-  font-weight: bolder;
+.top {
+  font-size: 1.5rem;
 }
-.results-text > *,
-.results-text .result {
-  font-weight: 900;
+
+.second {
+  font-size: 1.4rem;
+}
+
+.third {
+  font-size: 1.3rem;
 }
