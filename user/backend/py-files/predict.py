@@ -94,8 +94,10 @@ def extract_max_prediction(model, model_type, dataset):
     for prediction in predictions: # iterate on predictions to convert to 1d array of probabilities
         for i in range(len(prediction)):
             prediction_probs[i] += prediction[i]
-    unsorted_probabilities = prediction_probs # save the original probabilities and the indexes
+    
+    unsorted_probabilities = copy.deepcopy(prediction_probs) # save the original probabilities and the indexes
     prediction_probs.sort(reverse=True)
+    
     top_results = []
     for i in range(2):
         # extracting index of the top probabilities from unsorted array
