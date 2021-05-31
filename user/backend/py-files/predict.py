@@ -6,6 +6,7 @@ import sys
 import json
 import random
 import string
+import copy
 from dual_print import dual_print
 
 from tensorflow.keras.models import load_model
