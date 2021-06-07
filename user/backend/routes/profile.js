@@ -17,7 +17,6 @@ router.get("/", verifyAccessToken, async (req, res, next) => {
       details: {
         email: user.email,
         username: user.username,
-        name: user.name,
       },
       history: [],
     };
