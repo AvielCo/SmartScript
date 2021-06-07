@@ -14,7 +14,6 @@ function Profile({ isLoggedIn }) {
     details: {
       email: "",
       username: "",
-      name: "",
     },
     history: [],
   });
@@ -26,7 +25,6 @@ function Profile({ isLoggedIn }) {
     const textFields = [
       { label: "Email", value: userData.details.email },
       { label: "Username", value: userData.details.username },
-      { label: "Name", value: userData.details.name },
     ];
     return (
       <div className="profile-textfields">

@@ -12,17 +12,16 @@ require("dotenv").config();
 
 router.post("/register", async (req, res, next) => {
   try {
-    const { email, username, password, name } = decryptStrings({ email: req.body.email }, { username: req.body.username }, { password: req.body.password }, { name: req.body.name });
-    if (!email || !username || !password || !name) {
+    const { email, username, password } = decryptStrings({ email: req.body.email }, { username: req.body.username }, { password: req.body.password });
+    if (!email || !username || !password) {
       throw createError.BadRequest();
     }
-    await authSchema.validateAsync({ email, username, password, name });
+    await authSchema.validateAsync({ email, username, password });
 
     const newUserDetails = {
       email,
       username,
       password,
-      name,
     };
 
     //* Check if user exists
@@ -47,7 +46,7 @@ router.post("/register", async (req, res, next) => {
     const history = await new History({ userId: newUser._id, predictedResult: { classes: [], probabilities: [], dates: [] } }).save();
     await User.findByIdAndUpdate(newUser._id, { historyId: history._id });
 
-    sendCredentialEmail(name, username, password, email);
+    sendCredentialEmail(username, password, email);
 
     res.sendStatus(200);
   } catch (err) {
