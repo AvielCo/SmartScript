@@ -15,7 +15,6 @@ function Register() {
   const [inputUsername, setUsername] = useState("");
   const [inputPassword, setPassword] = useState("");
   const [inputEmail, setEmail] = useState("");
-  const [inputName, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const history = useHistory();
@@ -26,19 +25,14 @@ function Register() {
       toast.info("Please wait.");
       return;
     }
-    if (!inputUsername || !inputPassword || !inputEmail || !inputName) {
+    if (!inputUsername || !inputPassword || !inputEmail) {
       toast.info("Some fields are empty.");
       return;
     }
     setIsLoading(true);
-    const { encryptedUsername, encryptedPassword, encryptedEmail, encryptedName } = encryptStrings(
-      { encryptedUsername: inputUsername },
-      { encryptedPassword: inputPassword },
-      { encryptedEmail: inputEmail },
-      { encryptedName: inputName }
-    );
+    const { encryptedUsername, encryptedPassword, encryptedEmail } = encryptStrings({ encryptedUsername: inputUsername }, { encryptedPassword: inputPassword }, { encryptedEmail: inputEmail });
 
-    registerUser(encryptedEmail, encryptedUsername, encryptedPassword, encryptedName);
+    registerUser(encryptedEmail, encryptedUsername, encryptedPassword);
   };
 
   const registerUser = (email, username, password, name) => {
@@ -47,13 +41,12 @@ function Register() {
         email,
         username,
         password,
-        name,
       })
       .then(function (response) {
         setIsLoading(false);
         if (response.status === 200) {
           toast.info(`Please log in with your username and password!`);
-          toast.info(`Welcome to SmartScript ${inputName}`);
+          toast.info(`Welcome to SmartScript!`);
           history.replace("/login");
           return;
         }
@@ -98,9 +91,6 @@ function Register() {
                 <InputField type="password" value="password" name="password" setProperty={setPassword} prefix={<KeyOutlined />} />
               </Form.Item>
 
-              <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please enter a valid name." }]}>
-                <InputField type="text" value="name" name="name" setProperty={setName} prefix={<UserOutlined />} />
-              </Form.Item>
               <InputButton name="Register" type="submit" />
             </div>
           </div>

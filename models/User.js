@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const reqString = {
   type: String,
@@ -8,7 +8,7 @@ const reqString = {
 
 const emptyString = {
   type: String,
-  default: '',
+  default: "",
   required: false,
 };
 
@@ -31,7 +31,6 @@ const UserSchema = mongoose.Schema({
   email: reqLowUniqueString,
   username: reqLowUniqueString,
   password: reqHideString,
-  name: reqString,
   historyId: emptyString,
   banned: {
     type: Boolean,
@@ -50,7 +49,7 @@ UserSchema.methods.isValidPassword = async function (password) {
 };
 
 //When save() is fired
-UserSchema.pre('save', async function (next) {
+UserSchema.pre("save", async function (next) {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
@@ -61,4 +60,4 @@ UserSchema.pre('save', async function (next) {
   }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import 'antd/dist/antd.css';
-import './Home.css';
-import { Table, Space } from 'antd';
-import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
-import greenCircle from '../../assets/green-circle.svg';
-import redCircle from '../../assets/red-circle.svg';
-import sun from '../../assets/icon-sun.png';
-import moon from '../../assets/icon-moon.png';
-import { getAccessToken, useWindowDimensions } from '../../helpers';
-import { Doughnut } from 'react-chartjs-2';
+import React, { useEffect, useState } from "react";
+import "antd/dist/antd.css";
+import "./Home.css";
+import { Table, Space } from "antd";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import greenCircle from "../../assets/green-circle.svg";
+import redCircle from "../../assets/red-circle.svg";
+import sun from "../../assets/icon-sun.png";
+import moon from "../../assets/icon-moon.png";
+import { getAccessToken, useWindowDimensions } from "../../helpers";
+import { Doughnut } from "react-chartjs-2";
 
-import 'react-toastify/dist/ReactToastify.css';
-import { Redirect } from 'react-router';
-import { NavBar } from '../../components';
+import "react-toastify/dist/ReactToastify.css";
+import { Redirect } from "react-router";
+import { NavBar } from "../../components";
 
 function Home() {
   const [data, setData] = useState([{}]);
@@ -21,15 +21,15 @@ function Home() {
   const [totalusers, setTotalUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
   const [time, setTime] = useState(new Date().getTime());
-  const [greetingMsg, setGreetingMsg] = useState(' ');
-  const [weather, setWeather] = useState(' ');
+  const [greetingMsg, setGreetingMsg] = useState(" ");
+  const [weather, setWeather] = useState(" ");
   const [loading, setLoading] = useState(true);
   const { width } = useWindowDimensions();
-  const title = 'Welcome To SmartScript`s Admin Panel';
+  const title = "Welcome To SmartScript`s Admin Panel";
 
   const deleteTokenFromStorage = () => {
-    window.sessionStorage.removeItem('accessToken');
-    window.localStorage.removeItem('accessToken');
+    window.sessionStorage.removeItem("accessToken");
+    window.localStorage.removeItem("accessToken");
   };
 
   const editBanUser = (userId, isBanned, event) => {
@@ -39,7 +39,7 @@ function Home() {
 
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + getAccessToken(),
+        Authorization: "Bearer " + getAccessToken(),
         IsAdmin: true,
       },
     };
@@ -49,7 +49,7 @@ function Home() {
       .then((res) => {
         if (res.status === 200) {
           setUpdatedField(true);
-          toast.info(!isBanned ? 'Banned Successfully!' : 'Unbanned Successfully!');
+          toast.info(!isBanned ? "Banned Successfully!" : "Unbanned Successfully!");
         }
       })
       .catch((err) => {
@@ -67,9 +67,9 @@ function Home() {
 
   const getGreetingMsg = (hour) => {
     const greetings = {
-      morningMsg: 'Good Morning',
-      noonMsg: 'Good Afternoon',
-      eveMsg: 'Good Evening',
+      morningMsg: "Good Morning",
+      noonMsg: "Good Afternoon",
+      eveMsg: "Good Evening",
     };
 
     if (hour >= 6 && hour < 12) {
@@ -86,9 +86,9 @@ function Home() {
 
   const getCurrentTime = () => {
     const today = new Date();
-    const minutes = today.getMinutes() >= 10 ? today.getMinutes() : '0' + today.getMinutes();
-    const hours = today.getHours() >= 10 ? today.getHours() : '0' + today.getHours();
-    const currTime = hours + ':' + minutes;
+    const minutes = today.getMinutes() >= 10 ? today.getMinutes() : "0" + today.getMinutes();
+    const hours = today.getHours() >= 10 ? today.getHours() : "0" + today.getHours();
+    const currTime = hours + ":" + minutes;
     if (time !== currTime) {
       setTime(currTime);
       getGreetingMsg(today.getHours());
@@ -103,7 +103,7 @@ function Home() {
 
     const cfg = {
       headers: {
-        Authorization: 'Bearer ' + getAccessToken(),
+        Authorization: "Bearer " + getAccessToken(),
         IsAdmin: true,
       },
     };
@@ -124,7 +124,7 @@ function Home() {
           const { status, message } = err.response.data.error;
           if (status === 401) {
             deleteTokenFromStorage();
-            toast.error('Please log in to watch all users.');
+            toast.error("Please log in to watch all users.");
           }
           toast.error(message);
         }
@@ -140,25 +140,24 @@ function Home() {
   }, [time]);
 
   const usersColumns = [
-    { title: 'Name', dataIndex: 'name', key: 'name', width: width < 1220 ? '12%' : '20%' },
-    { title: 'Username', dataIndex: 'username', key: 'username', width: width < 1220 ? '12%' : '17%' },
-    { title: 'Email', dataIndex: 'email', key: 'email', width: width < 1220 ? '20%' : '30%' },
+    { title: "Username", dataIndex: "username", key: "username", width: width < 1220 ? "12%" : "17%" },
+    { title: "Email", dataIndex: "email", key: "email", width: width < 1220 ? "20%" : "30%" },
     {
-      title: 'Banned',
-      dataIndex: 'banned',
-      width: width < 1220 ? '7%' : '12%',
-      key: 'banned',
+      title: "Banned",
+      dataIndex: "banned",
+      width: width < 1220 ? "7%" : "12%",
+      key: "banned",
       render: (banned) => (banned ? <img alt="V" src={redCircle} width="20" /> : <img alt="X" src={greenCircle} width="20" />),
     },
     {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: width < 1220 ? '6%' : '13%',
+      title: "Actions",
+      dataIndex: "actions",
+      key: "actions",
+      width: width < 1220 ? "6%" : "13%",
       render: (text, record) => (
         <Space size="middle">
           <a href="#" onClick={(e) => editBanUser(record._id, record.banned, e)}>
-            {record.banned ? 'Unblock' : 'Block'}
+            {record.banned ? "Unblock" : "Block"}
           </a>
         </Space>
       ),
@@ -167,25 +166,25 @@ function Home() {
 
   const historyColumns = [
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
       render: (text, record) => {
-        return new Date(record.date).toLocaleDateString('he');
+        return new Date(record.date).toLocaleDateString("he");
       },
     },
-    { title: 'Class', dataIndex: 'class', key: 'class' },
-    { title: 'Probability', dataIndex: 'probability', key: 'probability' },
+    { title: "Class", dataIndex: "class", key: "class" },
+    { title: "Probability", dataIndex: "probability", key: "probability" },
   ];
 
   const chartData = {
-    labels: ['Blocked', 'Unblocked'],
+    labels: ["Blocked", "Unblocked"],
     datasets: [
       {
-        label: '# of Users',
+        label: "# of Users",
         data: [blockedUsers, totalusers - blockedUsers],
-        backgroundColor: ['rgba(255,65,65,0.5)', 'rgba(107,190,102,0.5)'],
-        borderColor: ['rgba(255,65,65,1)', 'rgba(107,190,102,255)'],
+        backgroundColor: ["rgba(255,65,65,0.5)", "rgba(107,190,102,0.5)"],
+        borderColor: ["rgba(255,65,65,1)", "rgba(107,190,102,255)"],
         borderWidth: 2,
         hoverOffset: 30,
       },
@@ -196,8 +195,8 @@ function Home() {
     maintainAspectRatio: true,
     animation: false,
     legend: {
-      position: 'bottom',
-      labels: { fontColor: '#000000', fontSize: 15, fontFamily: 'Times New Roman, Times, serif' },
+      position: "bottom",
+      labels: { fontColor: "#000000", fontSize: 15, fontFamily: "Times New Roman, Times, serif" },
     },
   };
 
@@ -225,7 +224,7 @@ function Home() {
                 <Table
                   pagination={false}
                   rowKey={(record) => record._id}
-                  scroll={width < 1220 && { x: 'calc(700px + 50%)', y: 240 }}
+                  scroll={width < 1220 && { x: "calc(700px + 50%)", y: 240 }}
                   loading={loading}
                   columns={usersColumns}
                   dataSource={data}

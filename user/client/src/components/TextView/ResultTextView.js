@@ -10,18 +10,13 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
     origin: result.top_results_origin[0][0],
     probability: result.top_results_origin[0][1],
   };
-  
+
   const second_result = result.success && {
     shape: result.top_results_shape[0][0],
     origin: result.top_results_origin[1][0],
     probability: result.top_results_origin[1][1],
   };
 
-  const third_result = result.success && {
-    shape: result.top_results_shape[1][0],
-    probability: result.top_results_shape[1][1],
-  };
-  
   return (
     <div>
       <div className="results">
@@ -34,9 +29,6 @@ const ResultTextView = ({ result, savedToHistory: { saved, reason } }) => {
                 </li>
                 <li>
                   <p className="results-text result second">{`Possible second prediction: ${second_result.origin}-${second_result.shape} ${second_result.probability}%`}</p>
-                </li>
-                <li>
-                  <p className="results-text result third">{`Possible second shape type: ${third_result.shape} ${third_result.probability}%`}</p>
                 </li>
               </ol>
             </div>
